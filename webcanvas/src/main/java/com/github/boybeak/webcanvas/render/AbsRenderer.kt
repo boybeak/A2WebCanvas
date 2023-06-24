@@ -39,16 +39,16 @@ internal abstract class AbsRenderer(internal val surfaceHolder: SurfaceHolder, c
             return
         }
         renderMode = mode
-        requestRender()
-    }
-
-    fun requestRender() {
         renderTask.logic = when(renderMode) {
             IWebCanvas.RENDER_MODE_WHEN_DIRTY -> whenDirtyLogic
             IWebCanvas.RENDER_MODE_CONTINUOUSLY -> continuouslyLogic
             IWebCanvas.RENDER_MODE_AUTO -> autoLogic
             else -> throw IllegalArgumentException("Illegal renderMode $renderMode")
         }
+        requestRender()
+    }
+
+    fun requestRender() {
         renderTask.logic?.requestRender()
     }
 
@@ -114,10 +114,26 @@ internal abstract class AbsRenderer(internal val surfaceHolder: SurfaceHolder, c
     }
     private class ContinuouslyLogic(context: Context, handler: Handler, task: Task, onRender: () -> Unit) : AutoLogic(handler, task, onRender) {
         private val period = 1000L / ceil((context as Activity).windowManager.defaultDisplay.refreshRate).toInt()
+        private var isRendering = false
+        override fun requestRender() {
+            if (isRendering) {
+                return
+            }
+            super.requestRender()
+            isRendering = true
+        }
         override fun run() {
+            if (!isRendering) {
+                return
+            }
             super.run()
             handler.postDelayed(task, period)
             isPosted = true
+        }
+
+        override fun stopRendering() {
+            super.stopRendering()
+            isRendering = false
         }
     }
 
