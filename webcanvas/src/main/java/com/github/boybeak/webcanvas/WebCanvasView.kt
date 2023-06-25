@@ -61,4 +61,8 @@ class WebCanvasView : SurfaceView, IWebCanvas2D, IWebCanvasWebGL {
         canvasContext?.onRenderModeChanged(mode)
     }
 
+    fun requestRender() {
+        canvasContext?.requestRender()
+    }
+
 }

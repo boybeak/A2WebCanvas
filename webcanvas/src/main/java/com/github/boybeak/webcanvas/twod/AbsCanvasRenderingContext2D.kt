@@ -14,6 +14,10 @@ abstract class AbsCanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : ICanvasRe
         renderer.setRenderMode(mode)
     }
 
+    override fun requestRender() {
+        renderer.requestRender()
+    }
+
     internal fun postInvalidate() {
         if (renderer.isAutoRendering) {
             renderer.requestRender()

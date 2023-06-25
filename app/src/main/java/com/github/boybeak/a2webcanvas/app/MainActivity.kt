@@ -5,7 +5,16 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.BaseAdapter
 import android.widget.Button
+import android.widget.Spinner
+import android.widget.SpinnerAdapter
+import android.widget.TextView
 import com.github.boybeak.webcanvas.IWebCanvas
 import com.github.boybeak.webcanvas.IWebCanvasContext
 import com.github.boybeak.webcanvas.WebCanvasView
@@ -18,20 +27,25 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
     }
 
+    private val modes = mapOf(
+        IWebCanvas.RENDER_MODE_WHEN_DIRTY to "WHEN_DIRTY",
+        IWebCanvas.RENDER_MODE_CONTINUOUSLY to "CONTINUOUSLY",
+        IWebCanvas.RENDER_MODE_AUTO to "AUTO"
+    )
+    private val currentMode = modes[0]
+
     private val canvasView by lazy { findViewById<WebCanvasView>(R.id.webCanvas) }
     private val invalidateButton by lazy { findViewById<Button>(R.id.invalidateButton) }
     private val houseButton by lazy { findViewById<Button>(R.id.houseButton) }
-    private val handler = Handler(Looper.getMainLooper())
-
-    private val task = Runnable {
-        Log.d(TAG, "Run!!!!")
-    }
+    private val switchModeSpinner by lazy { findViewById<Spinner>(R.id.modeSpinner) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        canvasView.setRenderMode(IWebCanvas.RENDER_MODE_AUTO)
+        invalidateButton.setOnClickListener {
+            canvasView.requestRender()
+        }
         houseButton.setOnClickListener {
             canvasView.getContext<CanvasRenderingContext2D>("2d").post {
                 strokeRect(75F, 140F, 150F, 110F)
@@ -45,10 +59,37 @@ class MainActivity : AppCompatActivity() {
                 stroke()
             }
         }
-    }
+        switchModeSpinner.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                canvasView.setRenderMode(position)
+            }
 
-    private fun refresh() {
-        handler.removeCallbacks(task)
-        handler.post(task)
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+        switchModeSpinner.adapter = object : BaseAdapter() {
+            override fun getCount(): Int {
+                return modes.size
+            }
+
+            override fun getItem(position: Int): Any {
+                return modes[position]!!
+            }
+
+            override fun getItemId(position: Int): Long {
+                return position.toLong()
+            }
+
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+                return TextView(this@MainActivity).apply {
+                    text = getItem(position).toString()
+                }
+            }
+        }
     }
 }
