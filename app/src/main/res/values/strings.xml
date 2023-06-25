@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">A2WebCanvas</string>
+    <string name="menu_item_invalidate">Invalidate</string>
+    <string name="menu_item_mode_switcher">Mode Switcher</string>
+    <string name="menu_item_when_dirty">When dirty</string>
+    <string name="menu_item_continuously">Continuously</string>
+    <string name="menu_item_auto">Auto</string>
 </resources>

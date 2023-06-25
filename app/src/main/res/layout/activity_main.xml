@@ -1,36 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
     <com.github.boybeak.webcanvas.WebCanvasView
         android:id="@+id/webCanvas"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="320dp"
         android:layout_gravity="center_vertical"
         />
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <Button
-            android:id="@+id/invalidateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Invalidate"
-            />
-        <Button
-            android:id="@+id/houseButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Draw House"
-            />
-        <Spinner
-            android:id="@+id/modeSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-    </LinearLayout>
-</FrameLayout>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/apisRv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        />
+</LinearLayout>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/invalidateItem"
+        android:title="@string/menu_item_invalidate"
+        android:icon="@drawable/ic_outline_format_paint_24"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/modeSwitcherItem"
+        android:title="@string/menu_item_mode_switcher"
+        android:icon="@drawable/ic_outline_tune_24"
+        app:showAsAction="always"
+        >
+        <menu>
+            <group
+                android:menuCategory="container"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/whenDirtyItem"
+                    android:title="@string/menu_item_when_dirty"
+                    android:checked="true"
+                    />
+                <item
+                    android:id="@+id/continuouslyItem"
+                    android:title="@string/menu_item_continuously"
+                    />
+                <item
+                    android:id="@+id/autoItem"
+                    android:title="@string/menu_item_auto"
+                    />
+            </group>
+        </menu>
+    </item>
+</menu>

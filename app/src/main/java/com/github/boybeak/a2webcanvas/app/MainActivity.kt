@@ -15,6 +15,14 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.SpinnerAdapter
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.RecyclerView
+import com.github.boybeak.a2webcanvas.app.adapter.ApiItem
+import com.github.boybeak.adapter.AnyAdapter
+import com.github.boybeak.adapter.event.OnClick
+import com.github.boybeak.adapter.event.OnItemClick
 import com.github.boybeak.webcanvas.IWebCanvas
 import com.github.boybeak.webcanvas.IWebCanvasContext
 import com.github.boybeak.webcanvas.WebCanvasView
@@ -27,69 +35,60 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
     }
 
-    private val modes = mapOf(
-        IWebCanvas.RENDER_MODE_WHEN_DIRTY to "WHEN_DIRTY",
-        IWebCanvas.RENDER_MODE_CONTINUOUSLY to "CONTINUOUSLY",
-        IWebCanvas.RENDER_MODE_AUTO to "AUTO"
-    )
-    private val currentMode = modes[0]
-
+    private val toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
     private val canvasView by lazy { findViewById<WebCanvasView>(R.id.webCanvas) }
-    private val invalidateButton by lazy { findViewById<Button>(R.id.invalidateButton) }
-    private val houseButton by lazy { findViewById<Button>(R.id.houseButton) }
-    private val switchModeSpinner by lazy { findViewById<Spinner>(R.id.modeSpinner) }
+    private val apisRecyclerView by lazy { findViewById<RecyclerView>(R.id.apisRv) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        invalidateButton.setOnClickListener {
-            canvasView.requestRender()
-        }
-        houseButton.setOnClickListener {
-            canvasView.getContext<CanvasRenderingContext2D>("2d").post {
-                strokeRect(75F, 140F, 150F, 110F)
-                fillRect(130F, 190F, 40F, 60F)
+        toolbar.inflateMenu(R.menu.menu_main)
+        toolbar.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.invalidateItem -> {
+                    canvasView.requestRender()
+                }
+                R.id.whenDirtyItem -> {
+                    it.isChecked = true
+                    canvasView.setRenderMode(IWebCanvas.RENDER_MODE_WHEN_DIRTY)
+                    Toast.makeText(this@MainActivity, it.title, Toast.LENGTH_SHORT).show()
+                }
+                R.id.continuouslyItem -> {
+                    it.isChecked = true
+                    canvasView.setRenderMode(IWebCanvas.RENDER_MODE_CONTINUOUSLY)
+                    Toast.makeText(this@MainActivity, it.title, Toast.LENGTH_SHORT).show()
 
-                beginPath()
-                moveTo(50F, 140F)
-                lineTo(150F, 60F)
-                lineTo(250F, 140F)
-                closePath()
-                stroke()
-            }
-        }
-        switchModeSpinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                canvasView.setRenderMode(position)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-        }
-        switchModeSpinner.adapter = object : BaseAdapter() {
-            override fun getCount(): Int {
-                return modes.size
-            }
-
-            override fun getItem(position: Int): Any {
-                return modes[position]!!
-            }
-
-            override fun getItemId(position: Int): Long {
-                return position.toLong()
-            }
-
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-                return TextView(this@MainActivity).apply {
-                    text = getItem(position).toString()
+                }
+                R.id.autoItem -> {
+                    it.isChecked = true
+                    canvasView.setRenderMode(IWebCanvas.RENDER_MODE_AUTO)
+                    Toast.makeText(this@MainActivity, it.title, Toast.LENGTH_SHORT).show()
                 }
             }
+            true
         }
+
+        toolbar.menu.performIdentifierAction(R.id.autoItem, 0)
+
+        val apis2D = CanvasApis2D(canvasView)
+        apisRecyclerView.adapter = AnyAdapter().apply {
+            addAll(apis2D.apis) { s, _ ->
+                ApiItem(s)
+            }
+            setOnClickFor(ApiItem::class.java, object : OnItemClick<ApiItem>() {
+                override fun onClick(
+                    view: View,
+                    item: ApiItem,
+                    position: Int,
+                    adapter: AnyAdapter
+                ) {
+                    toolbar.title = item.source().name
+                    canvasView.getContext<CanvasRenderingContext2D>("2d").post(item.source().onDraw)
+                }
+            })
+        }
+
     }
+
 }

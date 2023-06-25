@@ -21,6 +21,7 @@ internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer(canvas2D.surface
 
     override fun onRender() {
         if (currentCanvas != null) {
+            currentCanvas?.restore()
             surfaceHolder.unlockCanvasAndPost(currentCanvas)
         }
         nextCanvas()
@@ -33,15 +34,21 @@ internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer(canvas2D.surface
     private fun initDraw() {
         handler.post {
             nextCanvas()
-            currentCanvas?.drawColor(Color.WHITE)
+            resetCanvas()
         }
+    }
+
+    private fun resetCanvas() {
+        val canvas = currentCanvas ?: return
+        canvas.drawColor(Color.WHITE)
+        canvas.save()
     }
 
     private fun nextCanvas() {
         Log.d(TAG, "nextCanvas")
-        currentCanvas = surfaceHolder.lockCanvas().also {
-            it.drawColor(Color.WHITE)
-        }
+        currentCanvas = surfaceHolder.lockCanvas()
+        resetCanvas()
+
     }
 
 }
