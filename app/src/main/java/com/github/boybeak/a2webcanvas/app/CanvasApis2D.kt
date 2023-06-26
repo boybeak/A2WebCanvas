@@ -127,6 +127,36 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
                 stroke()
                 fillText("Abcdefghijklmnop ($s)", 0F, y.toFloat())
             }
+        },
+        Api2D("beginPath") {
+            // First path
+            beginPath()
+            strokeStyle = "blue"
+            moveTo(20F, 20F)
+            lineTo(200F, 20F)
+            stroke()
+
+            // Second path
+            beginPath()
+            strokeStyle = "green"
+            moveTo(20F, 20F)
+            lineTo(120F, 120F)
+            stroke()
+        },
+        Api2D("closePath") {
+            beginPath()
+            moveTo(20F, 140F) // Move pen to bottom-left corner
+            lineTo(120F, 10F) // Line to top corner
+            lineTo(220F, 140F) // Line to bottom-right corner
+            closePath() // Line to bottom-left corner
+            stroke()
+        },
+        Api2D("measureText") {
+            val hw = "Hello world"
+            val tm = measureText(hw)
+            fillText(hw, 100F, 40F)
+            font = "40px"
+            fillText("text width: ${tm.width}", 100F, 100F)
         }
     )
 }

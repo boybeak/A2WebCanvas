@@ -139,6 +139,10 @@ class WebPaint {
         }
     }
 
+    fun measureText(text: String): TextMetrics {
+        return TextMetrics(paint.measureText(text), paint)
+    }
+
     private fun statePaint() {
         stateMaskFilter()
         stateFont()

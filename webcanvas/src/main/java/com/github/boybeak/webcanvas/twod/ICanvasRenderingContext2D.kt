@@ -1,6 +1,7 @@
 package com.github.boybeak.webcanvas.twod
 
 import com.github.boybeak.webcanvas.IWebCanvasContext
+import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 
 interface ICanvasRenderingContext2D : IWebCanvasContext {
 
@@ -37,6 +38,8 @@ interface ICanvasRenderingContext2D : IWebCanvasContext {
     fun stroke()
     fun strokeRect(x: Float, y: Float, width: Float, height: Float)
     fun strokeText(text: String, x: Float, y: Float)
+
+    fun measureText(text: String): TextMetrics
 
     /** Path related **/
     fun beginPath()

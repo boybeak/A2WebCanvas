@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 import com.github.boybeak.webcanvas.twod.paint.WebPaint
 
 class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingContext2D(iWebCanvas) {
@@ -101,6 +102,10 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
     override fun strokeText(text: String, x: Float, y: Float) {
         canvas.drawText(text, x, paint.computeRealY(y), paint.strokePaint)
         postInvalidate()
+    }
+
+    override fun measureText(text: String): TextMetrics {
+        return paint.measureText(text)
     }
 
     override fun beginPath() {
