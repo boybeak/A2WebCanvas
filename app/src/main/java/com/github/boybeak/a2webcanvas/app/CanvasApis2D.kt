@@ -1,6 +1,7 @@
 package com.github.boybeak.a2webcanvas.app
 
 import com.github.boybeak.webcanvas.WebCanvasView
+import kotlin.math.PI
 
 class CanvasApis2D(private val canvas: WebCanvasView) {
     val apis = listOf(
@@ -157,6 +158,37 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             fillText(hw, 100F, 40F)
             font = "40px"
             fillText("text width: ${tm.width}", 100F, 100F)
+        },
+        Api2D("scale") {
+            strokeStyle = "red"
+            strokeRect(0F, 0F, 50F, 50F)
+
+            strokeStyle = "green"
+            scale(2F, 2F)
+            strokeRect(0F, 0F, 50F, 50F)
+
+            strokeStyle = "blue"
+            scale(2F, 2F)
+            strokeRect(0F, 0F, 50F, 50F)
+        },
+        Api2D("rotate") {
+            font = "50px"
+            fillStyle = "red"
+            fillText("Hello world", 100F, 100F)
+
+            rotate((45F / 180 * PI).toFloat())
+
+            fillStyle = "green"
+            fillText("Hello world", 100F, 100F)
+        },
+        Api2D("translate") {
+            strokeStyle = "red"
+            strokeRect(0F, 0F, 100F, 100F)
+
+            translate(50F, 50F)
+
+            strokeStyle = "green"
+            strokeRect(0F, 0F, 100F, 100F)
         }
     )
 }

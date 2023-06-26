@@ -47,4 +47,9 @@ interface ICanvasRenderingContext2D : IWebCanvasContext {
     fun moveTo(x: Float, y: Float)
     fun closePath()
 
+
+    fun rotate(angle: Float)
+    fun scale(x: Float, y: Float)
+    fun translate(x: Float, y: Float)
+
 }

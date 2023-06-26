@@ -7,6 +7,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 import com.github.boybeak.webcanvas.twod.paint.WebPaint
+import kotlin.math.PI
 
 class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingContext2D(iWebCanvas) {
 
@@ -121,6 +122,18 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
 
     override fun closePath() {
         path?.close()
+    }
+
+    override fun rotate(angle: Float) {
+        canvas.rotate((angle / PI * 180).toFloat())
+    }
+
+    override fun scale(x: Float, y: Float) {
+        canvas.scale(x, y)
+    }
+
+    override fun translate(x: Float, y: Float) {
+        canvas.translate(x, y)
     }
 
 }
