@@ -2,33 +2,18 @@ package com.github.boybeak.a2webcanvas.app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
-import android.widget.Button
-import android.widget.Spinner
-import android.widget.SpinnerAdapter
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import com.github.boybeak.a2webcanvas.app.adapter.ApiItem
+import com.github.boybeak.a2webcanvas.app.game.StickGame
 import com.github.boybeak.adapter.AnyAdapter
-import com.github.boybeak.adapter.event.OnClick
 import com.github.boybeak.adapter.event.OnItemClick
 import com.github.boybeak.webcanvas.IWebCanvas
-import com.github.boybeak.webcanvas.IWebCanvasContext
 import com.github.boybeak.webcanvas.WebCanvasView
 import com.github.boybeak.webcanvas.ext.post
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
-import com.github.boybeak.webcanvas.twod.IWebCanvas2D
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -39,6 +24,10 @@ class MainActivity : AppCompatActivity() {
     private val canvasView by lazy { findViewById<WebCanvasView>(R.id.webCanvas) }
     private val apisRecyclerView by lazy { findViewById<RecyclerView>(R.id.apisRv) }
 
+    private var lastDraw: (CanvasRenderingContext2D.() -> Unit)? = null
+
+    private val gifTask by lazy { StickGame(canvasView) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -46,6 +35,13 @@ class MainActivity : AppCompatActivity() {
         toolbar.inflateMenu(R.menu.menu_main)
         toolbar.setOnMenuItemClickListener {
             when(it.itemId) {
+                R.id.animationItem -> {
+                    if (gifTask.isRunning) {
+                        gifTask.finish()
+                    } else {
+                        gifTask.start()
+                    }
+                }
                 R.id.invalidateItem -> {
                     canvasView.requestRender()
                 }
@@ -85,10 +81,30 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     toolbar.title = item.source().name
                     canvasView.getContext<CanvasRenderingContext2D>("2d").post(item.source().onDraw)
+                    lastDraw = item.source().onDraw
                 }
             })
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        canvasView.onResume()
+        if (gifTask.isRunning) {
+            gifTask.resume()
+        }
+        /*if (lastDraw != null) {
+            canvasView.getContext<CanvasRenderingContext2D>("2d").post(lastDraw!!)
+        }*/
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (gifTask.isRunning) {
+            gifTask.pause()
+        }
+        canvasView.onPause()
     }
 
 }

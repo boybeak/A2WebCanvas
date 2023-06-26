@@ -10,6 +10,14 @@ abstract class AbsCanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : ICanvasRe
     internal val canvas: Canvas get() = renderer.canvas
     override val handler: Handler get() = renderer.handler
 
+    override fun onResume() {
+        renderer.onResume()
+    }
+
+    override fun onPause() {
+        renderer.onPause()
+    }
+
     override fun onRenderModeChanged(mode: Int) {
         renderer.setRenderMode(mode)
     }

@@ -33,6 +33,24 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
     override var lineWidth: Float
         get() = paint.lineWidth
         set(value) { paint.lineWidth = value }
+    override var shadowBlur: Float
+        get() = paint.shadowBlur
+        set(value) { paint.shadowBlur = value }
+    override var shadowColor: String?
+        get() = paint.shadowColor
+        set(value) { paint.shadowColor = value }
+    override var shadowOffsetX: Float
+        get() = paint.shadowOffsetX
+        set(value) { paint.shadowOffsetX = value }
+    override var shadowOffsetY: Float
+        get() = paint.shadowOffsetY
+        set(value) { paint.shadowOffsetY = value }
+    override var textAlign: String
+        get() = paint.textAlign
+        set(value) { paint.textAlign = value }
+    override var textBaseline: String
+        get() = paint.textBaseline
+        set(value) { paint.textBaseline = value }
 
     override fun save() {
         canvas.save()
@@ -62,8 +80,7 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
     }
 
     override fun fillText(text: String, x: Float, y: Float) {
-        // TODO("Calculate real y based on baseline")
-        canvas.drawText(text, x, y, paint.fillPaint)
+        canvas.drawText(text, x, paint.computeRealY(y), paint.fillPaint)
         postInvalidate()
     }
 
@@ -77,8 +94,7 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
     }
 
     override fun strokeText(text: String, x: Float, y: Float) {
-        // TODO("Calculate real y based on baseline")
-        canvas.drawText(text, x, y, paint.strokePaint)
+        canvas.drawText(text, x, paint.computeRealY(y), paint.strokePaint)
         postInvalidate()
     }
 

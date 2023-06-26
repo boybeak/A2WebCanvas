@@ -34,6 +34,9 @@ internal abstract class AbsRenderer(internal val surfaceHolder: SurfaceHolder, c
     private val continuouslyLogic = ContinuouslyLogic(context, handler, renderTask) { onRender() }
     private val autoLogic = AutoLogic(handler, renderTask) { onRender() }
 
+    open fun onResume() {}
+    open fun onPause() {}
+
     fun setRenderMode(mode: Int) {
         if (renderMode == mode) {
             return
@@ -62,7 +65,6 @@ internal abstract class AbsRenderer(internal val surfaceHolder: SurfaceHolder, c
                 }
                 field?.stopRendering()
                 field = value
-                Log.d(TAG, "Task.logic.set done value=$value")
             }
         override fun run() {
             logic?.run()
@@ -91,7 +93,6 @@ internal abstract class AbsRenderer(internal val surfaceHolder: SurfaceHolder, c
     private open class AutoLogic(handler: Handler, task: Task, onRender: () -> Unit) : AbsLogic(handler, task, onRender) {
         var isPosted = false
         override fun requestRender() {
-            Log.d(TAG, "AutoLogic.startRendering")
             if (isPosted) {
                 handler.removeCallbacks(task)
                 isPosted = false

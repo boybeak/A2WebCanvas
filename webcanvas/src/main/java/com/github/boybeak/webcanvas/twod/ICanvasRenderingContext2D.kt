@@ -15,6 +15,14 @@ interface ICanvasRenderingContext2D : IWebCanvasContext {
     var lineJoin: String
     var lineWidth: Float
 
+    var shadowBlur: Float
+    var shadowColor: String?
+    var shadowOffsetX: Float
+    var shadowOffsetY: Float
+
+    var textAlign: String
+    var textBaseline: String
+
     fun save()
     fun restore()
 

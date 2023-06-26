@@ -3,13 +3,31 @@ package com.github.boybeak.webcanvas.twod.paint
 import android.graphics.BlurMaskFilter
 import android.graphics.MaskFilter
 import android.graphics.Paint
+import android.util.Log
 import com.github.boybeak.webcanvas.utils.HtmlColor
 import java.lang.IllegalArgumentException
 import java.util.Stack
 
 class WebPaint {
 
-    private val paint = Paint()
+    companion object {
+        private const val TAG = "WebPaint"
+    }
+
+    private val paint = Paint().apply {
+        isAntiAlias = true
+    }
+    val fillPaint get() = paint.apply {
+        style = Paint.Style.FILL
+        color = HtmlColor.parseColor(currentState.fillStyle)
+        statePaint()
+    }
+    val strokePaint get() = paint.apply {
+        style = Paint.Style.STROKE
+        color = HtmlColor.parseColor(currentState.strokeStyle)
+        statePaint()
+    }
+
     private val currentState = State()
     private val stateStack = Stack<State>()
 
@@ -56,16 +74,44 @@ class WebPaint {
             stateLineWidth()
         }
 
-    val fillPaint get() = paint.apply {
-        style = Paint.Style.FILL
-        color = HtmlColor.parseColor(currentState.fillStyle)
-        statePaint()
-    }
-    val strokePaint get() = paint.apply {
-        style = Paint.Style.STROKE
-        color = HtmlColor.parseColor(currentState.strokeStyle)
-        statePaint()
-    }
+    var shadowBlur: Float
+        get() = currentState.shadowBlur
+        set(value) {
+            currentState.shadowBlur = value
+            stateShadow()
+        }
+    var shadowColor: String?
+        get() = currentState.shadowColor
+        set(value) {
+            currentState.shadowColor = value
+            stateShadow()
+        }
+    var shadowOffsetX: Float
+        get() = currentState.shadowOffsetX
+        set(value) {
+            currentState.shadowOffsetX = value
+            stateShadow()
+        }
+    var shadowOffsetY: Float
+        get() = currentState.shadowOffsetY
+        set(value) {
+            currentState.shadowOffsetY = value
+            stateShadow()
+        }
+
+    var textAlign: String
+        get() = currentState.textAlign
+        set(value) {
+            currentState.textAlign = value
+            stateTextAlign()
+        }
+
+    var textBaseline: String
+        get() = currentState.textBaseline
+        set(value) {
+            currentState.textBaseline = value
+
+        }
 
     fun save() {
         stateStack.push(currentState.copy())
@@ -73,6 +119,17 @@ class WebPaint {
     fun restore() {
         val s = stateStack.pop()
         currentState.load(s)
+    }
+
+    fun computeRealY(y: Float): Float {
+        return y - when(textBaseline) {
+            "top" -> paint.fontMetrics.ascent
+            "hanging" -> paint.fontMetrics.top
+            "ideographic" -> paint.fontMetrics.bottom
+            "bottom" -> paint.fontMetrics.descent
+            "middle" -> (paint.fontMetrics.ascent + paint.fontMetrics.descent) / 2
+            else -> 0F
+        }
     }
 
     private fun statePaint() {
@@ -87,6 +144,7 @@ class WebPaint {
         paint.typeface = font.typeface
     }
     private fun stateLineCap() {
+        Log.d(TAG, "stateLineCap lineCap=$lineCap")
         paint.strokeCap = when(lineCap) {
             "butt" -> Paint.Cap.BUTT
             "round" -> Paint.Cap.ROUND
@@ -106,6 +164,25 @@ class WebPaint {
         paint.strokeWidth = currentState.lineWidth
     }
 
+    private fun stateShadow() {
+        val colorStr = shadowColor ?: return
+        paint.setShadowLayer(shadowBlur, shadowOffsetX, shadowOffsetY, HtmlColor.parseColor(colorStr))
+    }
+
+    private fun stateTextAlign() {
+        paint.textAlign = when(textAlign) {
+            "left", "start" ->  {
+                Paint.Align.LEFT
+            }
+            "right", "end" ->  {
+                Paint.Align.RIGHT
+            }
+            "center" -> {
+                Paint.Align.CENTER
+            }
+            else -> throw IllegalArgumentException("Unknown textAlign $textAlign")
+        }
+    }
 
     private class State(var fillStyle: String = "#000",
                         var strokeStyle: String = "#000",
@@ -113,7 +190,13 @@ class WebPaint {
                         var font: String = "10px sans-serif",
                         var lineCap: String = "butt",
                         var lineJoin: String = "miter",
-                        var lineWidth: Float = 1F) {
+                        var lineWidth: Float = 1F,
+                        var shadowBlur: Float = 0F,
+                        var shadowColor: String? = null,
+                        var shadowOffsetX: Float = 0F,
+                        var shadowOffsetY: Float = 0F,
+                        var textAlign: String = "start",
+                        var textBaseline: String = "alphabetic") {
 
         companion object {
             private val NUM_REGEX = Regex("\\d+\\.?\\d*")
@@ -127,9 +210,16 @@ class WebPaint {
             this.lineCap = state.lineCap
             this.lineJoin = state.lineJoin
             this.lineWidth = state.lineWidth
+            this.shadowBlur = state.shadowBlur
+            this.shadowColor = state.shadowColor
+            this.shadowOffsetX = state.shadowOffsetX
+            this.shadowOffsetY = state.shadowOffsetY
+            this.textAlign = state.textAlign
+            this.textBaseline = state.textBaseline
         }
         fun copy(): State {
-            return State(fillStyle, strokeStyle, filter, font, lineCap, lineJoin, lineWidth)
+            return State(fillStyle, strokeStyle, filter, font, lineCap, lineJoin, lineWidth,
+                shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY, textAlign, textBaseline)
         }
 
         fun getMaskFilter(): MaskFilter? {
