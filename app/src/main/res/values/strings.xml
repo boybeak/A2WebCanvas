@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">A2WebCanvas</string>
+    <string name="menu_item_reset">Reset</string>
     <string name="menu_item_animation">Animation</string>
     <string name="menu_item_invalidate">Invalidate</string>
     <string name="menu_item_mode_switcher">Mode Switcher</string>
     <string name="menu_item_when_dirty">When dirty</string>
     <string name="menu_item_continuously">Continuously</string>
     <string name="menu_item_auto">Auto</string>
+
+    <string name="text_running_nothing">Running nothing</string>
+    <string name="text_running_api">Running: %1$s</string>
 </resources>

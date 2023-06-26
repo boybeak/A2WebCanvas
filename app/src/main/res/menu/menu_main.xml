@@ -2,16 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/resetItem"
+        android:title="@string/menu_item_reset"
+        android:icon="@drawable/ic_outline_restart_alt_24"
+        app:showAsAction="always"
+        />
+    <item
         android:id="@+id/animationItem"
         android:title="@string/menu_item_animation"
         android:icon="@drawable/ic_outline_gif_box_24"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         />
     <item
         android:id="@+id/invalidateItem"
         android:title="@string/menu_item_invalidate"
         android:icon="@drawable/ic_outline_format_paint_24"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         />
     <item
         android:id="@+id/modeSwitcherItem"

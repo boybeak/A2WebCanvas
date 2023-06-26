@@ -12,17 +12,33 @@
         android:layout_height="320dp"
         android:layout_gravity="center_vertical"
         />
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+    <TextView
+        android:id="@+id/runningApi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/text_running_nothing"
+        android:textStyle="bold"
         />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/apisRv"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        />
+        android:layout_weight="1">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/apisRv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            />
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_height="?actionBarSize"
+            app:buttonGravity="top"
+            app:fabAlignmentMode="end"
+            app:menu="@menu/menu_main"
+            />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </LinearLayout>

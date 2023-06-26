@@ -62,6 +62,11 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
         paint.restore()
     }
 
+    override fun reset() {
+        canvas.restoreToCount(renderer.resetSaveIndex)
+        paint.reset()
+    }
+
     override fun clearRect(x: Float, y: Float, width: Float, height: Float) {
         val p = Paint()
         p.color = Color.TRANSPARENT

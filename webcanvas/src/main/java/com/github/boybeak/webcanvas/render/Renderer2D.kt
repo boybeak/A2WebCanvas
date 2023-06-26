@@ -22,6 +22,9 @@ internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer(canvas2D.surface
         return currentCanvas!!
     }
 
+    var resetSaveIndex = 0
+        private set
+
     init {
         surfaceHolder.addCallback(object : SurfaceHolder.Callback2 {
             override fun surfaceCreated(holder: SurfaceHolder) {
@@ -104,7 +107,7 @@ internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer(canvas2D.surface
     private fun resetCanvas() {
         val canvas = currentCanvas ?: return
         canvas.drawColor(Color.WHITE)
-        canvas.save()
+        resetSaveIndex = canvas.save()
     }
 
     private fun nextCanvas() {
@@ -114,10 +117,11 @@ internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer(canvas2D.surface
     }
 
     private fun postCanvas() {
-        if (currentCanvas != null) {
-            currentCanvas?.restore()
-            surfaceHolder.unlockCanvasAndPost(currentCanvas)
+        val canvas = currentCanvas ?: return
+        if (canvas.saveCount > resetSaveIndex) {
+            canvas.restore()
         }
+        surfaceHolder.unlockCanvasAndPost(currentCanvas)
     }
 
 }

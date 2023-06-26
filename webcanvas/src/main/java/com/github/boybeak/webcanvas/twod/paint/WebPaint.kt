@@ -121,6 +121,13 @@ class WebPaint {
         currentState.load(s)
     }
 
+    fun reset() {
+        stateStack.clear()
+        paint.reset()
+        currentState.load(State())
+        statePaint()
+    }
+
     fun computeRealY(y: Float): Float {
         return y - when(textBaseline) {
             "top" -> paint.fontMetrics.ascent
@@ -134,6 +141,7 @@ class WebPaint {
 
     private fun statePaint() {
         stateMaskFilter()
+        stateFont()
     }
     private fun stateMaskFilter() {
         paint.maskFilter = currentState.getMaskFilter()

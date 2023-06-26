@@ -26,6 +26,8 @@ interface ICanvasRenderingContext2D : IWebCanvasContext {
     fun save()
     fun restore()
 
+    fun reset()
+
     fun clearRect(x: Float, y: Float, width: Float, height: Float)
 
     fun fill()

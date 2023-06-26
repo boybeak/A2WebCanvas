@@ -3,8 +3,8 @@ package com.github.boybeak.a2webcanvas.app
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import com.github.boybeak.a2webcanvas.app.adapter.ApiItem
 import com.github.boybeak.a2webcanvas.app.game.StickGame
@@ -12,15 +12,18 @@ import com.github.boybeak.adapter.AnyAdapter
 import com.github.boybeak.adapter.event.OnItemClick
 import com.github.boybeak.webcanvas.IWebCanvas
 import com.github.boybeak.webcanvas.WebCanvasView
+import com.github.boybeak.webcanvas.ext.context2DPost
 import com.github.boybeak.webcanvas.ext.post
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
+import com.google.android.material.bottomappbar.BottomAppBar
 
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity"
     }
 
-    private val toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
+    private val runningApi by lazy { findViewById<TextView>(R.id.runningApi) }
+    private val bottomAppBar by lazy { findViewById<BottomAppBar>(R.id.bottomAppBar) }
     private val canvasView by lazy { findViewById<WebCanvasView>(R.id.webCanvas) }
     private val apisRecyclerView by lazy { findViewById<RecyclerView>(R.id.apisRv) }
 
@@ -32,13 +35,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        toolbar.inflateMenu(R.menu.menu_main)
-        toolbar.setOnMenuItemClickListener {
+        bottomAppBar.setOnMenuItemClickListener {
             when(it.itemId) {
+                R.id.resetItem -> {
+                    canvasView.context2DPost {
+                        reset()
+                        requestRender()
+                    }
+                }
                 R.id.animationItem -> {
                     if (gifTask.isRunning) {
                         gifTask.finish()
                     } else {
+                        runningApi.text = getString(R.string.text_running_api, "Animation")
                         gifTask.start()
                     }
                 }
@@ -65,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        toolbar.menu.performIdentifierAction(R.id.autoItem, 0)
+        bottomAppBar.menu.performIdentifierAction(R.id.autoItem, 0)
 
         val apis2D = CanvasApis2D(canvasView)
         apisRecyclerView.adapter = AnyAdapter().apply {
@@ -79,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                     position: Int,
                     adapter: AnyAdapter
                 ) {
-                    toolbar.title = item.source().name
+                    runningApi.text = getString(R.string.text_running_api, item.source().name)
                     canvasView.getContext<CanvasRenderingContext2D>("2d").post(item.source().onDraw)
                     lastDraw = item.source().onDraw
                 }
