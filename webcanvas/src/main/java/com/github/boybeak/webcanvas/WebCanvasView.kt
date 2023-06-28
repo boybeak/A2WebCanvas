@@ -49,9 +49,9 @@ class WebCanvasView : SurfaceView, IWebCanvas2D, IWebCanvasWebGL {
                     throw IllegalArgumentException("")
                 }
             }
+            // Do some init
+            canvasContext?.onRenderModeChanged(renderMode)
         }
-        // Do some init
-        canvasContext?.onRenderModeChanged(renderMode)
         @Suppress("UNCHECKED_CAST")
         return canvasContext as T
     }
