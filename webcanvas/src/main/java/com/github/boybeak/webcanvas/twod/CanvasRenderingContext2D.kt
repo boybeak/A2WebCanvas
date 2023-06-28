@@ -65,6 +65,7 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
         set(value) { paint.textBaseline = value }
 
     override fun onCanvasCreated(canvas: Canvas) {
+        canvas.drawColor(Color.WHITE)
         resetSaveIndex = canvas.save()
     }
 

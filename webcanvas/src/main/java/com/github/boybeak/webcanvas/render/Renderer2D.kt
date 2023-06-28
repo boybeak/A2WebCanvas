@@ -52,7 +52,6 @@ internal class Renderer2D(canvas2D: IWebCanvas2D, private val callback: Callback
 
     private fun makeCanvas() {
         currentCanvas = surfaceHolder.lockCanvas()
-        currentCanvas?.drawColor(Color.WHITE)
         callback.onCanvasCreated(currentCanvas!!)
     }
 
