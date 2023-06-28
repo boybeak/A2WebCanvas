@@ -3,6 +3,7 @@ package com.github.boybeak.webcanvas.render
 import android.graphics.Canvas
 import android.graphics.Color
 import android.util.Log
+import android.view.SurfaceHolder
 import com.github.boybeak.webcanvas.twod.IWebCanvas2D
 
 internal class Renderer2D(canvas2D: IWebCanvas2D, private val callback: Callback) : AbsRenderer2D(canvas2D.surfaceHolder, canvas2D.getPlatformContext()) {
@@ -17,6 +18,36 @@ internal class Renderer2D(canvas2D: IWebCanvas2D, private val callback: Callback
             makeCanvas()
         }
         return currentCanvas!!
+    }
+
+    init {
+        surfaceHolder.addCallback(object : SurfaceHolder.Callback {
+            override fun surfaceCreated(holder: SurfaceHolder) {
+            }
+
+            override fun surfaceChanged(
+                holder: SurfaceHolder,
+                format: Int,
+                width: Int,
+                height: Int
+            ) {
+                handler.post {
+                    makeCanvas()
+                    commitCanvas()
+                }
+            }
+
+            override fun surfaceDestroyed(holder: SurfaceHolder) {
+                currentCanvas = null
+            }
+        })
+    }
+
+    init {
+        handler.post {
+            makeCanvas()
+            commitCanvas()
+        }
     }
 
     private fun makeCanvas() {
