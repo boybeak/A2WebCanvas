@@ -144,6 +144,28 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             lineTo(120F, 120F)
             stroke()
         },
+        Api2D("arc") {
+            // Draw shapes
+            for (i in 0 until 4) {
+                for (j in 0 until 3) {
+                    beginPath()
+                    val x = 25 + j * 50 // x coordinate
+                    val y = 25 + i * 50 // y coordinate
+                    val radius = 20 // Arc radius
+                    val startAngle = 0 // Starting point on circle
+                    val endAngle = Math.PI + (Math.PI * j) / 2 // End point on circle
+                    val counterclockwise = i % 2 == 1 // Draw counterclockwise
+        
+                    arc(x.toFloat(), y.toFloat(), radius.toFloat(), startAngle.toFloat(), endAngle.toFloat(), counterclockwise)
+        
+                    if (i > 1) {
+                        fill()
+                    } else {
+                        stroke()
+                    }
+                }
+            }
+        },
         Api2D("closePath") {
             beginPath()
             moveTo(20F, 140F) // Move pen to bottom-left corner

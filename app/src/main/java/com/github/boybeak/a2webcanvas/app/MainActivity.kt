@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.resetItem -> {
                     canvasView.context2DPost {
                         reset()
-                        requestRender()
                     }
                 }
                 R.id.animationItem -> {

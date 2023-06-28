@@ -43,6 +43,7 @@ interface ICanvasRenderingContext2D : IWebCanvasContext {
 
     /** Path related **/
     fun beginPath()
+    fun arc(x: Float, y: Float, radius: Float, startAngle: Float, endAngle: Float, counterclockwise: Boolean = false)
     fun lineTo(x: Float, y: Float)
     fun moveTo(x: Float, y: Float)
     fun closePath()

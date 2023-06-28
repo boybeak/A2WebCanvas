@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import com.github.boybeak.webcanvas.render.Renderer2D
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import com.github.boybeak.webcanvas.twod.IWebCanvas2D
 import com.github.boybeak.webcanvas.webgl.IWebCanvasWebGL

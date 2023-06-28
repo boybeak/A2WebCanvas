@@ -2,11 +2,14 @@ package com.github.boybeak.webcanvas.twod
 
 import android.graphics.Canvas
 import android.os.Handler
+import android.util.Log
+import com.github.boybeak.webcanvas.WebCanvasView
+import com.github.boybeak.webcanvas.render.AbsRenderer2D
 import com.github.boybeak.webcanvas.render.Renderer2D
 
-abstract class AbsCanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : ICanvasRenderingContext2D {
+abstract class AbsCanvasRenderingContext2D() : ICanvasRenderingContext2D {
 
-    internal val renderer: Renderer2D = Renderer2D(iWebCanvas)
+    internal abstract val renderer: AbsRenderer2D
     internal val canvas: Canvas get() = renderer.canvas
     override val handler: Handler get() = renderer.handler
 

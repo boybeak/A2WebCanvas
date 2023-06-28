@@ -38,6 +38,7 @@ internal abstract class AbsRenderer(internal val surfaceHolder: SurfaceHolder, c
     open fun onPause() {}
 
     fun setRenderMode(mode: Int) {
+        Log.d(TAG, "setRenderMode mode=$mode")
         if (renderMode == mode) {
             return
         }
@@ -53,6 +54,18 @@ internal abstract class AbsRenderer(internal val surfaceHolder: SurfaceHolder, c
 
     fun requestRender() {
         renderTask.logic?.requestRender()
+    }
+
+    fun isMyThread(): Boolean {
+        return Thread.currentThread() == renderThread
+    }
+
+    fun executeOnMyThread(task: Runnable) {
+        if (isMyThread()) {
+            task.run()
+        } else {
+            handler.post(task)
+        }
     }
 
     abstract fun onRender()

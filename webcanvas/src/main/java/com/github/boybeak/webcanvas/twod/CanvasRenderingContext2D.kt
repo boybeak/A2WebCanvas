@@ -1,19 +1,29 @@
 package com.github.boybeak.webcanvas.twod
 
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import android.util.Log
+import com.github.boybeak.webcanvas.render.AbsRenderer2D
+import com.github.boybeak.webcanvas.render.Renderer2D
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 import com.github.boybeak.webcanvas.twod.paint.WebPaint
 import kotlin.math.PI
 
-class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingContext2D(iWebCanvas) {
+class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingContext2D(), Renderer2D.Callback {
+
+    companion object {
+        private const val TAG = "CanvasRenderingContext2D"
+    }
 
     private val paint = WebPaint()
 
     private var path: Path? = null
+    private var resetSaveIndex = 0
+    override val renderer: AbsRenderer2D = Renderer2D(iWebCanvas, this)
     override var fillStyle: String
         get() = paint.fillStyle
         set(value) { paint.fillStyle = value }
@@ -54,6 +64,16 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
         get() = paint.textBaseline
         set(value) { paint.textBaseline = value }
 
+    override fun onCanvasCreated(canvas: Canvas) {
+        resetSaveIndex = canvas.save()
+    }
+
+    override fun onCanvasCommit(canvas: Canvas) {
+        if (canvas.saveCount > resetSaveIndex) {
+            canvas.restoreToCount(resetSaveIndex)
+        }
+    }
+
     override fun save() {
         canvas.save()
         paint.save()
@@ -65,8 +85,9 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
     }
 
     override fun reset() {
-        canvas.restoreToCount(renderer.resetSaveIndex)
+        canvas.restoreToCount(resetSaveIndex)
         paint.reset()
+        postInvalidate()
     }
 
     override fun clearRect(x: Float, y: Float, width: Float, height: Float) {
@@ -82,6 +103,7 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
     }
 
     override fun fillRect(x: Float, y: Float, width: Float, height: Float) {
+        Log.d(TAG, "fillRect canvas=$canvas")
         canvas.drawRect(x, y, x + width, y + height, paint.fillPaint)
         postInvalidate()
     }
@@ -92,10 +114,12 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
     }
 
     override fun stroke() {
+        Log.d(TAG, "stroke canvas=$canvas")
         canvas.drawPath(path!!, paint.strokePaint)
         postInvalidate()
     }
     override fun strokeRect(x: Float, y: Float, width: Float, height: Float) {
+        Log.d(TAG, "strokeRect canvas=$canvas")
         canvas.drawRect(x, y, x + width, y + height, paint.strokePaint)
         postInvalidate()
     }
@@ -110,17 +134,38 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
     }
 
     override fun beginPath() {
+        Log.d(TAG, "beginPath")
         path = Path()
     }
 
+    override fun arc(
+        x: Float,
+        y: Float,
+        radius: Float,
+        startAngle: Float,
+        endAngle: Float,
+        counterclockwise: Boolean
+    ) {
+        val sweepAngle = if (counterclockwise) {
+            ((endAngle - startAngle) / PI * 180).toFloat() - 360
+        } else {
+            ((endAngle - startAngle) / PI * 180).toFloat()
+        }
+        path?.addArc(x - radius, y - radius, x + radius, y + radius,
+            (startAngle / PI * 180).toFloat(), sweepAngle)
+    }
+
     override fun lineTo(x: Float, y: Float) {
+        Log.d(TAG, "lineTo")
         path?.lineTo(x, y)
     }
     override fun moveTo(x: Float, y: Float) {
+        Log.d(TAG, "moveTo")
         path?.moveTo(x, y)
     }
 
     override fun closePath() {
+        Log.d(TAG, "closePath")
         path?.close()
     }
 
