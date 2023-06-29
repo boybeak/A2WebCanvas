@@ -10,7 +10,7 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
     }
 
     override val renderer: AbsRenderer2D = Renderer2D(iWebCanvas)
-    override val canvasPainter = CanvasPainter(renderer)
+    override val canvasPainter = CanvasPainter2D(renderer)
 
     override fun reset() {
         super.reset()

@@ -11,7 +11,7 @@ import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 import com.github.boybeak.webcanvas.twod.paint.WebPaint
 import kotlin.math.PI
 
-class CanvasPainter(private val canvasProvider: CanvasProvider) : ICanvasPainter2D, CanvasProvider.Callback {
+class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPainter2D, CanvasProvider.Callback {
 
     companion object {
         private const val TAG = "CanvasPainter"
@@ -94,7 +94,6 @@ class CanvasPainter(private val canvasProvider: CanvasProvider) : ICanvasPainter
     override fun reset() {
         canvas.restoreToCount(resetSaveIndex)
         paint.reset()
-//        postInvalidate()
     }
 
     override fun clearRect(x: Float, y: Float, width: Float, height: Float) {
@@ -110,30 +109,22 @@ class CanvasPainter(private val canvasProvider: CanvasProvider) : ICanvasPainter
     }
 
     override fun fillRect(x: Float, y: Float, width: Float, height: Float) {
-        Log.d(TAG, "fillRect canvas=$canvas")
         canvas.drawRect(x, y, x + width, y + height, paint.fillPaint)
-//        postInvalidate()
     }
 
     override fun fillText(text: String, x: Float, y: Float) {
         canvas.drawText(text, x, paint.computeRealY(y), paint.fillPaint)
-//        postInvalidate()
     }
 
     override fun stroke() {
-        Log.d(TAG, "stroke canvas=$canvas path=$path")
         canvas.drawPath(path!!, paint.strokePaint)
-//        postInvalidate()
     }
     override fun strokeRect(x: Float, y: Float, width: Float, height: Float) {
-        Log.d(TAG, "strokeRect canvas=$canvas")
         canvas.drawRect(x, y, x + width, y + height, paint.strokePaint)
-//        postInvalidate()
     }
 
     override fun strokeText(text: String, x: Float, y: Float) {
         canvas.drawText(text, x, paint.computeRealY(y), paint.strokePaint)
-//        postInvalidate()
     }
 
     override fun measureText(text: String): TextMetrics {
@@ -141,7 +132,6 @@ class CanvasPainter(private val canvasProvider: CanvasProvider) : ICanvasPainter
     }
 
     override fun beginPath() {
-        Log.d(TAG, "beginPath")
         path = Path()
     }
 
@@ -154,25 +144,25 @@ class CanvasPainter(private val canvasProvider: CanvasProvider) : ICanvasPainter
         counterclockwise: Boolean
     ) {
         val sweepAngle = if (counterclockwise) {
-            ((endAngle - startAngle) / PI * 180).toFloat() - 360
+            val deltaAngle = ((endAngle - startAngle) / PI * 180).toFloat()
+            // Handle the special data, TODO("may cause other problems, need test")
+            if (deltaAngle % 360 == 0F) 360F else deltaAngle - 360
         } else {
             ((endAngle - startAngle) / PI * 180).toFloat()
         }
+        Log.d(TAG, "arc endAngle=$endAngle counterclockwise=$counterclockwise sweepAngle=$sweepAngle")
         path?.addArc(x - radius, y - radius, x + radius, y + radius,
             (startAngle / PI * 180).toFloat(), sweepAngle)
     }
 
     override fun lineTo(x: Float, y: Float) {
-        Log.d(TAG, "lineTo path=$path")
         path?.lineTo(x, y)
     }
     override fun moveTo(x: Float, y: Float) {
-        Log.d(TAG, "moveTo path=$path")
         path?.moveTo(x, y)
     }
 
     override fun closePath() {
-        Log.d(TAG, "closePath")
         path?.close()
     }
 
