@@ -4,6 +4,9 @@ import com.github.boybeak.webcanvas.WebCanvasView
 import kotlin.math.PI
 
 class CanvasApis2D(private val canvas: WebCanvasView) {
+
+    val density = canvas.context.resources.displayMetrics.density
+
     val apis = listOf(
         Api2D("draw a house") {
             lineWidth = 10F
@@ -165,6 +168,48 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
                     }
                 }
             }
+        },
+        Api2D("arcTo") {
+            scale(density, density)
+            val x0 = 200F
+            val y0 = 20F
+            val x1 = 200F
+            val y1 = 130F
+            val x2 = 50F
+            val y2 = 20F
+            val r = 40F
+
+            // Tangential lines
+            beginPath()
+            strokeStyle = "gray"
+            moveTo(x0, y0)
+            lineTo(x1, y1)
+            lineTo(x2, y2)
+            stroke()
+
+
+            // Arc
+            beginPath()
+            strokeStyle = "black"
+            lineWidth = 5F
+            // lineTo(200, 200);
+            // lineTo(200, 200);
+            moveTo(x0, y0)
+            arcTo(x1, y1, x2, y2, r)
+            stroke()
+
+            // Start point
+            beginPath()
+            fillStyle = "blue"
+            arc(x0, y0, 5F, 0F, (2 * PI).toFloat())
+            fill()
+
+            // Control points
+            beginPath()
+            fillStyle = "red"
+            arc(x1, y1, 5F, 0F, (2 * PI).toFloat()) // Control point one
+            arc(x2, y2, 5F, 0F, (2 * PI).toFloat()) // Control point two
+            fill()
         },
         Api2D("closePath") {
             beginPath()

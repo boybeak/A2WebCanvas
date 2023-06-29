@@ -79,6 +79,8 @@ interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
         counterclockwise: Boolean
     ) = canvasPainter.arc(x, y, radius, startAngle, endAngle, counterclockwise)
 
+    override fun arcTo(x1: Float, y1: Float, x2: Float, y2: Float, radius: Float) = canvasPainter.arcTo(x1, y1, x2, y2, radius)
+
     override fun lineTo(x: Float, y: Float) = canvasPainter.lineTo(x, y)
 
     override fun moveTo(x: Float, y: Float) = canvasPainter.moveTo(x, y)

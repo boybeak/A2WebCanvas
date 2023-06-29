@@ -3,12 +3,11 @@ package com.github.boybeak.webcanvas.twod
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
-import android.util.Log
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 import com.github.boybeak.webcanvas.twod.paint.WebPaint
+import com.github.boybeak.webcanvas.twod.geometry.AnchorPath
 import kotlin.math.PI
 
 class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPainter2D, CanvasProvider.Callback {
@@ -17,7 +16,7 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
         private const val TAG = "CanvasPainter"
     }
 
-    private var path: Path? = null
+    private var path: AnchorPath? = null
     private val paint = WebPaint()
 
     private val canvas: Canvas get() = canvasProvider.canvas
@@ -132,7 +131,7 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
     }
 
     override fun beginPath() {
-        path = Path()
+        path = AnchorPath()
     }
 
     override fun arc(
@@ -145,14 +144,18 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
     ) {
         val sweepAngle = if (counterclockwise) {
             val deltaAngle = ((endAngle - startAngle) / PI * 180).toFloat()
-            // Handle the special data, TODO("may cause other problems, need test")
+            // Handle the special data
+            // TODO("may cause other problems, need test")
             if (deltaAngle % 360 == 0F) 360F else deltaAngle - 360
         } else {
             ((endAngle - startAngle) / PI * 180).toFloat()
         }
-        Log.d(TAG, "arc endAngle=$endAngle counterclockwise=$counterclockwise sweepAngle=$sweepAngle")
         path?.addArc(x - radius, y - radius, x + radius, y + radius,
             (startAngle / PI * 180).toFloat(), sweepAngle)
+    }
+
+    override fun arcTo(x1: Float, y1: Float, x2: Float, y2: Float, radius: Float) {
+        path?.arcTo(x1, y1, x2, y2, radius)
     }
 
     override fun lineTo(x: Float, y: Float) {

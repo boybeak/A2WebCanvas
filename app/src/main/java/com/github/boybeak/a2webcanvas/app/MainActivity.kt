@@ -1,5 +1,6 @@
 package com.github.boybeak.a2webcanvas.app
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -37,6 +38,9 @@ class MainActivity : AppCompatActivity() {
 
         bottomAppBar.setOnMenuItemClickListener {
             when(it.itemId) {
+                R.id.debugItem -> {
+                    startActivity(Intent(this, DebugActivity::class.java))
+                }
                 R.id.resetItem -> {
                     canvasView.context2DPost {
                         reset()
