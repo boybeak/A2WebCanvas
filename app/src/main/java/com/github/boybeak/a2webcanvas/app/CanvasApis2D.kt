@@ -1,5 +1,6 @@
 package com.github.boybeak.a2webcanvas.app
 
+import android.graphics.PointF
 import com.github.boybeak.webcanvas.WebCanvasView
 import kotlin.math.PI
 
@@ -169,7 +170,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
                 }
             }
         },
-        Api2D("arcTo") {
+        Api2D("arcTo - 1") {
             scale(density, density)
             val x0 = 200F
             val y0 = 20F
@@ -192,8 +193,8 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             beginPath()
             strokeStyle = "black"
             lineWidth = 5F
-            // lineTo(200, 200);
-            // lineTo(200, 200);
+            // lineTo(200, 200)
+            // lineTo(200, 200)
             moveTo(x0, y0)
             arcTo(x1, y1, x2, y2, r)
             stroke()
@@ -210,6 +211,35 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             arc(x1, y1, 5F, 0F, (2 * PI).toFloat()) // Control point one
             arc(x2, y2, 5F, 0F, (2 * PI).toFloat()) // Control point two
             fill()
+        },
+        Api2D("arcTo - 2") {
+            scale(density, density)
+            val p0 = PointF(230F, 20F)
+            val p1 = PointF(90F, 130F)
+            val p2 = PointF(20F, 20F)
+
+            fun labelPoint(p: PointF) {
+                val offset = 15
+                fillText("(${p.x}, ${p.y})", p.x + offset, p.y + offset)
+            }
+
+            beginPath()
+            moveTo(p0.x, p0.y)
+            arcTo(p1.x, p1.y, p2.x, p2.y, 50F)
+            lineTo(p2.x, p2.y)
+
+            labelPoint(p0)
+            labelPoint(p1)
+            labelPoint(p2)
+
+            stroke()
+        },
+        Api2D("arcTo - 3") {
+            beginPath()
+            moveTo(180F, 90F)
+            arcTo(180F, 130F, 110F, 130F, 130F)
+            lineTo(110F, 130F)
+            stroke()        
         },
         Api2D("closePath") {
             beginPath()
