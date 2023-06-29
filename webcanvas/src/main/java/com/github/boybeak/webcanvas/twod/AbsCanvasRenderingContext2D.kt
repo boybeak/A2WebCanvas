@@ -7,7 +7,7 @@ import com.github.boybeak.webcanvas.WebCanvasView
 import com.github.boybeak.webcanvas.render.AbsRenderer2D
 import com.github.boybeak.webcanvas.render.Renderer2D
 
-abstract class AbsCanvasRenderingContext2D() : ICanvasRenderingContext2D {
+abstract class AbsCanvasRenderingContext2D : ICanvasRenderingContext2D {
 
     internal abstract val renderer: AbsRenderer2D
     internal val canvas: Canvas get() = renderer.canvas

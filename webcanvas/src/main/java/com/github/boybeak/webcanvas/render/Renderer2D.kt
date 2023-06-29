@@ -6,11 +6,13 @@ import android.util.Log
 import android.view.SurfaceHolder
 import com.github.boybeak.webcanvas.twod.IWebCanvas2D
 
-internal class Renderer2D(canvas2D: IWebCanvas2D, private val callback: Callback) : AbsRenderer2D(canvas2D.surfaceHolder, canvas2D.getPlatformContext()) {
+internal class Renderer2D(canvas2D: IWebCanvas2D, private val callback: Callback) : AbsRenderer2D(canvas2D.getPlatformContext()) {
 
     companion object {
         private const val TAG = "Renderer2D"
     }
+
+    private val surfaceHolder = canvas2D.surfaceHolder
 
     private var currentCanvas: Canvas? = null
     override val canvas: Canvas get() {

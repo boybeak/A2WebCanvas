@@ -11,7 +11,7 @@ import com.github.boybeak.webcanvas.IWebCanvasSurfaceHolder
 import java.lang.IllegalArgumentException
 import kotlin.math.ceil
 
-internal abstract class AbsRenderer(internal val surfaceHolder: SurfaceHolder, context: Context) :
+internal abstract class AbsRenderer(context: Context) :
     IWebCanvasSurfaceHolder {
 
     companion object {
