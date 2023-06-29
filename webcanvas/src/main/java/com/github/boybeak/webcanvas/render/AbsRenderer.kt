@@ -106,6 +106,7 @@ internal abstract class AbsRenderer(context: Context) :
     private open class AutoLogic(handler: Handler, task: Task, onRender: () -> Unit) : AbsLogic(handler, task, onRender) {
         var isPosted = false
         override fun requestRender() {
+            Log.d(TAG,  "requestRender ")
             if (isPosted) {
                 handler.removeCallbacks(task)
                 isPosted = false

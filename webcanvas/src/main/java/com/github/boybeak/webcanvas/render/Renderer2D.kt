@@ -4,9 +4,10 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.util.Log
 import android.view.SurfaceHolder
+import com.github.boybeak.webcanvas.twod.CanvasProvider
 import com.github.boybeak.webcanvas.twod.IWebCanvas2D
 
-internal class Renderer2D(canvas2D: IWebCanvas2D, private val callback: Callback) : AbsRenderer2D(canvas2D.getPlatformContext()) {
+internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer2D(canvas2D.getPlatformContext()) {
 
     companion object {
         private const val TAG = "Renderer2D"
@@ -20,6 +21,12 @@ internal class Renderer2D(canvas2D: IWebCanvas2D, private val callback: Callback
             makeCanvas()
         }
         return currentCanvas!!
+    }
+
+    private var callback: CanvasProvider.Callback? = null
+
+    override fun setCallback(callback: CanvasProvider.Callback?) {
+        this.callback = callback
     }
 
     init {
@@ -54,7 +61,7 @@ internal class Renderer2D(canvas2D: IWebCanvas2D, private val callback: Callback
 
     private fun makeCanvas() {
         currentCanvas = surfaceHolder.lockCanvas()
-        callback.onCanvasCreated(currentCanvas!!)
+        callback?.onCanvasCreated(currentCanvas!!)
     }
 
     override fun onRender() {
@@ -64,15 +71,10 @@ internal class Renderer2D(canvas2D: IWebCanvas2D, private val callback: Callback
     private fun commitCanvas() {
         Log.d(TAG, "invalidate currentCanvas=$currentCanvas")
         val c = currentCanvas ?: return
-        callback.onCanvasCommit(c)
+        callback?.onCanvasCommit(c)
         surfaceHolder.unlockCanvasAndPost(c)
         currentCanvas = null
-    }
-
-    interface Callback {
-        fun onCanvasCreated(canvas: Canvas)
-        fun onCanvasCommit(canvas: Canvas)
-
+        callback?.onCanvasDestroyed()
     }
 
 }
