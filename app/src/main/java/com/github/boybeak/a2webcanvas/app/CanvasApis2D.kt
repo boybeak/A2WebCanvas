@@ -2,6 +2,7 @@ package com.github.boybeak.a2webcanvas.app
 
 import android.graphics.PointF
 import com.github.boybeak.webcanvas.WebCanvasView
+import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import kotlin.math.PI
 
 class CanvasApis2D(private val canvas: WebCanvasView) {
@@ -9,7 +10,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
     val density = canvas.context.resources.displayMetrics.density
 
     val apis = listOf(
-        Api2D("draw a house") {
+        newFixedApi("draw a house") {
             lineWidth = 10F
             strokeRect(75F, 140F, 150F, 110F)
             fillRect(130F, 190F, 40F, 60F)
@@ -21,7 +22,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             closePath()
             stroke()
         },
-        Api2D("clearRect") {
+        newFixedApi("clearRect") {
             beginPath()
             fillStyle = "#ff6"
             fillRect(0F, 0F, canvas.width.toFloat(), canvas.height.toFloat())
@@ -36,19 +37,19 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
 
             clearRect(10F, 10F, 120F, 100F)
         },
-        Api2D("save and restore") {
+        newFixedApi("save and restore") {
             save()
             fillStyle = "green"
             fillRect(10F, 10F, 100F, 100F)
             restore()
             fillRect(150F, 40F, 100F, 100F)
         },
-        Api2D("filter") {
+        newFixedApi("filter") {
             filter = "blur(4px)"
             font = "48px serif"
             fillText("Hello world", 50F, 100F)
         },
-        Api2D("lineCap") {
+        newFixedApi("lineCap") {
             beginPath()
             moveTo(20F, 20F)
             lineWidth = 15F
@@ -56,7 +57,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             lineTo(100F, 100F)
             stroke()
         },
-        Api2D("lineJoin") {
+        newFixedApi("lineJoin") {
             lineWidth = 20F
             lineJoin = "round"
             beginPath()
@@ -66,7 +67,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             lineTo(280F, 150F)
             stroke()
         },
-        Api2D("lineWidth") {
+        newFixedApi("lineWidth") {
             lineWidth = 15F
 
             beginPath()
@@ -74,15 +75,15 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             lineTo(130F, 130F)
             stroke()
         },
-        Api2D("fillText") {
+        newFixedApi("fillText") {
             font = "50px serif"
             fillText("Hello world", 50F, 90F)
         },
-        Api2D("font") {
+        newFixedApi("font") {
             font = "bold 48px serif"
             strokeText("Hello world", 50F, 100F)
         },
-        Api2D("shadow") {
+        newFixedApi("shadow") {
             // Shadow
             shadowColor = "red"
             shadowOffsetX = 25F
@@ -92,7 +93,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             fillStyle = "blue"
             fillRect(20F, 20F, 150F, 100F)
         },
-        Api2D("textAlign") {
+        newFixedApi("textAlign") {
             val x = canvas.width / 2F
 
             beginPath()
@@ -111,7 +112,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             textAlign = "right"
             fillText("right-aligned", x, 130F)
         },
-        Api2D("textBaseline") {
+        newFixedApi("textBaseline") {
             val baselines = arrayOf(
                 "top",
                 "hanging",
@@ -133,7 +134,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
                 fillText("Abcdefghijklmnop ($s)", 0F, y.toFloat())
             }
         },
-        Api2D("beginPath") {
+        newFixedApi("beginPath") {
             // First path
             beginPath()
             strokeStyle = "blue"
@@ -148,7 +149,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             lineTo(120F, 120F)
             stroke()
         },
-        Api2D("arc") {
+        newFixedApi("arc") {
             // Draw shapes
             for (i in 0 until 4) {
                 for (j in 0 until 3) {
@@ -170,8 +171,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
                 }
             }
         },
-        Api2D("arcTo - 1") {
-            scale(density, density)
+        newFixedApi("arcTo - 1") {
             val x0 = 200F
             val y0 = 20F
             val x1 = 200F
@@ -212,8 +212,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             arc(x2, y2, 5F, 0F, (2 * PI).toFloat()) // Control point two
             fill()
         },
-        Api2D("arcTo - 2") {
-            scale(density, density)
+        newFixedApi("arcTo - 2") {
             val p0 = PointF(230F, 20F)
             val p1 = PointF(90F, 130F)
             val p2 = PointF(20F, 20F)
@@ -234,14 +233,14 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
 
             stroke()
         },
-        Api2D("arcTo - 3") {
+        newFixedApi("arcTo - 3") {
             beginPath()
             moveTo(180F, 90F)
             arcTo(180F, 130F, 110F, 130F, 130F)
             lineTo(110F, 130F)
             stroke()        
         },
-        Api2D("closePath") {
+        newFixedApi("closePath") {
             beginPath()
             moveTo(20F, 140F) // Move pen to bottom-left corner
             lineTo(120F, 10F) // Line to top corner
@@ -249,14 +248,14 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             closePath() // Line to bottom-left corner
             stroke()
         },
-        Api2D("measureText") {
+        newFixedApi("measureText") {
             val hw = "Hello world"
             val tm = measureText(hw)
             fillText(hw, 100F, 40F)
             font = "40px"
             fillText("text width: ${tm.width}", 100F, 100F)
         },
-        Api2D("scale") {
+        newFixedApi("scale") {
             strokeStyle = "red"
             strokeRect(0F, 0F, 50F, 50F)
 
@@ -268,7 +267,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             scale(2F, 2F)
             strokeRect(0F, 0F, 50F, 50F)
         },
-        Api2D("rotate") {
+        newFixedApi("rotate") {
             font = "50px"
             fillStyle = "red"
             fillText("Hello world", 100F, 100F)
@@ -278,7 +277,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             fillStyle = "green"
             fillText("Hello world", 100F, 100F)
         },
-        Api2D("translate") {
+        newFixedApi("translate") {
             strokeStyle = "red"
             strokeRect(0F, 0F, 100F, 100F)
 
@@ -288,4 +287,14 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             strokeRect(0F, 0F, 100F, 100F)
         }
     )
+
+    private fun newFixedApi(name: String, onDraw: (CanvasRenderingContext2D.() -> Unit)): Api2D {
+        return Api2D(name, newFixedOnDraw(onDraw))
+    }
+    private fun newFixedOnDraw(onDraw: (CanvasRenderingContext2D.() -> Unit)): CanvasRenderingContext2D.() -> Unit {
+        return {
+            scale(density, density)
+            onDraw.invoke(this)
+        }
+    }
 }
