@@ -7,7 +7,7 @@ import android.view.SurfaceHolder
 import com.github.boybeak.webcanvas.twod.CanvasProvider
 import com.github.boybeak.webcanvas.twod.IWebCanvas2D
 
-internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer2D(canvas2D.getPlatformContext()) {
+internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer2D(canvas2D) {
 
     companion object {
         private const val TAG = "Renderer2D"
@@ -40,7 +40,7 @@ internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer2D(canvas2D.getPl
                 width: Int,
                 height: Int
             ) {
-                handler.post {
+                poster.postEvent {
                     makeCanvas()
                     commitCanvas()
                 }
@@ -53,13 +53,16 @@ internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer2D(canvas2D.getPl
     }
 
     init {
-        handler.post {
+        poster.postEvent {
             makeCanvas()
             commitCanvas()
         }
     }
 
     private fun makeCanvas() {
+        if (currentCanvas != null) {
+            return
+        }
         currentCanvas = surfaceHolder.lockCanvas()
         callback?.onCanvasCreated(currentCanvas!!)
     }
@@ -69,7 +72,6 @@ internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer2D(canvas2D.getPl
     }
 
     private fun commitCanvas() {
-        Log.d(TAG, "invalidate currentCanvas=$currentCanvas")
         val c = currentCanvas ?: return
         callback?.onCanvasCommit(c)
         surfaceHolder.unlockCanvasAndPost(c)

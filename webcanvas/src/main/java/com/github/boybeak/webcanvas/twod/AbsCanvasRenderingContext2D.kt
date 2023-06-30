@@ -11,7 +11,6 @@ abstract class AbsCanvasRenderingContext2D : ICanvasRenderingContext2D {
 
     internal abstract val renderer: AbsRenderer2D
     internal val canvas: Canvas get() = renderer.canvas
-    override val handler: Handler get() = renderer.handler
 
     override fun onResume() {
         renderer.onResume()

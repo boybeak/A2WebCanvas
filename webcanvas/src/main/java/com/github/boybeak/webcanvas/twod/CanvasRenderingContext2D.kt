@@ -4,7 +4,7 @@ import com.github.boybeak.webcanvas.render.AbsRenderer2D
 import com.github.boybeak.webcanvas.render.Renderer2D
 import com.github.boybeak.webcanvas.twod.image.IWebImage
 
-class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingContext2D() {
+class CanvasRenderingContext2D internal constructor(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingContext2D() {
 
     companion object {
         private const val TAG = "CanvasRenderingContext2D"

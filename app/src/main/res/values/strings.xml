@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">A2WebCanvas</string>
 
+    <string name="menu_item_v8">V8</string>
     <string name="menu_item_debug">Debug</string>
     <string name="menu_item_reset">Reset</string>
     <string name="menu_item_animation">Animation</string>

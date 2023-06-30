@@ -3,42 +3,49 @@ package com.github.boybeak.webcanvas.render
 import android.app.Activity
 import android.content.Context
 import android.os.Handler
-import android.os.HandlerThread
 import android.util.Log
-import android.view.SurfaceHolder
 import com.github.boybeak.webcanvas.IWebCanvas
 import com.github.boybeak.webcanvas.IWebCanvasSurfaceHolder
 import java.lang.IllegalArgumentException
 import kotlin.math.ceil
 
-internal abstract class AbsRenderer(context: Context) :
+internal abstract class AbsRenderer(private val iWebCanvas: IWebCanvas) :
     IWebCanvasSurfaceHolder {
 
     companion object {
         private const val TAG = "AbsRenderer"
     }
 
-    private val renderThread = HandlerThread("RendererThread").also {
-        it.start()
+    private val context: Context get() = iWebCanvas.getPlatformContext()
+
+    internal val poster = object : EventPoster {
+        override fun postEvent(event: Runnable) {
+            iWebCanvas.queueEvent(event)
+        }
+
+        override fun postEventDelayed(delayInMills: Long, event: Runnable) {
+            iWebCanvas.queueEvent(delayInMills, event)
+        }
+
+        override fun removeEvent(event: Runnable) {
+            iWebCanvas.removeEvent(event)
+        }
     }
-    val handler: Handler = Handler(renderThread.looper)
 
     private var renderMode: Int = -1
-        private set
 
     val isContinuouslyRendering get() = renderMode == IWebCanvas.RENDER_MODE_CONTINUOUSLY
     val isAutoRendering get() = renderMode == IWebCanvas.RENDER_MODE_AUTO
 
     private val renderTask = Task()
-    private val whenDirtyLogic = WhenDirtyLogic(handler, renderTask) { onRender() }
-    private val continuouslyLogic = ContinuouslyLogic(context, handler, renderTask) { onRender() }
-    private val autoLogic = AutoLogic(handler, renderTask) { onRender() }
+    private val whenDirtyLogic = WhenDirtyLogic(poster, renderTask) { onRender() }
+    private val continuouslyLogic = ContinuouslyLogic(context, poster, renderTask) { onRender() }
+    private val autoLogic = AutoLogic(poster, renderTask) { onRender() }
 
     open fun onResume() {}
     open fun onPause() {}
 
     fun setRenderMode(mode: Int) {
-        Log.d(TAG, "setRenderMode mode=$mode")
         if (renderMode == mode) {
             return
         }
@@ -54,18 +61,6 @@ internal abstract class AbsRenderer(context: Context) :
 
     fun requestRender() {
         renderTask.logic?.requestRender()
-    }
-
-    fun isMyThread(): Boolean {
-        return Thread.currentThread() == renderThread
-    }
-
-    fun executeOnMyThread(task: Runnable) {
-        if (isMyThread()) {
-            task.run()
-        } else {
-            handler.post(task)
-        }
     }
 
     abstract fun onRender()
@@ -89,34 +84,33 @@ internal abstract class AbsRenderer(context: Context) :
         fun stopRendering()
         fun run()
     }
-    private abstract class AbsLogic(val handler: Handler, val task: Task, val onRender: () -> Unit) : RenderLogic {
+    private abstract class AbsLogic(val poster: EventPoster, val task: Task, val onRender: () -> Unit) : RenderLogic {
         override fun run() {
             onRender()
         }
     }
-    private class WhenDirtyLogic(handler: Handler, task: Task, onRender: () -> Unit) : AbsLogic(handler, task, onRender) {
+    private class WhenDirtyLogic(poster: EventPoster, task: Task, onRender: () -> Unit) : AbsLogic(poster, task, onRender) {
         override fun requestRender() {
-            handler.post(task)
+            poster.postEvent(task)
         }
 
         override fun stopRendering() {
-            handler.removeCallbacks(task)
+            poster.removeEvent(task)
         }
     }
-    private open class AutoLogic(handler: Handler, task: Task, onRender: () -> Unit) : AbsLogic(handler, task, onRender) {
+    private open class AutoLogic(handler: EventPoster, task: Task, onRender: () -> Unit) : AbsLogic(handler, task, onRender) {
         var isPosted = false
         override fun requestRender() {
-            Log.d(TAG,  "requestRender ")
             if (isPosted) {
                 return
             }
-            handler.post(task)
+            poster.postEvent(task)
             isPosted = true
         }
 
         override fun stopRendering() {
             if (isPosted) {
-                handler.removeCallbacks(task)
+                poster.removeEvent(task)
                 isPosted = false
             }
         }
@@ -126,7 +120,7 @@ internal abstract class AbsRenderer(context: Context) :
             super.run()
         }
     }
-    private class ContinuouslyLogic(context: Context, handler: Handler, task: Task, onRender: () -> Unit) : AutoLogic(handler, task, onRender) {
+    private class ContinuouslyLogic(context: Context, poster: EventPoster, task: Task, onRender: () -> Unit) : AutoLogic(poster, task, onRender) {
         private val period = 1000L / ceil((context as Activity).windowManager.defaultDisplay.refreshRate).toInt()
         private var isRendering = false
         override fun requestRender() {
@@ -141,7 +135,7 @@ internal abstract class AbsRenderer(context: Context) :
                 return
             }
             super.run()
-            handler.postDelayed(task, period)
+            poster.postEventDelayed(period, task)
             isPosted = true
         }
 

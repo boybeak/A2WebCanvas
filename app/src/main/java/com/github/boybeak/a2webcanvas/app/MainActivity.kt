@@ -14,7 +14,6 @@ import com.github.boybeak.adapter.event.OnItemClick
 import com.github.boybeak.webcanvas.IWebCanvas
 import com.github.boybeak.webcanvas.WebCanvasView
 import com.github.boybeak.webcanvas.ext.context2DPost
-import com.github.boybeak.webcanvas.ext.post
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import com.google.android.material.bottomappbar.BottomAppBar
 
@@ -38,6 +37,9 @@ class MainActivity : AppCompatActivity() {
 
         bottomAppBar.setOnMenuItemClickListener {
             when(it.itemId) {
+                R.id.v8Item -> {
+                    startActivity(Intent(this, V8Activity::class.java))
+                }
                 R.id.debugItem -> {
                     startActivity(Intent(this, DebugActivity::class.java))
                 }
@@ -92,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                     adapter: AnyAdapter
                 ) {
                     runningApi.text = getString(R.string.text_running_api, item.source().name)
-                    canvasView.getContext<CanvasRenderingContext2D>("2d").post(item.source().onDraw)
+                    canvasView.context2DPost(item.source().onDraw)
                     lastDraw = item.source().onDraw
                 }
             })

@@ -1,20 +1,18 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    namespace 'com.github.boybeak.a2webcanvas.app'
+    namespace 'com.github.boybeak.v8webcanvas'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.github.boybeak.a2webcanvas.app"
         minSdk 24
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -37,14 +35,10 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
 
-    implementation 'com.github.boybeak:any-adapter:1.4.1'
-    implementation project(":webcanvas")
-    implementation project(":v8webcanvas")
     implementation 'com.eclipsesource.j2v8:j2v8:6.2.1@aar'
+    implementation project(":webcanvas")
     implementation 'com.github.boybeak.v8x:v8binding:dev-0.0.2'
-    implementation 'com.github.boybeak.v8x:v8ext:dev-0.0.2'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
