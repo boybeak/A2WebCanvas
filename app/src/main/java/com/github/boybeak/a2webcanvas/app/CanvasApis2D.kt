@@ -1,12 +1,15 @@
 package com.github.boybeak.a2webcanvas.app
 
 import android.graphics.PointF
+import com.github.boybeak.a2webcanvas.app.image.AssetImage
+import com.github.boybeak.a2webcanvas.app.image.ResourceImage
 import com.github.boybeak.webcanvas.WebCanvasView
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import kotlin.math.PI
 
 class CanvasApis2D(private val canvas: WebCanvasView) {
 
+    val context = canvas.context
     val density = canvas.context.resources.displayMetrics.density
 
     val apis = listOf(
@@ -240,6 +243,65 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             lineTo(110F, 130F)
             stroke()        
         },
+        newFixedApi("bezierCurveTo  - 1") {
+            // Define the points as {x, y}
+            val start = PointF(50F, 20F)
+            val cp1 = PointF(230F, 30F)
+            val cp2 = PointF(150F, 80F)
+            val end = PointF(250F, 100F)
+
+            // Cubic Bézier curve
+            beginPath()
+            moveTo(start.x, start.y)
+            bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y)
+            stroke()
+
+            // Start and end points
+            fillStyle = "blue"
+            beginPath()
+            arc(start.x, start.y, 5F, 0F, (2 * PI).toFloat()) // Start point
+            arc(end.x, end.y, 5F, 0F, (2 * PI).toFloat()) // End point
+            fill()
+
+            // Control points
+            fillStyle = "red"
+            beginPath()
+            arc(cp1.x, cp1.y, 5F, 0F, (2 * PI).toFloat()) // Control point one
+            arc(cp2.x, cp2.y, 5F, 0F, (2 * PI).toFloat()) // Control point two
+            fill()
+        },
+        newFixedApi("bezierCurveTo - 2") {
+            beginPath()
+            moveTo(30F, 30F)
+            bezierCurveTo(120F, 160F, 180F, 10F, 220F, 140F)
+            stroke()
+        },
+        newFixedApi("quadraticCurveTo - 1") {
+            // Quadratic Bézier curve
+            beginPath()
+            moveTo(50F, 20F)
+            quadraticCurveTo(230F, 30F, 50F, 100F)
+            stroke()
+
+            // Start and end points
+            fillStyle = "blue"
+            beginPath()
+            arc(50F, 20F, 5F, 0F, (2 * PI).toFloat()) // Start point
+            arc(50F, 100F, 5F, 0F, (2 * PI).toFloat()) // End point
+            fill()
+
+            // Control point
+            fillStyle = "red"
+            beginPath()
+            arc(230F, 30F, 5F, 0F, (2 * PI).toFloat())
+            fill()
+        },
+        newFixedApi("quadraticCurveTo - 2") {
+            beginPath()
+            moveTo(20F, 110F)
+            quadraticCurveTo(230F, 150F, 250F, 20F)
+            stroke()
+        },
         newFixedApi("closePath") {
             beginPath()
             moveTo(20F, 140F) // Move pen to bottom-left corner
@@ -285,6 +347,12 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
 
             strokeStyle = "green"
             strokeRect(0F, 0F, 100F, 100F)
+        },
+        newFixedApi("drawImage - 1") {
+            drawImage(ResourceImage(context, R.drawable.flower), 0, 0)
+        },
+        newFixedApi("drawImage - 2") {
+            drawImage(AssetImage(context, "hippo.png"), 0, 0)
         }
     )
 

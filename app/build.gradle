@@ -42,6 +42,8 @@ dependencies {
     implementation 'com.github.boybeak:any-adapter:1.4.1'
     implementation project(":webcanvas")
 
+    implementation 'com.eclipsesource.j2v8:j2v8:6.2.1@aar'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

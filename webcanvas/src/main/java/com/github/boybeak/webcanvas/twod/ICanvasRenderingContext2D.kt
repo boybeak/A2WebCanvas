@@ -1,6 +1,7 @@
 package com.github.boybeak.webcanvas.twod
 
 import com.github.boybeak.webcanvas.IWebCanvasContext
+import com.github.boybeak.webcanvas.twod.image.IWebImage
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 
 interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
@@ -81,9 +82,20 @@ interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
 
     override fun arcTo(x1: Float, y1: Float, x2: Float, y2: Float, radius: Float) = canvasPainter.arcTo(x1, y1, x2, y2, radius)
 
+    override fun bezierCurveTo(
+        cp1x: Float,
+        cp1y: Float,
+        cp2x: Float,
+        cp2y: Float,
+        x: Float,
+        y: Float
+    )  = canvasPainter.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)
+
     override fun lineTo(x: Float, y: Float) = canvasPainter.lineTo(x, y)
 
     override fun moveTo(x: Float, y: Float) = canvasPainter.moveTo(x, y)
+
+    override fun quadraticCurveTo(cpx: Float, cpy: Float, x: Float, y: Float) = canvasPainter.quadraticCurveTo(cpx, cpy, x, y)
 
     override fun closePath() = canvasPainter.closePath()
 
@@ -92,4 +104,20 @@ interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
     override fun scale(x: Float, y: Float) = canvasPainter.scale(x, y)
 
     override fun translate(x: Float, y: Float) = canvasPainter.translate(x, y)
+
+    override fun drawImage(image: IWebImage, dx: Int, dy: Int) = canvasPainter.drawImage(image, dx, dy)
+
+    override fun drawImage(image: IWebImage, dx: Int, dy: Int, dWidth: Int, dHeight: Int) = canvasPainter.drawImage(image, dx, dy, dWidth, dHeight)
+
+    override fun drawImage(
+        image: IWebImage,
+        sx: Int,
+        sy: Int,
+        sWidth: Int,
+        sHeight: Int,
+        dx: Int,
+        dy: Int,
+        dWidth: Int,
+        dHeight: Int
+    ) = canvasPainter.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
 }

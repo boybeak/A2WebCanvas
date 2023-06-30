@@ -1,5 +1,6 @@
 package com.github.boybeak.webcanvas.twod
 
+import com.github.boybeak.webcanvas.twod.image.IWebImage
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 
 interface ICanvasPainter2D {
@@ -44,12 +45,21 @@ interface ICanvasPainter2D {
     fun beginPath()
     fun arc(x: Float, y: Float, radius: Float, startAngle: Float, endAngle: Float, counterclockwise: Boolean = false)
     fun arcTo(x1: Float, y1: Float, x2: Float, y2: Float, radius: Float)
+    fun bezierCurveTo(cp1x: Float, cp1y: Float, cp2x: Float, cp2y: Float, x: Float, y: Float)
     fun lineTo(x: Float, y: Float)
     fun moveTo(x: Float, y: Float)
+    fun quadraticCurveTo(cpx: Float, cpy: Float, x: Float, y: Float)
     fun closePath()
 
+    /** Transform related **/
 
     fun rotate(angle: Float)
     fun scale(x: Float, y: Float)
     fun translate(x: Float, y: Float)
+
+    /** Image related **/
+
+    fun drawImage(image: IWebImage, dx: Int, dy: Int)
+    fun drawImage(image: IWebImage, dx: Int, dy: Int, dWidth: Int, dHeight: Int)
+    fun drawImage(image: IWebImage, sx: Int, sy: Int, sWidth: Int, sHeight: Int, dx: Int, dy: Int, dWidth: Int, dHeight: Int)
 }

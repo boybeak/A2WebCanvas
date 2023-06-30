@@ -1,13 +1,16 @@
 package com.github.boybeak.webcanvas.twod
 
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 import com.github.boybeak.webcanvas.twod.paint.WebPaint
 import com.github.boybeak.webcanvas.twod.geometry.AnchorPath
+import com.github.boybeak.webcanvas.twod.image.IWebImage
 import kotlin.math.PI
 
 class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPainter2D, CanvasProvider.Callback {
@@ -18,6 +21,9 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
 
     private var path: AnchorPath? = null
     private val paint = WebPaint()
+
+    private val drawImageSrcRect = Rect()
+    private val drawImageDstRect = Rect()
 
     private val canvas: Canvas get() = canvasProvider.canvas
 
@@ -130,6 +136,8 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
         return paint.measureText(text)
     }
 
+    // Path related
+
     override fun beginPath() {
         path = AnchorPath()
     }
@@ -158,11 +166,26 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
         path?.arcTo(x1, y1, x2, y2, radius)
     }
 
+    override fun bezierCurveTo(
+        cp1x: Float,
+        cp1y: Float,
+        cp2x: Float,
+        cp2y: Float,
+        x: Float,
+        y: Float
+    ) {
+        path?.cubicTo(cp1x, cp1y, cp2x, cp2y, x, y)
+    }
+
     override fun lineTo(x: Float, y: Float) {
         path?.lineTo(x, y)
     }
     override fun moveTo(x: Float, y: Float) {
         path?.moveTo(x, y)
+    }
+
+    override fun quadraticCurveTo(cpx: Float, cpy: Float, x: Float, y: Float) {
+        path?.quadTo(cpx, cpy, x, y)
     }
 
     override fun closePath() {
@@ -179,6 +202,33 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
 
     override fun translate(x: Float, y: Float) {
         canvas.translate(x, y)
+    }
+
+    // Image related
+
+    override fun drawImage(image: IWebImage, dx: Int, dy: Int) {
+        drawImage(image, dx, dy, image.width, image.height)
+    }
+
+    override fun drawImage(image: IWebImage, dx: Int, dy: Int, dWidth: Int, dHeight: Int) {
+        drawImage(image, 0, 0, image.width, image.height, dx, dy, dWidth, dHeight)
+    }
+
+    override fun drawImage(
+        image: IWebImage,
+        sx: Int,
+        sy: Int,
+        sWidth: Int,
+        sHeight: Int,
+        dx: Int,
+        dy: Int,
+        dWidth: Int,
+        dHeight: Int
+    ) {
+        val src = image.bitmap ?: return
+        drawImageSrcRect.set(sx, sy, sx + sWidth, sy + sHeight)
+        drawImageDstRect.set(dx, dy, dx + dWidth, dy + dHeight)
+        canvas.drawBitmap(src, drawImageSrcRect, drawImageDstRect, null)
     }
 
 }

@@ -2,6 +2,7 @@ package com.github.boybeak.webcanvas.twod
 
 import com.github.boybeak.webcanvas.render.AbsRenderer2D
 import com.github.boybeak.webcanvas.render.Renderer2D
+import com.github.boybeak.webcanvas.twod.image.IWebImage
 
 class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingContext2D() {
 
@@ -51,4 +52,28 @@ class CanvasRenderingContext2D(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingCon
         postInvalidate()
     }
 
+    override fun drawImage(image: IWebImage, dx: Int, dy: Int) {
+        super.drawImage(image, dx, dy)
+        postInvalidate()
+    }
+
+    override fun drawImage(image: IWebImage, dx: Int, dy: Int, dWidth: Int, dHeight: Int) {
+        super.drawImage(image, dx, dy, dWidth, dHeight)
+        postInvalidate()
+    }
+
+    override fun drawImage(
+        image: IWebImage,
+        sx: Int,
+        sy: Int,
+        sWidth: Int,
+        sHeight: Int,
+        dx: Int,
+        dy: Int,
+        dWidth: Int,
+        dHeight: Int
+    ) {
+        super.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+        postInvalidate()
+    }
 }
