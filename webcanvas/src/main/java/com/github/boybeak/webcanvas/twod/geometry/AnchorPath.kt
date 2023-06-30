@@ -3,6 +3,7 @@ package com.github.boybeak.webcanvas.twod.geometry
 import android.graphics.Path
 import android.graphics.PointF
 import android.graphics.RectF
+import android.util.Log
 
 class AnchorPath : Path() {
 
@@ -15,19 +16,7 @@ class AnchorPath : Path() {
 
     private var directionIndex = 0
 
-//    private val arcTo = ArcTo(this)
-
     private val arcTo = ArcTo()
-
-    fun arcToF(x1: Float,
-               y1: Float,
-               x2: Float,
-               y2: Float,
-               radius: Float): ArcTo {
-        val arcToF = ArcTo()
-        arcToF.set(anchorPointF.x, anchorPointF.y, x1, y1, x2, y2, radius)
-        return arcToF
-    }
 
     fun arcTo(
         x1: Float,

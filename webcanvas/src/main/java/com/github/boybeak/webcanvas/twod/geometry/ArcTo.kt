@@ -2,6 +2,7 @@ package com.github.boybeak.webcanvas.twod.geometry
 
 import android.graphics.PointF
 import android.graphics.RectF
+import android.util.Log
 import kotlin.math.sin
 import kotlin.math.tan
 
@@ -9,7 +10,7 @@ import kotlin.math.tan
  * make a 2d coordinate system based on control point 1 as the origin point.
  * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/arcTo
  */
-class ArcTo() {
+class ArcTo {
 
     companion object {
         private const val TAG = "ArcToF"
@@ -36,10 +37,9 @@ class ArcTo() {
      */
 
     /**
-     * Make the cPoint as origin point to a new 2d coordinate,
-     * to calculate the start degrees
+     * x Positive direction vector, no matter what origin point.
      */
-    private val cxpVec = VectorF2D()
+    private val xPositiveVec = VectorF2D(1F, 0F)
 
     /**
      * Result fields
@@ -68,7 +68,6 @@ class ArcTo() {
         osVec.angleMidTo(oeVec, ocVec)
 
         cPoint.set(oPoint.x + ocVec.normalized.x * ocLen, oPoint.y + ocVec.normalized.y * ocLen)
-        cxpVec.set(cPoint.x + 1, cPoint.y)
 
         rect.set(cPoint.x - radius, cPoint.y - radius, cPoint.x + radius, cPoint.y + radius)
 
@@ -80,9 +79,10 @@ class ArcTo() {
 
         ct1Vec.set(cPoint, tangentPoint1)
         ct2Vec.set(cPoint, tangentPoint2)
+
         sweepDegrees = ct1Vec.degreesWith(ct2Vec)
 
-        startDegrees = ct1Vec.degreesWith(cxpVec)
+        startDegrees = ct1Vec.degreesWith(xPositiveVec)
 
     }
 
