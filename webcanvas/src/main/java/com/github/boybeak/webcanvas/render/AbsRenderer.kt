@@ -108,8 +108,7 @@ internal abstract class AbsRenderer(context: Context) :
         override fun requestRender() {
             Log.d(TAG,  "requestRender ")
             if (isPosted) {
-                handler.removeCallbacks(task)
-                isPosted = false
+                return
             }
             handler.post(task)
             isPosted = true
