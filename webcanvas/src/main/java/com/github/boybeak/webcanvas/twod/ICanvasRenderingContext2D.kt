@@ -1,8 +1,7 @@
 package com.github.boybeak.webcanvas.twod
 
-import android.graphics.Color
 import com.github.boybeak.webcanvas.IWebCanvasContext
-import com.github.boybeak.webcanvas.twod.image.IWebImage
+import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 
 interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {

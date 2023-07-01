@@ -2,7 +2,7 @@ package com.github.boybeak.webcanvas.twod
 
 import com.github.boybeak.webcanvas.render.AbsRenderer2D
 import com.github.boybeak.webcanvas.render.Renderer2D
-import com.github.boybeak.webcanvas.twod.image.IWebImage
+import com.github.boybeak.webcanvas.image.IWebImage
 
 class CanvasRenderingContext2D internal constructor(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingContext2D() {
 

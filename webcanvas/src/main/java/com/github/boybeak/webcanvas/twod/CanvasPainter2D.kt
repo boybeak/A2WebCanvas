@@ -10,7 +10,7 @@ import android.graphics.Rect
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 import com.github.boybeak.webcanvas.twod.paint.WebPaint
 import com.github.boybeak.webcanvas.twod.geometry.AnchorPath
-import com.github.boybeak.webcanvas.twod.image.IWebImage
+import com.github.boybeak.webcanvas.image.IWebImage
 import kotlin.math.PI
 
 class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPainter2D, CanvasProvider.Callback {

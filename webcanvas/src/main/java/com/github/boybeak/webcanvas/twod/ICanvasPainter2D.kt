@@ -1,6 +1,6 @@
 package com.github.boybeak.webcanvas.twod
 
-import com.github.boybeak.webcanvas.twod.image.IWebImage
+import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 
 interface ICanvasPainter2D {
