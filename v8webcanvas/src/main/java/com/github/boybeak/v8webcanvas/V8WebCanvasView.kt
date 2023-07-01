@@ -9,6 +9,7 @@ import com.github.boybeak.v8x.binding.Key
 import com.github.boybeak.v8x.binding.V8Binding
 import com.github.boybeak.v8x.binding.annotation.V8Method
 import com.github.boybeak.webcanvas.WebCanvasView
+import java.lang.IllegalArgumentException
 
 class V8WebCanvasView : WebCanvasView, V8Binding {
 
@@ -34,7 +35,12 @@ class V8WebCanvasView : WebCanvasView, V8Binding {
 
     @V8Method(jsFuncName = "getContext")
     fun getContextV8(type: String): V8Object {
-        return V8CanvasRenderingContext2D(getContext(type)).getMyBinding(v8)
+        return when(type) {
+            "2d" -> V8CanvasRenderingContext2D(this).getMyBinding(v8)
+            "webgl" -> TODO("Not support yet")
+            "webgl2" -> TODO("Not support yet")
+            else -> throw IllegalArgumentException("The type - $type not supported")
+        }
     }
 
     override fun getBindingId(): String {

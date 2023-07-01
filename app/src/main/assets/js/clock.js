@@ -1,6 +1,6 @@
 function clock() {
   const now = new Date();
-  const ctx = canvas.getContext("2d");
+
   ctx.save();
   ctx.clearRect(0, 0, 150, 150);
   ctx.translate(75, 75);
@@ -11,6 +11,7 @@ function clock() {
   ctx.lineWidth = 8;
   ctx.lineCap = "round";
 
+  Console.log('clock before Hour marks');
   // Hour marks
   ctx.save();
   for (let i = 0; i < 12; i++) {
@@ -22,6 +23,7 @@ function clock() {
   }
   ctx.restore();
 
+  Console.log('clock before Minute marks');
   // Minute marks
   ctx.save();
   ctx.lineWidth = 5;
@@ -45,6 +47,7 @@ function clock() {
   // Write image description
   canvas.innerText = `The time is: ${hr}:${min}`;
 
+  Console.log('clock before Write Hours');
   // Write Hours
   ctx.save();
   ctx.rotate(
@@ -57,6 +60,7 @@ function clock() {
   ctx.stroke();
   ctx.restore();
 
+  Console.log('clock before Write Minutes');
   // Write Minutes
   ctx.save();
   ctx.rotate((Math.PI / 30) * min + (Math.PI / 1800) * sec);
@@ -67,6 +71,7 @@ function clock() {
   ctx.stroke();
   ctx.restore();
 
+  Console.log('clock before Write seconds');
   // Write seconds
   ctx.save();
   ctx.rotate((sec * Math.PI) / 30);

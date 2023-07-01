@@ -25,6 +25,8 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
     private val drawImageSrcRect = Rect()
     private val drawImageDstRect = Rect()
 
+    private val canvasBackgroundColor = Color.WHITE
+
     private val canvas: Canvas get() = canvasProvider.canvas
 
     private var resetSaveIndex = 0
@@ -74,7 +76,7 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
     }
 
     override fun onCanvasCreated(canvas: Canvas) {
-        canvas.drawColor(Color.WHITE)
+        canvas.drawColor(canvasBackgroundColor)
         resetSaveIndex = canvas.save()
     }
 
@@ -102,11 +104,11 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
     }
 
     override fun clearRect(x: Float, y: Float, width: Float, height: Float) {
-        val p = Paint()
-        p.color = Color.TRANSPARENT
-        p.isDither = true
-        p.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-        canvas.drawRect(x, y, x + width, y + height, p)
+        canvas.save()
+        canvas.clipRect(x, y, x + width, y + height)
+        // drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR) will leave a black area
+        canvas.drawColor(canvasBackgroundColor)
+        canvas.restore()
     }
 
     override fun fill() {
