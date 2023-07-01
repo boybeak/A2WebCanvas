@@ -21,6 +21,8 @@ class V8WebCanvasView : WebCanvasView, V8Binding {
         return v8Internal!!
     }
 
+    private var v8CanvasContext: Any? = null
+
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -36,7 +38,12 @@ class V8WebCanvasView : WebCanvasView, V8Binding {
     @V8Method(jsFuncName = "getContext")
     fun getContextV8(type: String): V8Object {
         return when(type) {
-            "2d" -> V8CanvasRenderingContext2D(this).getMyBinding(v8)
+            "2d" -> {
+                if (v8CanvasContext == null) {
+                    v8CanvasContext = V8CanvasRenderingContext2D(this)
+                }
+                (v8CanvasContext as V8CanvasRenderingContext2D).getMyBinding(v8)
+            }
             "webgl" -> TODO("Not support yet")
             "webgl2" -> TODO("Not support yet")
             else -> throw IllegalArgumentException("The type - $type not supported")

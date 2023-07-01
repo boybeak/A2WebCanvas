@@ -10,6 +10,7 @@
     <string name="menu_item_when_dirty">When dirty</string>
     <string name="menu_item_continuously">Continuously</string>
     <string name="menu_item_auto">Auto</string>
+    <string name="menu_item_stop">Stop</string>
 
     <string name="text_running_nothing">Running nothing</string>
     <string name="text_running_api">Running: %1$s</string>

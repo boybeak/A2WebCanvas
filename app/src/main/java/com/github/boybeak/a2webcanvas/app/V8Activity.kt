@@ -4,20 +4,20 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Function
-import com.eclipsesource.v8.V8Object
 import com.github.boybeak.a2webcanvas.app.adapter.JsApiItem
 import com.github.boybeak.adapter.AnyAdapter
 import com.github.boybeak.adapter.event.OnItemClick
 import com.github.boybeak.v8webcanvas.V8WebCanvasView
-import com.github.boybeak.v8x.binding.Key
-import com.github.boybeak.v8x.binding.V8Binding
 import com.github.boybeak.v8x.binding.V8BindingAdapter
 import com.github.boybeak.v8x.binding.annotation.V8Method
 import com.github.boybeak.v8x.ext.guessName
 import com.github.boybeak.webcanvas.IWebCanvas
+import com.github.boybeak.webcanvas.ext.context2DPost
+import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import java.io.File
 
 class V8Activity : AppCompatActivity() {
@@ -26,7 +26,10 @@ class V8Activity : AppCompatActivity() {
         private const val TAG = "V8Activity"
     }
 
+    private val density get() = resources.displayMetrics.density
+
     private val canvasView by lazy { findViewById<V8WebCanvasView>(R.id.canvasView) }
+    private val menuBar by lazy { findViewById<Toolbar>(R.id.menuBar) }
     private val jsApiRv by lazy { findViewById<RecyclerView>(R.id.jsApiRv) }
 
     private var v8: V8? = null
@@ -45,13 +48,30 @@ class V8Activity : AppCompatActivity() {
         }
     }
     private val window = object : V8BindingAdapter {
+
+        @Volatile
+        var stopWhenNextFrame = false
+
         override fun getBindingId(): String {
             return this.hashCode().toString()
         }
         @V8Method
         fun requestAnimationFrame(function: V8Function) {
+            if (stopWhenNextFrame) {
+                stopWhenNextFrame = false
+                return
+            }
+            menuBar.menu.findItem(R.id.stopItem).run {
+                if (!isVisible) {
+                    runOnUiThread {
+                        isVisible = true
+                    }
+                }
+            }
+
             val guessName = function.guessName
             canvasView.queueEvent(16L) {
+                canvasView?.getContext<CanvasRenderingContext2D>("2d")?.scale(density, density)
                 v8?.executeJSFunction(guessName)
             }
         }
@@ -91,6 +111,21 @@ class V8Activity : AppCompatActivity() {
                     }
                 }
             })
+        }
+
+        menuBar.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.stopItem -> {
+                    window.stopWhenNextFrame = true
+                    it.isVisible = false
+                    canvasView.queueEvent {
+                        canvasView.context2DPost {
+                            reset()
+                        }
+                    }
+                }
+            }
+            true
         }
     }
 
