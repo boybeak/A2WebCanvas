@@ -12,14 +12,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/menuBar"
+        app:layout_constraintDimensionRatio="1:1"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/jsApiRv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/canvasView"
+        app:layout_constraintBottom_toTopOf="@+id/menuBar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         />
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/menuBar"
         android:layout_width="0dp"
         android:layout_height="?actionBarSize"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

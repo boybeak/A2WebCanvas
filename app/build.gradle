@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+apply from: '../dependencies.gradle'
+
 android {
     namespace 'com.github.boybeak.a2webcanvas.app'
     compileSdk 33
@@ -42,9 +44,9 @@ dependencies {
     implementation 'com.github.boybeak:any-adapter:1.4.1'
     implementation project(":webcanvas")
     implementation project(":v8webcanvas")
-    implementation 'com.eclipsesource.j2v8:j2v8:6.2.1@aar'
-    implementation 'com.github.boybeak.v8x:v8binding:dev-0.0.2'
-    implementation 'com.github.boybeak.v8x:v8ext:dev-0.0.2'
+    implementation project.ext.v8.j2v8
+    implementation project.ext.v8x.binding
+    implementation project.ext.v8x.ext
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
