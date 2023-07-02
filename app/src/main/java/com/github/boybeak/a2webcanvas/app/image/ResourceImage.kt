@@ -7,5 +7,7 @@ import androidx.annotation.DrawableRes
 import com.github.boybeak.webcanvas.image.IWebImage
 
 class ResourceImage(context: Context, @DrawableRes resId: Int) : IWebImage {
+    override val id: String
+        get() = hashCode().toString()
     override val bitmap: Bitmap? = BitmapFactory.decodeResource(context.resources, resId)
 }

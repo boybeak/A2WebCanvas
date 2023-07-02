@@ -4,9 +4,11 @@ import android.util.Log
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.github.boybeak.v8webcanvas.V8WebCanvasView
+import com.github.boybeak.v8webcanvas.image.V8HTMLImageElement
 import com.github.boybeak.v8x.binding.Key
 import com.github.boybeak.v8x.binding.V8Binding
 import com.github.boybeak.v8x.binding.annotation.V8Method
+import com.github.boybeak.webcanvas.image.WebImageManager
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import java.lang.IllegalArgumentException
 
@@ -167,16 +169,47 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
     /** Image related **/
 
     @V8Method
-    fun drawImage(image: V8Object, dx: Int, dy: Int) {
-        TODO()
-    }
-    @V8Method
-    fun drawImage(image: V8Object, dx: Int, dy: Int, dWidth: Int, dHeight: Int) {
-        TODO()
-    }
-    @V8Method
-    fun drawImage(image: V8Object, sx: Int, sy: Int, sWidth: Int, sHeight: Int, dx: Int, dy: Int, dWidth: Int, dHeight: Int) {
-        TODO()
+    fun drawImage(vararg args: Any) {
+        when(args.size) {
+            3 -> {
+                val image = args[0] as V8Object
+                val dx = (args[1] as Number).toInt()
+                val dy = (args[2] as Number).toInt()
+
+                val id = V8HTMLImageElement.getId(image)
+                val img = WebImageManager[id]
+                context2D.drawImage(img, dx, dy)
+            }
+            5 -> {
+                val image = args[0] as V8Object
+                val dx = (args[1] as Number).toInt()
+                val dy = (args[2] as Number).toInt()
+                val dw = (args[3] as Number).toInt()
+                val dh = (args[4] as Number).toInt()
+
+                val id = V8HTMLImageElement.getId(image)
+                val img = WebImageManager[id]
+                context2D.drawImage(img, dx, dy, dw, dh)
+            }
+            9 -> {
+                val image = args[0] as V8Object
+                val sx = (args[1] as Number).toInt()
+                val sy = (args[2] as Number).toInt()
+                val sw = (args[3] as Number).toInt()
+                val sh = (args[4] as Number).toInt()
+
+                val dx = (args[5] as Number).toInt()
+                val dy = (args[6] as Number).toInt()
+                val dw = (args[7] as Number).toInt()
+                val dh = (args[8] as Number).toInt()
+
+                val id = V8HTMLImageElement.getId(image)
+                val img = WebImageManager[id]
+                context2D.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)
+            }
+            else -> throw IllegalArgumentException("Unsupported arguments count ${args.size}")
+        }
+
     }
 
 }

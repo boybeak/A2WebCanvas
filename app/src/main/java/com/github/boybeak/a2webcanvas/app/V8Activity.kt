@@ -1,5 +1,7 @@
 package com.github.boybeak.a2webcanvas.app
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,15 +10,20 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Function
+import com.eclipsesource.v8.V8Object
 import com.github.boybeak.a2webcanvas.app.adapter.JsApiItem
 import com.github.boybeak.adapter.AnyAdapter
 import com.github.boybeak.adapter.event.OnItemClick
 import com.github.boybeak.v8webcanvas.V8WebCanvasView
+import com.github.boybeak.v8webcanvas.image.V8HTMLImageElement
 import com.github.boybeak.v8x.binding.V8BindingAdapter
 import com.github.boybeak.v8x.binding.annotation.V8Method
+import com.github.boybeak.v8x.binding.ext.manager
 import com.github.boybeak.v8x.ext.guessName
 import com.github.boybeak.webcanvas.IWebCanvas
 import com.github.boybeak.webcanvas.ext.context2DPost
+import com.github.boybeak.webcanvas.image.ISrcDecoder
+import com.github.boybeak.webcanvas.image.WebImageManager
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import java.io.File
 
@@ -76,6 +83,30 @@ class V8Activity : AppCompatActivity() {
             }
         }
     }
+    private val imageCreator = object : V8BindingAdapter {
+        override fun getBindingId(): String {
+            return this.hashCode().toString()
+        }
+        @V8Method
+        fun createImage(): V8Object {
+            return V8HTMLImageElement(WebImageManager.createHTMLImageElement(imageDecoder)).getMyBinding(v8!!)
+        }
+    }
+    private val imageDecoder = object : ISrcDecoder {
+        override fun decode(src: String?): Bitmap? {
+            src ?: return null
+            return if (src.startsWith("assets")) {
+                val path = src.replace("assets/", "")
+                assets.open(path).run {
+                    val bmp = BitmapFactory.decodeStream(this)
+                    this.close()
+                    bmp
+                }
+            } else {
+                null
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,12 +114,14 @@ class V8Activity : AppCompatActivity() {
 
         canvasView.setRenderMode(IWebCanvas.RENDER_MODE_AUTO)
         canvasView.queueEvent {
+            v8?.manager
             v8 = V8.createV8Runtime()
             canvasView.initialize(v8!!)
             v8?.add("canvas", canvasView.getMyBinding(v8!!))
             v8?.add("Console", console.getMyBinding(v8!!))
             v8?.add("ctx", canvasView.getContextV8("2d"))
             v8?.add("window", window.getMyBinding(v8!!))
+            v8?.add("ImageCreator", imageCreator.getMyBinding(v8!!))
 
             v8?.executeScript("Console.log('Hello JS');")
         }

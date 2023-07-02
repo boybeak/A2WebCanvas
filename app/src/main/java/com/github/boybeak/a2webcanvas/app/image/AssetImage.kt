@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory
 import com.github.boybeak.webcanvas.image.IWebImage
 
 class AssetImage(context: Context, path: String) : IWebImage {
+    override val id: String
+        get() = hashCode().toString()
     override val bitmap: Bitmap = context.assets.open(path).run {
         val bmp = BitmapFactory.decodeStream(this)
         this.close()
