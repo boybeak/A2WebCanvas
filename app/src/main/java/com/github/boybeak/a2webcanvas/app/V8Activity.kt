@@ -93,17 +93,25 @@ class V8Activity : AppCompatActivity() {
         }
     }
     private val imageDecoder = object : ISrcDecoder {
-        override fun decode(src: String?): Bitmap? {
-            src ?: return null
-            return if (src.startsWith("assets")) {
-                val path = src.replace("assets/", "")
-                assets.open(path).run {
-                    val bmp = BitmapFactory.decodeStream(this)
-                    this.close()
-                    bmp
+        override fun decode(src: String?, callback: ISrcDecoder.Callback) {
+            src ?: return
+            try {
+                if (src.startsWith("assets")) {
+                    val path = src.replace("assets/", "")
+                    Thread {
+                        val bitmap = assets.open(path).run {
+                            val bmp = BitmapFactory.decodeStream(this)
+                            this.close()
+                            bmp
+                        }
+                        callback.onLoad(bitmap)
+                    }.start()
+                } else {
+                    null
                 }
-            } else {
-                null
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                callback.onError(e)
             }
         }
     }
