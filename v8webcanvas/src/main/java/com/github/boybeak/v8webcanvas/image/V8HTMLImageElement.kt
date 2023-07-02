@@ -71,9 +71,7 @@ class V8HTMLImageElement(private val htmlImageElement: HTMLImageElement) : V8Bin
                 }
             }
             "onerror", "error" -> htmlImageElement.setOnError {
-                if (htmlImageElement.bitmap != null) {
-                    target.executeJSFunction("onerror")
-                }
+                target.executeJSFunction("onerror")
             }
         }
     }

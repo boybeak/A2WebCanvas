@@ -18,21 +18,17 @@ class HTMLImageElement internal constructor(private val decoder: ISrcDecoder): A
             decoder.decode(value, object : ISrcDecoder.Callback {
                 override fun onLoad(bitmap: Bitmap) {
                     this@HTMLImageElement.bitmap = bitmap
+                    onLoad?.invoke()
                 }
 
                 override fun onError(e: Throwable) {
+                    onError?.invoke(e)
                 }
             })
         }
 
     override var bitmap: Bitmap? = null
-        private set(value) {
-            field = value
-            // TODO success callback
-            if (value != null) {
-                onLoad?.invoke()
-            }
-        }
+        private set
 
     private var onLoad: OnLoad? = null
     private var onError: OnError? =  null
