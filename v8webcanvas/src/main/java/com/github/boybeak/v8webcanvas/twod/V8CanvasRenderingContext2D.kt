@@ -212,4 +212,9 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
 
     }
 
+    @V8Method
+    fun getImageData(vararg args: Any) {
+        TODO("getImageData not implemented")
+    }
+
 }

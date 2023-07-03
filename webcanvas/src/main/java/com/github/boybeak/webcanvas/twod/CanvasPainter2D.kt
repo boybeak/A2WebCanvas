@@ -3,6 +3,7 @@ package com.github.boybeak.webcanvas.twod
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorSpace
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
@@ -27,9 +28,17 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
 
     private val canvasBackgroundColor = Color.WHITE
 
+    private var shadowCanvas: Canvas? = null
     private val canvas: Canvas get() = canvasProvider.canvas
 
     private var resetSaveIndex = 0
+
+    private fun canvasRun(callback: (canvas: Canvas) -> Unit) {
+        callback.invoke(canvas)
+        if (shadowCanvas != null) {
+            callback.invoke(shadowCanvas!!)
+        }
+    }
 
     override var fillStyle: String
         get() = paint.fillStyle
@@ -76,34 +85,43 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
     }
 
     override fun onCanvasCreated(canvas: Canvas) {
+        if (shadowCanvas == null) {
+            shadowCanvas = Canvas(Bitmap.createBitmap(canvas.width, canvas.height, Bitmap.Config.ARGB_8888))
+        } else if (shadowCanvas!!.width != canvas.width || shadowCanvas!!.height != canvas.height) {
+            shadowCanvas = Canvas(Bitmap.createBitmap(canvas.width, canvas.height, Bitmap.Config.ARGB_8888))
+        }
         canvas.drawColor(canvasBackgroundColor)
         resetSaveIndex = canvas.save()
+        shadowCanvas?.save()
     }
 
     override fun onCanvasCommit(canvas: Canvas) {
         if (canvas.saveCount > resetSaveIndex) {
             canvas.restoreToCount(resetSaveIndex)
+            shadowCanvas?.restoreToCount(resetSaveIndex)
         }
     }
 
     override fun onCanvasDestroyed() {}
 
-    override fun save() {
+
+
+    override fun save() = canvasRun{ canvas ->
         canvas.save()
         paint.save()
     }
 
-    override fun restore() {
+    override fun restore() = canvasRun{ canvas ->
         canvas.restore()
         paint.restore()
     }
 
-    override fun reset() {
+    override fun reset() = canvasRun{ canvas ->
         canvas.restoreToCount(resetSaveIndex)
         paint.reset()
     }
 
-    override fun clearRect(x: Float, y: Float, width: Float, height: Float) {
+    override fun clearRect(x: Float, y: Float, width: Float, height: Float) = canvasRun{ canvas ->
         canvas.save()
         canvas.clipRect(x, y, x + width, y + height)
         // drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR) will leave a black area
@@ -111,26 +129,26 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
         canvas.restore()
     }
 
-    override fun fill() {
+    override fun fill() = canvasRun{ canvas ->
         canvas.drawPath(path!!, paint.fillPaint)
     }
 
-    override fun fillRect(x: Float, y: Float, width: Float, height: Float) {
+    override fun fillRect(x: Float, y: Float, width: Float, height: Float) = canvasRun{ canvas ->
         canvas.drawRect(x, y, x + width, y + height, paint.fillPaint)
     }
 
-    override fun fillText(text: String, x: Float, y: Float) {
+    override fun fillText(text: String, x: Float, y: Float) = canvasRun{ canvas ->
         canvas.drawText(text, x, paint.computeRealY(y), paint.fillPaint)
     }
 
-    override fun stroke() {
+    override fun stroke() = canvasRun{ canvas ->
         canvas.drawPath(path!!, paint.strokePaint)
     }
-    override fun strokeRect(x: Float, y: Float, width: Float, height: Float) {
+    override fun strokeRect(x: Float, y: Float, width: Float, height: Float) = canvasRun{ canvas ->
         canvas.drawRect(x, y, x + width, y + height, paint.strokePaint)
     }
 
-    override fun strokeText(text: String, x: Float, y: Float) {
+    override fun strokeText(text: String, x: Float, y: Float) = canvasRun{ canvas ->
         canvas.drawText(text, x, paint.computeRealY(y), paint.strokePaint)
     }
 
@@ -194,15 +212,15 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
         path?.close()
     }
 
-    override fun rotate(angle: Float) {
+    override fun rotate(angle: Float) = canvasRun{ canvas ->
         canvas.rotate((angle / PI * 180).toFloat())
     }
 
-    override fun scale(x: Float, y: Float) {
+    override fun scale(x: Float, y: Float) = canvasRun{ canvas ->
         canvas.scale(x, y)
     }
 
-    override fun translate(x: Float, y: Float) {
+    override fun translate(x: Float, y: Float) = canvasRun{ canvas ->
         canvas.translate(x, y)
     }
 
@@ -226,11 +244,19 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
         dy: Int,
         dWidth: Int,
         dHeight: Int
-    ) {
-        val src = image.bitmap ?: return
+    ) = canvasRun{ canvas ->
+        val src = image.bitmap ?: return@canvasRun
         drawImageSrcRect.set(sx, sy, sx + sWidth, sy + sHeight)
         drawImageDstRect.set(dx, dy, dx + dWidth, dy + dHeight)
         canvas.drawBitmap(src, drawImageSrcRect, drawImageDstRect, null)
+    }
+
+    override fun getImageData(sx: Float, sy: Float, sw: Float, sh: Float) = canvasRun{ canvas ->
+        TODO("Not yet implemented")
+    }
+
+    override fun getImageData(sx: Float, sy: Float, sw: Float, sh: Float, colorSpace: ColorSpace) = canvasRun{ canvas ->
+        TODO("Not yet implemented")
     }
 
 }

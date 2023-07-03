@@ -1,5 +1,6 @@
 package com.github.boybeak.webcanvas.twod
 
+import android.graphics.ColorSpace
 import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 
@@ -62,4 +63,6 @@ interface ICanvasPainter2D {
     fun drawImage(image: IWebImage, dx: Int, dy: Int)
     fun drawImage(image: IWebImage, dx: Int, dy: Int, dWidth: Int, dHeight: Int)
     fun drawImage(image: IWebImage, sx: Int, sy: Int, sWidth: Int, sHeight: Int, dx: Int, dy: Int, dWidth: Int, dHeight: Int)
+    fun getImageData(sx: Float, sy: Float, sw: Float, sh: Float)
+    fun getImageData(sx: Float, sy: Float, sw: Float, sh: Float, colorSpace: ColorSpace)
 }

@@ -1,5 +1,6 @@
 package com.github.boybeak.webcanvas.twod
 
+import android.graphics.ColorSpace
 import com.github.boybeak.webcanvas.render.AbsRenderer2D
 import com.github.boybeak.webcanvas.render.Renderer2D
 import com.github.boybeak.webcanvas.image.IWebImage
@@ -75,5 +76,13 @@ class CanvasRenderingContext2D internal constructor(iWebCanvas: IWebCanvas2D) : 
     ) {
         super.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
         postInvalidate()
+    }
+
+    override fun getImageData(sx: Float, sy: Float, sw: Float, sh: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getImageData(sx: Float, sy: Float, sw: Float, sh: Float, colorSpace: ColorSpace) {
+        TODO("Not yet implemented")
     }
 }
