@@ -4,6 +4,7 @@ import android.graphics.ColorSpace
 import com.github.boybeak.webcanvas.render.AbsRenderer2D
 import com.github.boybeak.webcanvas.render.Renderer2D
 import com.github.boybeak.webcanvas.image.IWebImage
+import com.github.boybeak.webcanvas.image.ImageData
 
 class CanvasRenderingContext2D internal constructor(iWebCanvas: IWebCanvas2D) : AbsCanvasRenderingContext2D() {
 
@@ -78,11 +79,34 @@ class CanvasRenderingContext2D internal constructor(iWebCanvas: IWebCanvas2D) : 
         postInvalidate()
     }
 
-    override fun getImageData(sx: Float, sy: Float, sw: Float, sh: Float) {
+    override fun getImageData(sx: Int, sy: Int, sw: Int, sh: Int): ImageData {
+        return canvasPainter.getImageData(sx, sy, sw, sh)
+    }
+
+    override fun getImageData(
+        sx: Int,
+        sy: Int,
+        sw: Int,
+        sh: Int,
+        colorSpace: ColorSpace
+    ): ImageData {
         TODO("Not yet implemented")
     }
 
-    override fun getImageData(sx: Float, sy: Float, sw: Float, sh: Float, colorSpace: ColorSpace) {
-        TODO("Not yet implemented")
+    override fun putImageData(imageData: ImageData, dx: Int, dy: Int) {
+        canvasPainter.putImageData(imageData, dx, dy)
     }
+
+    override fun putImageData(
+        imageData: ImageData,
+        dx: Int,
+        dy: Int,
+        dirtyX: Int,
+        dirtyY: Int,
+        dirtyWidth: Int,
+        dirtyHeight: Int
+    ) {
+        canvasPainter.putImageData(imageData, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight)
+    }
+
 }

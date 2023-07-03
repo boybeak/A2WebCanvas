@@ -1,6 +1,7 @@
 package com.github.boybeak.webcanvas.utils
 
 import android.graphics.Color
+import android.util.Log
 import java.util.Locale
 
 object HtmlColor {
@@ -9,6 +10,7 @@ object HtmlColor {
         return htmlColorMap[name.toUpperCase(Locale.ENGLISH)] ?: throw IllegalArgumentException("Unknown color name($name)")
     }
     fun parseColor(colorStr: String): Int {
+        Log.d(TAG, "parseColor colorStr=$colorStr")
         return if (colorStr.indexOf("rgba", ignoreCase = true) >= 0) {
             val array = colorStr.split("[(,)]".toRegex())
             val r = array[1].trim().toInt()

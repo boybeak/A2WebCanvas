@@ -12,6 +12,9 @@ import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 import com.github.boybeak.webcanvas.twod.paint.WebPaint
 import com.github.boybeak.webcanvas.twod.geometry.AnchorPath
 import com.github.boybeak.webcanvas.image.IWebImage
+import com.github.boybeak.webcanvas.image.ImageData
+import com.github.boybeak.webcanvas.image.WebImageManager
+import java.lang.IllegalArgumentException
 import kotlin.math.PI
 
 class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPainter2D, CanvasProvider.Callback {
@@ -28,6 +31,7 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
 
     private val canvasBackgroundColor = Color.WHITE
 
+    private var shadowBitmap: Bitmap? = null
     private var shadowCanvas: Canvas? = null
     private val canvas: Canvas get() = canvasProvider.canvas
 
@@ -86,9 +90,12 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
 
     override fun onCanvasCreated(canvas: Canvas) {
         if (shadowCanvas == null) {
-            shadowCanvas = Canvas(Bitmap.createBitmap(canvas.width, canvas.height, Bitmap.Config.ARGB_8888))
-        } else if (shadowCanvas!!.width != canvas.width || shadowCanvas!!.height != canvas.height) {
-            shadowCanvas = Canvas(Bitmap.createBitmap(canvas.width, canvas.height, Bitmap.Config.ARGB_8888))
+            shadowBitmap = Bitmap.createBitmap(canvas.width, canvas.height, Bitmap.Config.ARGB_8888)
+            shadowCanvas = Canvas(shadowBitmap!!)
+        } else if(shadowCanvas!!.width != canvas.width || shadowCanvas!!.height != canvas.height) {
+            shadowBitmap?.recycle()
+            shadowBitmap = Bitmap.createBitmap(canvas.width, canvas.height, Bitmap.Config.ARGB_8888)
+            shadowCanvas?.setBitmap(shadowBitmap)
         }
         canvas.drawColor(canvasBackgroundColor)
         resetSaveIndex = canvas.save()
@@ -251,12 +258,29 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
         canvas.drawBitmap(src, drawImageSrcRect, drawImageDstRect, null)
     }
 
-    override fun getImageData(sx: Float, sy: Float, sw: Float, sh: Float) = canvasRun{ canvas ->
+    override fun getImageData(sx: Int, sy: Int, sw: Int, sh: Int): ImageData {
+        val shadowBmp = shadowBitmap ?: throw IllegalArgumentException("getImageData error, shadowCanvas is null")
+        return WebImageManager.createImageData(Bitmap.createBitmap(shadowBmp, sx, sy, sw, sh))
+    }
+
+    override fun getImageData(sx: Int, sy: Int, sw: Int, sh: Int, colorSpace: ColorSpace): ImageData {
         TODO("Not yet implemented")
     }
 
-    override fun getImageData(sx: Float, sy: Float, sw: Float, sh: Float, colorSpace: ColorSpace) = canvasRun{ canvas ->
-        TODO("Not yet implemented")
+    override fun putImageData(imageData: ImageData, dx: Int, dy: Int) {
+        drawImage(imageData, dx, dy)
+    }
+
+    override fun putImageData(
+        imageData: ImageData,
+        dx: Int,
+        dy: Int,
+        dirtyX: Int,
+        dirtyY: Int,
+        dirtyWidth: Int,
+        dirtyHeight: Int
+    ) {
+        drawImage(imageData, dirtyX, dirtyY, dirtyWidth, dirtyHeight, dx ,dy, imageData.width, imageData.height)
     }
 
 }

@@ -5,9 +5,12 @@ import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.github.boybeak.v8webcanvas.V8WebCanvasView
 import com.github.boybeak.v8webcanvas.image.V8HTMLImageElement
+import com.github.boybeak.v8webcanvas.image.V8ImageData
 import com.github.boybeak.v8x.binding.Key
 import com.github.boybeak.v8x.binding.V8Binding
 import com.github.boybeak.v8x.binding.annotation.V8Method
+import com.github.boybeak.webcanvas.image.IWebImage
+import com.github.boybeak.webcanvas.image.ImageData
 import com.github.boybeak.webcanvas.image.WebImageManager
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import java.lang.IllegalArgumentException
@@ -213,8 +216,50 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
     }
 
     @V8Method
-    fun getImageData(vararg args: Any) {
-        TODO("getImageData not implemented")
+    fun getImageData(vararg args: Any): V8Object {
+        return when(args.size) {
+            4 -> {
+                val sx = (args[0] as Number).toInt()
+                val sy = (args[1] as Number).toInt()
+                val sw = (args[2] as Number).toInt()
+                val sh = (args[3] as Number).toInt()
+                val imgData = context2D.getImageData(sx, sy, sw, sh)
+                V8ImageData(imgData).getMyBinding(v8)
+            }
+            9 -> {
+                TODO("Not support yet")
+            }
+            else -> throw IllegalArgumentException("Unsupported arguments count ${args.size}")
+        }
+    }
+
+    @V8Method
+    fun putImageData(vararg args: Any) {
+        when(args.size) {
+            3 -> {
+                val v8ImgData = args[0] as V8Object
+                val imgId = V8ImageData.getId(v8ImgData)
+                val imageData = WebImageManager.getIWebImage<ImageData>(imgId)
+                val dx = (args[1] as Number).toInt()
+                val dy = (args[2] as Number).toInt()
+
+                context2D.putImageData(imageData, dx, dy)
+            }
+            7 -> {
+                val v8ImgData = args[0] as V8Object
+                val imgId = V8ImageData.getId(v8ImgData)
+                val imageData = WebImageManager.getIWebImage<ImageData>(imgId)
+                val dx = (args[1] as Number).toInt()
+                val dy = (args[2] as Number).toInt()
+                val dirtyX = (args[3] as Number).toInt()
+                val dirtyY = (args[4] as Number).toInt()
+                val dirtyWidth = (args[5] as Number).toInt()
+                val dirtyHeight = (args[6] as Number).toInt()
+
+                context2D.putImageData(imageData, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight)
+            }
+            else -> throw IllegalArgumentException("Unsupported arguments count ${args.size}")
+        }
     }
 
 }

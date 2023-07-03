@@ -1,5 +1,7 @@
 package com.github.boybeak.webcanvas.image
 
+import android.graphics.Bitmap
+
 object WebImageManager {
 
     private const val TAG = "WebImageManager"
@@ -12,8 +14,14 @@ object WebImageManager {
         }
     }
 
-    fun getIWebImage(id: String): IWebImage {
-        return imageMap[id]!!
+    fun createImageData(bitmap: Bitmap): ImageData {
+        return ImageData(bitmap).also {
+            imageMap[it.id] = it
+        }
+    }
+
+    fun <T : IWebImage> getIWebImage(id: String): T {
+        return imageMap[id]!! as T
     }
 
     operator fun get(id: String): IWebImage = imageMap[id]!!
