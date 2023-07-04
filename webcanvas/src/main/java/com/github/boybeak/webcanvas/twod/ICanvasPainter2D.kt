@@ -51,6 +51,9 @@ interface ICanvasPainter2D {
     fun lineTo(x: Float, y: Float)
     fun moveTo(x: Float, y: Float)
     fun quadraticCurveTo(cpx: Float, cpy: Float, x: Float, y: Float)
+    fun rect(x: Float, y: Float, width: Float, height: Float)
+    fun roundRect(x: Float, y: Float, width: Float, height: Float, radii: FloatArray)
+
     fun closePath()
 
     /** Transform related **/

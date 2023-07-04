@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorSpace
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
@@ -213,6 +214,14 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
 
     override fun quadraticCurveTo(cpx: Float, cpy: Float, x: Float, y: Float) {
         path?.quadTo(cpx, cpy, x, y)
+    }
+
+    override fun rect(x: Float, y: Float, width: Float, height: Float) {
+        path?.addRect(x, y, x + width, y + height)
+    }
+
+    override fun roundRect(x: Float, y: Float, width: Float, height: Float, radii: FloatArray) {
+        path?.addRoundRect(x, y, x + width, y + height, radii, Path.Direction.CW)
     }
 
     override fun closePath() {
