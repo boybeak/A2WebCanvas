@@ -1,7 +1,9 @@
 package com.github.boybeak.webcanvas.twod
 
+import android.graphics.ColorSpace
 import com.github.boybeak.webcanvas.IWebCanvasContext
 import com.github.boybeak.webcanvas.image.IWebImage
+import com.github.boybeak.webcanvas.image.ImageData
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 
 interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
@@ -120,4 +122,34 @@ interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
         dWidth: Int,
         dHeight: Int
     ) = canvasPainter.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+
+    override fun getImageData(sx: Int, sy: Int, sw: Int, sh: Int): ImageData {
+        return canvasPainter.getImageData(sx, sy, sw, sh)
+    }
+
+    override fun getImageData(
+        sx: Int,
+        sy: Int,
+        sw: Int,
+        sh: Int,
+        colorSpace: ColorSpace
+    ): ImageData {
+        TODO("Not yet implemented")
+    }
+
+    override fun putImageData(imageData: ImageData, dx: Int, dy: Int) {
+        canvasPainter.putImageData(imageData, dx, dy)
+    }
+
+    override fun putImageData(
+        imageData: ImageData,
+        dx: Int,
+        dy: Int,
+        dirtyX: Int,
+        dirtyY: Int,
+        dirtyWidth: Int,
+        dirtyHeight: Int
+    ) {
+        canvasPainter.putImageData(imageData, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight)
+    }
 }

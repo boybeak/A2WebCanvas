@@ -79,22 +79,9 @@ class CanvasRenderingContext2D internal constructor(iWebCanvas: IWebCanvas2D) : 
         postInvalidate()
     }
 
-    override fun getImageData(sx: Int, sy: Int, sw: Int, sh: Int): ImageData {
-        return canvasPainter.getImageData(sx, sy, sw, sh)
-    }
-
-    override fun getImageData(
-        sx: Int,
-        sy: Int,
-        sw: Int,
-        sh: Int,
-        colorSpace: ColorSpace
-    ): ImageData {
-        TODO("Not yet implemented")
-    }
-
     override fun putImageData(imageData: ImageData, dx: Int, dy: Int) {
-        canvasPainter.putImageData(imageData, dx, dy)
+        super.putImageData(imageData, dx, dy)
+        postInvalidate()
     }
 
     override fun putImageData(
@@ -106,7 +93,8 @@ class CanvasRenderingContext2D internal constructor(iWebCanvas: IWebCanvas2D) : 
         dirtyWidth: Int,
         dirtyHeight: Int
     ) {
-        canvasPainter.putImageData(imageData, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight)
+        super.putImageData(imageData, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight)
+        postInvalidate()
     }
 
 }
