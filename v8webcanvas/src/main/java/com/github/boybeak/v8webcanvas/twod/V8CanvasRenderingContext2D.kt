@@ -2,7 +2,9 @@ package com.github.boybeak.v8webcanvas.twod
 
 import android.util.Log
 import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8TypedArray
 import com.github.boybeak.v8webcanvas.V8WebCanvasView
 import com.github.boybeak.v8webcanvas.image.V8HTMLImageElement
 import com.github.boybeak.v8webcanvas.image.V8ImageData
@@ -14,6 +16,7 @@ import com.github.boybeak.webcanvas.image.ImageData
 import com.github.boybeak.webcanvas.image.WebImageManager
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import java.lang.IllegalArgumentException
+import kotlin.math.abs
 
 class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V8Binding {
 
@@ -157,6 +160,114 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
     fun moveTo(x: Double, y: Double) = context2D.moveTo(x.toFloat(), y.toFloat())
     @V8Method
     fun quadraticCurveTo(cpx: Double, cpy: Double, x: Double, y: Double) = context2D.quadraticCurveTo(cpx.toFloat(), cpy.toFloat(), x.toFloat(), y.toFloat())
+
+    @V8Method
+    fun rect(x: Double, y: Double, width: Double, height: Double) {
+        context2D.rect(x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
+    }
+
+    private val roundRectRadii = FloatArray(8)
+    private val roundRectRadiiReceiver1 = DoubleArray(1)    // [all-corners]
+    private val roundRectRadiiReceiver2 = DoubleArray(2)    // [top-left-and-bottom-right, top-right-and-bottom-left]
+    private val roundRectRadiiReceiver3 = DoubleArray(3)    // [top-left, top-right-and-bottom-left, bottom-right]
+    private val roundRectRadiiReceiver4 = DoubleArray(4)    // [top-left, top-right, bottom-right, bottom-left]
+    @V8Method
+    fun roundRect(x: Double, y: Double, width: Double, height: Double, radii: Any) {
+        roundRectRadii.fill(0F)
+        when(radii) {
+            is Number -> {
+                roundRectRadii.fill(radii.toFloat())
+            }
+            is V8Array -> {
+                when(radii.length()) {
+                    1 ->  {
+                        radii.getDoubles(0, radii.length(), roundRectRadiiReceiver1)
+                        roundRectRadii.fill(roundRectRadiiReceiver1[0].toFloat())
+                    }
+                    2 -> {
+                        radii.getDoubles(0, radii.length(), roundRectRadiiReceiver2)
+
+                        roundRectRadii[0] = roundRectRadiiReceiver2[0].toFloat()
+                        roundRectRadii[1] = roundRectRadiiReceiver2[0].toFloat()
+                        roundRectRadii[2] = roundRectRadiiReceiver2[1].toFloat()
+                        roundRectRadii[3] = roundRectRadiiReceiver2[1].toFloat()
+
+                        roundRectRadii[4] = roundRectRadiiReceiver2[0].toFloat()
+                        roundRectRadii[5] = roundRectRadiiReceiver2[0].toFloat()
+                        roundRectRadii[6] = roundRectRadiiReceiver2[1].toFloat()
+                        roundRectRadii[7] = roundRectRadiiReceiver2[1].toFloat()
+                    }
+                    3 -> {
+                        radii.getDoubles(0, radii.length(), roundRectRadiiReceiver3)
+
+                        roundRectRadii[0] = roundRectRadiiReceiver3[0].toFloat()
+                        roundRectRadii[1] = roundRectRadiiReceiver3[0].toFloat()
+                        roundRectRadii[2] = roundRectRadiiReceiver3[1].toFloat()
+                        roundRectRadii[3] = roundRectRadiiReceiver3[1].toFloat()
+
+                        roundRectRadii[4] = roundRectRadiiReceiver3[2].toFloat()
+                        roundRectRadii[5] = roundRectRadiiReceiver3[2].toFloat()
+                        roundRectRadii[6] = roundRectRadiiReceiver3[1].toFloat()
+                        roundRectRadii[7] = roundRectRadiiReceiver3[1].toFloat()
+                    }
+                    4 -> {
+                        radii.getDoubles(0, radii.length(), roundRectRadiiReceiver4)
+
+                        roundRectRadii[0] = roundRectRadiiReceiver4[0].toFloat()
+                        roundRectRadii[1] = roundRectRadiiReceiver4[0].toFloat()
+                        roundRectRadii[2] = roundRectRadiiReceiver4[1].toFloat()
+                        roundRectRadii[3] = roundRectRadiiReceiver4[1].toFloat()
+
+                        roundRectRadii[4] = roundRectRadiiReceiver4[2].toFloat()
+                        roundRectRadii[5] = roundRectRadiiReceiver4[2].toFloat()
+                        roundRectRadii[6] = roundRectRadiiReceiver4[3].toFloat()
+                        roundRectRadii[7] = roundRectRadiiReceiver4[3].toFloat()
+                    }
+                    else -> throw IllegalArgumentException("Unsupported radii size ${radii.length()}")
+                }
+            }
+        }
+        val xSymbol = if (width == 0.0) 1 else (abs(width) / width).toInt()
+        val ySymbol = if (height == 0.0) 1 else (abs(height) / height).toInt()
+        if (xSymbol < 0) {
+            // -1, left and right should swap
+            var tempX = roundRectRadii[0]
+            var tempY = roundRectRadii[1]
+            roundRectRadii[0] = roundRectRadii[2]
+            roundRectRadii[1] = roundRectRadii[3]
+
+            roundRectRadii[2] = tempX
+            roundRectRadii[3] = tempY
+
+            tempX = roundRectRadii[6]
+            tempY = roundRectRadii[7]
+            roundRectRadii[6] = roundRectRadii[4]
+            roundRectRadii[7] = roundRectRadii[5]
+
+            roundRectRadii[4] = tempX
+            roundRectRadii[5] = tempY
+        }
+        if (ySymbol < 0) {
+            // -1, top and bottom should swap
+            var tempX = roundRectRadii[0]
+            var tempY = roundRectRadii[1]
+            roundRectRadii[0] = roundRectRadii[6]
+            roundRectRadii[1] = roundRectRadii[7]
+
+            roundRectRadii[6] = tempX
+            roundRectRadii[7] = tempY
+
+            tempX = roundRectRadii[2]
+            tempY = roundRectRadii[3]
+            roundRectRadii[2] = roundRectRadii[4]
+            roundRectRadii[3] = roundRectRadii[5]
+
+            roundRectRadii[4] = tempX
+            roundRectRadii[5] = tempY
+        }
+        context2D.roundRect(x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat(), roundRectRadii)
+    }
+
     @V8Method
     fun closePath() = context2D.closePath()
 

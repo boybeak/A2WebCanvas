@@ -100,11 +100,11 @@ interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
     override fun quadraticCurveTo(cpx: Float, cpy: Float, x: Float, y: Float) = canvasPainter.quadraticCurveTo(cpx, cpy, x, y)
 
     override fun rect(x: Float, y: Float, width: Float, height: Float) {
-        TODO("Not yet implemented")
+        canvasPainter.rect(x, y, width, height)
     }
 
-    override fun roundRect(x: Float, y: Float, width: Float, height: Float, radii: Float) {
-        TODO("Not yet implemented")
+    override fun roundRect(x: Float, y: Float, width: Float, height: Float, radii: FloatArray) {
+        canvasPainter.roundRect(x, y, width, height, radii)
     }
 
     override fun closePath() = canvasPainter.closePath()
