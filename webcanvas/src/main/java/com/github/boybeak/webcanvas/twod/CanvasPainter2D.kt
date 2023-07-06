@@ -4,11 +4,13 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorSpace
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
+import android.util.Log
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 import com.github.boybeak.webcanvas.twod.paint.WebPaint
 import com.github.boybeak.webcanvas.twod.geometry.AnchorPath
@@ -228,6 +230,11 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
         path?.close()
     }
 
+    override fun getTransform(): Matrix {
+        canvas.getMatrix(transformMatrix)
+        return transformMatrix
+    }
+
     override fun rotate(angle: Float) = canvasRun{ canvas ->
         canvas.rotate((angle / PI * 180).toFloat())
     }
@@ -238,6 +245,42 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
 
     override fun translate(x: Float, y: Float) = canvasRun{ canvas ->
         canvas.translate(x, y)
+    }
+
+    private val transformMatrix = Matrix()
+
+    /**
+     * a - scaleX
+     * b - skewY
+     * c - skewX
+     * d - scaleY
+     * e - transformX
+     * f - transformY
+     */
+    override fun setTransform(a: Float, b: Float, c: Float, d: Float, e: Float, f: Float) {
+        Log.d(TAG, "setTransform(a=$a, b=$b, c=$c, d=$d, e=$e, f=$f)")
+        transformMatrix.reset()
+        transformMatrix.postScale(a, d)
+        transformMatrix.postSkew(c, b)
+        transformMatrix.postTranslate(e, f)
+        canvas.setMatrix(transformMatrix)
+    }
+
+    override fun setTransform(matrix: Matrix) {
+        canvas.setMatrix(matrix)
+    }
+
+    override fun transform(a: Float, b: Float, c: Float, d: Float, e: Float, f: Float) {
+        canvas.getMatrix(transformMatrix)
+        transformMatrix.postScale(a, d)
+        transformMatrix.postSkew(c, b)
+        transformMatrix.postTranslate(e, f)
+        canvas.setMatrix(transformMatrix)
+    }
+
+    override fun resetTransform() {
+        transformMatrix.reset()
+        canvas.setMatrix(transformMatrix)
     }
 
     // Image related

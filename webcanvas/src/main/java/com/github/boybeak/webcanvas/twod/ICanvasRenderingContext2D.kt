@@ -1,6 +1,7 @@
 package com.github.boybeak.webcanvas.twod
 
 import android.graphics.ColorSpace
+import android.graphics.Matrix
 import com.github.boybeak.webcanvas.IWebCanvasContext
 import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.image.ImageData
@@ -109,11 +110,31 @@ interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
 
     override fun closePath() = canvasPainter.closePath()
 
+    override fun getTransform(): Matrix {
+        return canvasPainter.getTransform()
+    }
+
     override fun rotate(angle: Float) = canvasPainter.rotate(angle)
 
     override fun scale(x: Float, y: Float) = canvasPainter.scale(x, y)
 
     override fun translate(x: Float, y: Float) = canvasPainter.translate(x, y)
+
+    override fun setTransform(a: Float, b: Float, c: Float, d: Float, e: Float, f: Float) {
+        canvasPainter.setTransform(a, b, c, d, e, f)
+    }
+
+    override fun setTransform(matrix: Matrix) {
+        canvasPainter.setTransform(matrix)
+    }
+
+    override fun transform(a: Float, b: Float, c: Float, d: Float, e: Float, f: Float) {
+        canvasPainter.transform(a, b, c, d, e, f)
+    }
+
+    override fun resetTransform() {
+        canvasPainter.resetTransform()
+    }
 
     override fun drawImage(image: IWebImage, dx: Int, dy: Int) = canvasPainter.drawImage(image, dx, dy)
 

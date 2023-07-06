@@ -1,5 +1,6 @@
 package com.github.boybeak.v8webcanvas.twod
 
+import android.graphics.Matrix
 import android.util.Log
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
@@ -273,12 +274,64 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
 
     /** Transform related **/
 
+    private val transformValues = FloatArray(9)
+    @V8Method
+    fun getTransform(): V8Object {
+        val matrix = context2D.getTransform()
+        matrix.getValues(transformValues)
+        return V8Object(v8).apply {
+            add("a", transformValues[3].toDouble())
+            add("b", transformValues[6].toDouble())
+            add("b", transformValues[5].toDouble())
+            add("d", transformValues[4].toDouble())
+            add("e", transformValues[7].toDouble())
+            add("f", transformValues[8].toDouble())
+        }
+    }
+
     @V8Method
     fun rotate(angle: Double) = context2D.rotate(angle.toFloat())
     @V8Method
     fun scale(x: Double, y: Double) = context2D.scale(x.toFloat(), y.toFloat())
     @V8Method
     fun translate(x: Double, y: Double) = context2D.translate(x.toFloat(), y.toFloat())
+
+    @V8Method
+    fun setTransform(vararg args: Any) {
+        when(args.size) {
+            1 -> {
+                val matrixObj = args[0] as V8Object
+                context2D.setTransform(
+                    matrixObj.getDouble("a").toFloat(),
+                    matrixObj.getDouble("b").toFloat(),
+                    matrixObj.getDouble("c").toFloat(),
+                    matrixObj.getDouble("d").toFloat(),
+                    matrixObj.getDouble("e").toFloat(),
+                    matrixObj.getDouble("f").toFloat()
+                )
+            }
+            6 -> {
+                val a = (args[0] as Number).toFloat()
+                val b = (args[1] as Number).toFloat()
+                val c = (args[2] as Number).toFloat()
+                val d = (args[3] as Number).toFloat()
+                val e = (args[4] as Number).toFloat()
+                val f = (args[5] as Number).toFloat()
+                context2D.setTransform(a, b, c, d, e, f)
+            }
+            else -> throw IllegalArgumentException("Unsupported args count ${args.size}")
+        }
+    }
+
+    @V8Method
+    fun transform(a: Double, b: Double, c: Double, d: Double, e: Double, f: Double) {
+        context2D.transform(a.toFloat(), b.toFloat(), c.toFloat(), d.toFloat(), e.toFloat(), f.toFloat())
+    }
+
+    @V8Method
+    fun resetTransform() {
+        context2D.resetTransform()
+    }
 
     /** Image related **/
 

@@ -1,6 +1,7 @@
 package com.github.boybeak.webcanvas.twod
 
 import android.graphics.ColorSpace
+import android.graphics.Matrix
 import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.image.ImageData
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
@@ -58,9 +59,34 @@ interface ICanvasPainter2D {
 
     /** Transform related **/
 
+    fun getTransform(): Matrix
+
     fun rotate(angle: Float)
     fun scale(x: Float, y: Float)
     fun translate(x: Float, y: Float)
+
+    /**
+     * a - scaleX
+     * b - skewY
+     * c - skewX
+     * d - scaleY
+     * e - transformX
+     * f - transformY
+     */
+    fun setTransform(a: Float, b: Float, c: Float, d: Float, e: Float, f: Float)
+    fun setTransform(matrix: Matrix)
+
+    /**
+     * a - scaleX
+     * b - skewY
+     * c - skewX
+     * d - scaleY
+     * e - transformX
+     * f - transformY
+     */
+    fun transform(a: Float, b: Float, c: Float, d: Float, e: Float, f: Float)
+
+    fun resetTransform()
 
     /** Image related **/
 
