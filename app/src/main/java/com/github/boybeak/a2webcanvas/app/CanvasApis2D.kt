@@ -127,7 +127,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
                 "bottom"
             )
             font = "36px serif"
-            strokeStyle = "red"
+            strokeStyle = Style.ColorStyle("red")
 
             baselines.forEachIndexed { index, s ->
                 textBaseline = s
@@ -142,14 +142,14 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
         newFixedApi("beginPath") {
             // First path
             beginPath()
-            strokeStyle = "blue"
+            strokeStyle = Style.ColorStyle("blue")
             moveTo(20F, 20F)
             lineTo(200F, 20F)
             stroke()
 
             // Second path
             beginPath()
-            strokeStyle = "green"
+            strokeStyle = Style.ColorStyle("green")
             moveTo(20F, 20F)
             lineTo(120F, 120F)
             stroke()
@@ -187,7 +187,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
 
             // Tangential lines
             beginPath()
-            strokeStyle = "gray"
+            strokeStyle = Style.ColorStyle("gray")
             moveTo(x0, y0)
             lineTo(x1, y1)
             lineTo(x2, y2)
@@ -196,7 +196,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
 
             // Arc
             beginPath()
-            strokeStyle = "black"
+            strokeStyle = Style.ColorStyle("black")
             lineWidth = 5F
             // lineTo(200, 200)
             // lineTo(200, 200)
@@ -320,14 +320,14 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             fillText("text width: ${tm.width}", 100F, 100F)
         },
         newFixedApi("scale") {
-            strokeStyle = "red"
+            strokeStyle = Style.ColorStyle("red")
             strokeRect(0F, 0F, 50F, 50F)
 
-            strokeStyle = "green"
+            strokeStyle = Style.ColorStyle("green")
             scale(2F, 2F)
             strokeRect(0F, 0F, 50F, 50F)
 
-            strokeStyle = "blue"
+            strokeStyle = Style.ColorStyle("blue")
             scale(2F, 2F)
             strokeRect(0F, 0F, 50F, 50F)
         },
@@ -342,12 +342,12 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             fillText("Hello world", 100F, 100F)
         },
         newFixedApi("translate") {
-            strokeStyle = "red"
+            strokeStyle = Style.ColorStyle("red")
             strokeRect(0F, 0F, 100F, 100F)
 
             translate(50F, 50F)
 
-            strokeStyle = "green"
+            strokeStyle = Style.ColorStyle("green")
             strokeRect(0F, 0F, 100F, 100F)
         },
         newFixedApi("drawImage - 1") {

@@ -53,7 +53,7 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
     override var fillStyle: Style
         get() = paint.fillStyle
         set(value) { paint.fillStyle = value }
-    override var strokeStyle: String
+    override var strokeStyle: Style
         get() = paint.strokeStyle
         set(value) { paint.strokeStyle = value }
     override var filter: String?

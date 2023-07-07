@@ -1,5 +1,6 @@
 package com.github.boybeak.v8webcanvas.twod
 
+import android.graphics.Color
 import android.graphics.Matrix
 import android.util.Log
 import com.eclipsesource.v8.V8
@@ -17,6 +18,7 @@ import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.image.ImageData
 import com.github.boybeak.webcanvas.image.WebImageManager
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
+import com.github.boybeak.webcanvas.twod.gradient.CanvasGradient
 import com.github.boybeak.webcanvas.twod.gradient.CanvasGradientManager
 import com.github.boybeak.webcanvas.twod.gradient.LinearGradient
 import com.github.boybeak.webcanvas.twod.paint.Style
@@ -31,6 +33,11 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
 
     private val context2D: CanvasRenderingContext2D get() = v8WebCanvas2D.getContext("2d")
     private val v8: V8 get() = v8WebCanvas2D.v8
+
+    private val fillColorStyle = Style.ColorStyle(Color.BLACK)
+    private val fillGradientStyle = Style.GradientStyle(CanvasGradient.NONE)
+    private val strokeColorStyle = Style.ColorStyle(Color.BLACK)
+    private val strokeGradientStyle = Style.GradientStyle(CanvasGradient.NONE)
 
     override fun getBindingId(): String {
         return hashCode().toString()
@@ -61,16 +68,30 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
         when(propertyName) {
             "fillStyle" -> {
                 if (newValue is String) {
-                    context2D.fillStyle = Style.ColorStyle(newValue.toString())
+                    fillColorStyle.setColorStr(newValue.toString())
+                    context2D.fillStyle = fillColorStyle
                 } else if (newValue is V8Object) {
                     if (V8CanvasGradient.isGradient(newValue)) {
                         val gradientId = V8CanvasGradient.getId(newValue)
                         val gradient = CanvasGradientManager.getCanvasGradient(gradientId)
-                        context2D.fillStyle = Style.GradientStyle(gradient)
+                        fillGradientStyle.gradient = gradient
+                        context2D.fillStyle = fillGradientStyle
                     }
                 }
             }
-            "strokeStyle" -> context2D.strokeStyle = newValue.toString()
+            "strokeStyle" -> {
+                if (newValue is String) {
+                    strokeColorStyle.setColorStr(newValue.toString())
+                    context2D.strokeStyle = strokeColorStyle
+                } else if (newValue is V8Object) {
+                    if (V8CanvasGradient.isGradient(newValue)) {
+                        val gradientId = V8CanvasGradient.getId(newValue)
+                        val gradient = CanvasGradientManager.getCanvasGradient(gradientId)
+                        strokeGradientStyle.gradient = gradient
+                        context2D.strokeStyle = strokeGradientStyle
+                    }
+                }
+            }
             "filter" -> context2D.filter = newValue.toString()
             "font" -> context2D.font = newValue.toString()
             "lineCap" -> context2D.lineCap = newValue.toString()

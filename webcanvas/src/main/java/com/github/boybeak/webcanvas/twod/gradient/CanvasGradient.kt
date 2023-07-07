@@ -1,9 +1,18 @@
 package com.github.boybeak.webcanvas.twod.gradient
 
 import android.graphics.Shader
+import java.lang.IllegalArgumentException
 import java.util.UUID
 
 abstract class CanvasGradient {
+
+    companion object {
+        val NONE = object : CanvasGradient() {
+            override fun toShader(): Shader {
+                throw IllegalArgumentException("DO NOT USE THIS, REPLACE THIS WITH OTHER CanvasGradient")
+            }
+        }
+    }
 
     val id = UUID.randomUUID().toString()
     internal val colorStops = ArrayList<ColorStop>()

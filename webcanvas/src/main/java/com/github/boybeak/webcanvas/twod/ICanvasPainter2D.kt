@@ -11,7 +11,7 @@ import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 interface ICanvasPainter2D {
 
     var fillStyle: Style
-    var strokeStyle: String
+    var strokeStyle: Style
 
     var filter: String?
 

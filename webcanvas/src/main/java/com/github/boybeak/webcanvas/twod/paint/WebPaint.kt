@@ -25,7 +25,7 @@ class WebPaint {
     }
     val strokePaint get() = paint.apply {
         style = Paint.Style.STROKE
-        color = HtmlColor.parseColor(currentState.strokeStyle)
+        strokeStyle.setTo(paint)
         statePaint()
     }
 
@@ -37,7 +37,7 @@ class WebPaint {
         set(value) {
             currentState.fillStyle = value
         }
-    var strokeStyle: String
+    var strokeStyle: Style
         get() = currentState.strokeStyle
         set(value) {
             currentState.strokeStyle = value
@@ -198,7 +198,7 @@ class WebPaint {
     }
 
     private class State(var fillStyle: Style = Style.ColorStyle(Color.BLACK),
-                        var strokeStyle: String = "#000",
+                        var strokeStyle: Style = Style.ColorStyle(Color.BLACK),
                         var filter: String? = null,
                         var font: String = "10px sans-serif",
                         var lineCap: String = "butt",

@@ -15,7 +15,7 @@ interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
     override var fillStyle: Style
         get() = canvasPainter.fillStyle
         set(value) { canvasPainter.fillStyle = value }
-    override var strokeStyle: String
+    override var strokeStyle: Style
         get() = canvasPainter.strokeStyle
         set(value) { canvasPainter.strokeStyle = value }
     override var filter: String?
