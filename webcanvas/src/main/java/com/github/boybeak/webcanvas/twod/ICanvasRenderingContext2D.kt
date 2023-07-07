@@ -5,12 +5,14 @@ import android.graphics.Matrix
 import com.github.boybeak.webcanvas.IWebCanvasContext
 import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.image.ImageData
+import com.github.boybeak.webcanvas.twod.gradient.LinearGradient
+import com.github.boybeak.webcanvas.twod.paint.Style
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 
 interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
 
     val canvasPainter: ICanvasPainter2D
-    override var fillStyle: String
+    override var fillStyle: Style
         get() = canvasPainter.fillStyle
         set(value) { canvasPainter.fillStyle = value }
     override var strokeStyle: String
@@ -49,6 +51,10 @@ interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
     override var textBaseline: String
         get() = canvasPainter.textBaseline
         set(value) { canvasPainter.textBaseline = value }
+
+    override fun createLinearGradient(x0: Float, y0: Float, x1: Float, y1: Float): LinearGradient {
+        return canvasPainter.createLinearGradient(x0, y0, x1, y1)
+    }
 
     override fun save() = canvasPainter.save()
 

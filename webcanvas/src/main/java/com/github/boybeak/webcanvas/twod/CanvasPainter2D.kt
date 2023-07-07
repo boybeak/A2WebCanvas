@@ -17,6 +17,9 @@ import com.github.boybeak.webcanvas.twod.geometry.AnchorPath
 import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.image.ImageData
 import com.github.boybeak.webcanvas.image.WebImageManager
+import com.github.boybeak.webcanvas.twod.gradient.CanvasGradientManager
+import com.github.boybeak.webcanvas.twod.gradient.LinearGradient
+import com.github.boybeak.webcanvas.twod.paint.Style
 import java.lang.IllegalArgumentException
 import kotlin.math.PI
 
@@ -47,7 +50,7 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
         }
     }
 
-    override var fillStyle: String
+    override var fillStyle: Style
         get() = paint.fillStyle
         set(value) { paint.fillStyle = value }
     override var strokeStyle: String
@@ -114,7 +117,9 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
 
     override fun onCanvasDestroyed() {}
 
-
+    override fun createLinearGradient(x0: Float, y0: Float, x1: Float, y1: Float): LinearGradient {
+        return CanvasGradientManager.createLinearGradient(x0, y0, x1, y1)
+    }
 
     override fun save() = canvasRun{ canvas ->
         canvas.save()

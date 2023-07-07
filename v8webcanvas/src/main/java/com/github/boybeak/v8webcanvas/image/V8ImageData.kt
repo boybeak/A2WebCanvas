@@ -20,7 +20,7 @@ class V8ImageData(private val imageData: ImageData) : V8Binding {
     }
 
     @V8Field
-    val _v8ImageDataId = imageData.id
+    private val _v8ImageDataId = imageData.id
 
     override fun getBindingId(): String {
         return imageData.id

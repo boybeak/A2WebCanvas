@@ -1,6 +1,7 @@
 package com.github.boybeak.webcanvas.twod.paint
 
 import android.graphics.BlurMaskFilter
+import android.graphics.Color
 import android.graphics.MaskFilter
 import android.graphics.Paint
 import android.util.Log
@@ -19,7 +20,7 @@ class WebPaint {
     }
     val fillPaint get() = paint.apply {
         style = Paint.Style.FILL
-        color = HtmlColor.parseColor(currentState.fillStyle)
+        fillStyle.setTo(this)
         statePaint()
     }
     val strokePaint get() = paint.apply {
@@ -31,7 +32,7 @@ class WebPaint {
     private val currentState = State()
     private val stateStack = Stack<State>()
 
-    var fillStyle: String
+    var fillStyle: Style
         get() = currentState.fillStyle
         set(value) {
             currentState.fillStyle = value
@@ -196,7 +197,7 @@ class WebPaint {
         }
     }
 
-    private class State(var fillStyle: String = "#000",
+    private class State(var fillStyle: Style = Style.ColorStyle(Color.BLACK),
                         var strokeStyle: String = "#000",
                         var filter: String? = null,
                         var font: String = "10px sans-serif",

@@ -4,11 +4,13 @@ import android.graphics.ColorSpace
 import android.graphics.Matrix
 import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.image.ImageData
+import com.github.boybeak.webcanvas.twod.gradient.LinearGradient
+import com.github.boybeak.webcanvas.twod.paint.Style
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 
 interface ICanvasPainter2D {
 
-    var fillStyle: String
+    var fillStyle: Style
     var strokeStyle: String
 
     var filter: String?
@@ -26,6 +28,8 @@ interface ICanvasPainter2D {
 
     var textAlign: String
     var textBaseline: String
+
+    fun createLinearGradient(x0: Float, y0: Float, x1: Float, y1: Float): LinearGradient
 
     fun save()
     fun restore()

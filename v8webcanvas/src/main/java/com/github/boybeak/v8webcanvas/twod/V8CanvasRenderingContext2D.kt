@@ -9,6 +9,7 @@ import com.eclipsesource.v8.V8TypedArray
 import com.github.boybeak.v8webcanvas.V8WebCanvasView
 import com.github.boybeak.v8webcanvas.image.V8HTMLImageElement
 import com.github.boybeak.v8webcanvas.image.V8ImageData
+import com.github.boybeak.v8webcanvas.twod.gradient.V8CanvasGradient
 import com.github.boybeak.v8x.binding.Key
 import com.github.boybeak.v8x.binding.V8Binding
 import com.github.boybeak.v8x.binding.annotation.V8Method
@@ -16,6 +17,9 @@ import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.image.ImageData
 import com.github.boybeak.webcanvas.image.WebImageManager
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
+import com.github.boybeak.webcanvas.twod.gradient.CanvasGradientManager
+import com.github.boybeak.webcanvas.twod.gradient.LinearGradient
+import com.github.boybeak.webcanvas.twod.paint.Style
 import java.lang.IllegalArgumentException
 import kotlin.math.abs
 
@@ -55,7 +59,17 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
         oldValue: Any?
     ) {
         when(propertyName) {
-            "fillStyle" -> context2D.fillStyle = newValue.toString()
+            "fillStyle" -> {
+                if (newValue is String) {
+                    context2D.fillStyle = Style.ColorStyle(newValue.toString())
+                } else if (newValue is V8Object) {
+                    if (V8CanvasGradient.isGradient(newValue)) {
+                        val gradientId = V8CanvasGradient.getId(newValue)
+                        val gradient = CanvasGradientManager.getCanvasGradient(gradientId)
+                        context2D.fillStyle = Style.GradientStyle(gradient)
+                    }
+                }
+            }
             "strokeStyle" -> context2D.strokeStyle = newValue.toString()
             "filter" -> context2D.filter = newValue.toString()
             "font" -> context2D.font = newValue.toString()
@@ -69,6 +83,11 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
             "textAlign" -> context2D.textAlign = newValue.toString()
             "textBaseline" -> context2D.textBaseline = newValue.toString()
         }
+    }
+
+    @V8Method
+    fun createLinearGradient(x0: Double, y0: Double, x1: Double, y1: Double): V8Object {
+        return V8CanvasGradient(context2D.createLinearGradient(x0.toFloat(), y0.toFloat(), x1.toFloat(), y1.toFloat())).getMyBinding(v8)
     }
 
     @V8Method

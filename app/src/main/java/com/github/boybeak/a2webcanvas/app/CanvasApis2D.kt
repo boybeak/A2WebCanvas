@@ -6,6 +6,7 @@ import com.github.boybeak.a2webcanvas.app.image.ResourceImage
 import com.github.boybeak.webcanvas.WebCanvasView
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import com.github.boybeak.webcanvas.twod.ICanvasRenderingContext2D
+import com.github.boybeak.webcanvas.twod.paint.Style
 import kotlin.math.PI
 
 class CanvasApis2D(private val canvas: WebCanvasView) {
@@ -28,11 +29,11 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
         },
         newFixedApi("clearRect") {
             beginPath()
-            fillStyle = "#ff6"
+            fillStyle = Style.ColorStyle("#ff6")
             fillRect(0F, 0F, canvas.width.toFloat(), canvas.height.toFloat())
 
             beginPath()
-            fillStyle = "blue"
+            fillStyle = Style.ColorStyle("blue")
             moveTo(20F, 20F)
             lineTo(180F, 20F)
             lineTo(130F, 130F)
@@ -43,7 +44,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
         },
         newFixedApi("save and restore") {
             save()
-            fillStyle = "green"
+            fillStyle = Style.ColorStyle("green")
             fillRect(10F, 10F, 100F, 100F)
             restore()
             fillRect(150F, 40F, 100F, 100F)
@@ -94,7 +95,7 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             shadowBlur = 10F
 
             // Rectangle
-            fillStyle = "blue"
+            fillStyle = Style.ColorStyle("blue")
             fillRect(20F, 20F, 150F, 100F)
         },
         newFixedApi("textAlign") {
@@ -205,13 +206,13 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
 
             // Start point
             beginPath()
-            fillStyle = "blue"
+            fillStyle = Style.ColorStyle("blue")
             arc(x0, y0, 5F, 0F, (2 * PI).toFloat())
             fill()
 
             // Control points
             beginPath()
-            fillStyle = "red"
+            fillStyle = Style.ColorStyle("red")
             arc(x1, y1, 5F, 0F, (2 * PI).toFloat()) // Control point one
             arc(x2, y2, 5F, 0F, (2 * PI).toFloat()) // Control point two
             fill()
@@ -258,14 +259,14 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             stroke()
 
             // Start and end points
-            fillStyle = "blue"
+            fillStyle = Style.ColorStyle("blue")
             beginPath()
             arc(start.x, start.y, 5F, 0F, (2 * PI).toFloat()) // Start point
             arc(end.x, end.y, 5F, 0F, (2 * PI).toFloat()) // End point
             fill()
 
             // Control points
-            fillStyle = "red"
+            fillStyle = Style.ColorStyle("red")
             beginPath()
             arc(cp1.x, cp1.y, 5F, 0F, (2 * PI).toFloat()) // Control point one
             arc(cp2.x, cp2.y, 5F, 0F, (2 * PI).toFloat()) // Control point two
@@ -285,14 +286,14 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             stroke()
 
             // Start and end points
-            fillStyle = "blue"
+            fillStyle = Style.ColorStyle("blue")
             beginPath()
             arc(50F, 20F, 5F, 0F, (2 * PI).toFloat()) // Start point
             arc(50F, 100F, 5F, 0F, (2 * PI).toFloat()) // End point
             fill()
 
             // Control point
-            fillStyle = "red"
+            fillStyle = Style.ColorStyle("red")
             beginPath()
             arc(230F, 30F, 5F, 0F, (2 * PI).toFloat())
             fill()
@@ -332,12 +333,12 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
         },
         newFixedApi("rotate") {
             font = "50px"
-            fillStyle = "red"
+            fillStyle = Style.ColorStyle("red")
             fillText("Hello world", 100F, 100F)
 
             rotate((45F / 180 * PI).toFloat())
 
-            fillStyle = "green"
+            fillStyle = Style.ColorStyle("green")
             fillText("Hello world", 100F, 100F)
         },
         newFixedApi("translate") {
