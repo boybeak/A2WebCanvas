@@ -15,7 +15,14 @@ abstract class CanvasGradient {
     }
 
     val id = UUID.randomUUID().toString()
-    internal val colorStops = ArrayList<ColorStop>()
+    private val colorStops = ArrayList<ColorStop>()
+
+    internal val colors: IntArray get() = IntArray(colorStops.size) {
+        colorStops[it].color
+    }
+    internal val positions: FloatArray get() = FloatArray(colorStops.size) {
+        colorStops[it].offset
+    }
 
     /**
      * @param offset A number between 0 and 1, inclusive, representing the position of the color stop. 0 represents the start of the gradient and 1 represents the end.

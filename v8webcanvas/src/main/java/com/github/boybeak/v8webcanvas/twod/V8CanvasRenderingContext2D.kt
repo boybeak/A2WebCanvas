@@ -21,6 +21,7 @@ import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import com.github.boybeak.webcanvas.twod.gradient.CanvasGradient
 import com.github.boybeak.webcanvas.twod.gradient.CanvasGradientManager
 import com.github.boybeak.webcanvas.twod.gradient.LinearGradient
+import com.github.boybeak.webcanvas.twod.gradient.RadialGradient
 import com.github.boybeak.webcanvas.twod.paint.Style
 import java.lang.IllegalArgumentException
 import kotlin.math.abs
@@ -109,6 +110,19 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
     @V8Method
     fun createLinearGradient(x0: Double, y0: Double, x1: Double, y1: Double): V8Object {
         return V8CanvasGradient(context2D.createLinearGradient(x0.toFloat(), y0.toFloat(), x1.toFloat(), y1.toFloat())).getMyBinding(v8)
+    }
+
+    @V8Method
+    fun createRadialGradient(
+        x0: Double,
+        y0: Double,
+        r0: Double,
+        x1: Double,
+        y1: Double,
+        r1: Double
+    ): V8Object {
+        return V8CanvasGradient(context2D.createRadialGradient(x0.toFloat(), y0.toFloat(), r0.toFloat(),
+            x1.toFloat(), y1.toFloat(), r1.toFloat())).getMyBinding(v8)
     }
 
     @V8Method

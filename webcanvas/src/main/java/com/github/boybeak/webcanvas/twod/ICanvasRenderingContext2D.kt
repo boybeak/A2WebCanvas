@@ -6,6 +6,7 @@ import com.github.boybeak.webcanvas.IWebCanvasContext
 import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.image.ImageData
 import com.github.boybeak.webcanvas.twod.gradient.LinearGradient
+import com.github.boybeak.webcanvas.twod.gradient.RadialGradient
 import com.github.boybeak.webcanvas.twod.paint.Style
 import com.github.boybeak.webcanvas.twod.paint.TextMetrics
 
@@ -54,6 +55,17 @@ interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
 
     override fun createLinearGradient(x0: Float, y0: Float, x1: Float, y1: Float): LinearGradient {
         return canvasPainter.createLinearGradient(x0, y0, x1, y1)
+    }
+
+    override fun createRadialGradient(
+        x0: Float,
+        y0: Float,
+        r0: Float,
+        x1: Float,
+        y1: Float,
+        r1: Float
+    ): RadialGradient {
+        return canvasPainter.createRadialGradient(x0, y0, r0, x1, y1, r1)
     }
 
     override fun save() = canvasPainter.save()

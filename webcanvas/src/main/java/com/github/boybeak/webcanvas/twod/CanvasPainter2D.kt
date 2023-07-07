@@ -19,6 +19,7 @@ import com.github.boybeak.webcanvas.image.ImageData
 import com.github.boybeak.webcanvas.image.WebImageManager
 import com.github.boybeak.webcanvas.twod.gradient.CanvasGradientManager
 import com.github.boybeak.webcanvas.twod.gradient.LinearGradient
+import com.github.boybeak.webcanvas.twod.gradient.RadialGradient
 import com.github.boybeak.webcanvas.twod.paint.Style
 import java.lang.IllegalArgumentException
 import kotlin.math.PI
@@ -119,6 +120,17 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
 
     override fun createLinearGradient(x0: Float, y0: Float, x1: Float, y1: Float): LinearGradient {
         return CanvasGradientManager.createLinearGradient(x0, y0, x1, y1)
+    }
+
+    override fun createRadialGradient(
+        x0: Float,
+        y0: Float,
+        r0: Float,
+        x1: Float,
+        y1: Float,
+        r1: Float
+    ): RadialGradient {
+        return CanvasGradientManager.createRadialGradient(x0, y0, r0, x1, y1, r1)
     }
 
     override fun save() = canvasRun{ canvas ->
