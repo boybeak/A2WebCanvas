@@ -1,11 +1,14 @@
 package com.github.boybeak.a2webcanvas.app
 
+import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
 import com.github.boybeak.a2webcanvas.app.adapter.JsApiItem
@@ -28,12 +31,14 @@ class OnscreenActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "OnscreenActivity"
+        const val KEY_SUB_DIR = "sub-dir"
     }
 
     private val density get() = resources.displayMetrics.density
 
     private val canvas by lazy { findViewById<V8WebCanvasView>(R.id.webCanvas) }
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.apiList) }
+    private val stopBtn by lazy { findViewById<View>(R.id.stopBtn) }
 
     private val v8Engine = V8Engine()
 
@@ -47,7 +52,7 @@ class OnscreenActivity : AppCompatActivity() {
 
         @V8Method
         fun log(vararg args: Any) {
-            Log.d(tag, args.joinToString())
+            Log.d(tag, args.joinToString(separator = ""))
         }
     }
     private val window = object : V8BindingAdapter {
@@ -70,6 +75,11 @@ class OnscreenActivity : AppCompatActivity() {
                 canvas?.getContext<CanvasRenderingContext2D>("2d")?.scale(density, density)
                 v8Engine.v8Run {
                     executeJSFunction(guessName)
+                }
+            }
+            if (stopBtn.visibility == View.GONE) {
+                runOnUiThread {
+                    stopBtn.visibility = View.VISIBLE
                 }
             }
         }
@@ -107,17 +117,14 @@ class OnscreenActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_onscreen)
 
         v8Engine.onV8Prepared {
             canvas.initialize(this)
-            add("canvas", canvas.getMyBinding(this))
-            add("Console", console.getMyBinding(this))
-            add("ctx", canvas.getContextV8("2d"))
-            add("window", window.getMyBinding(this))
-            add("ImageCreator", imageCreator.getMyBinding(this))
+            initV8(this)
         }
         canvas.setOnPrepareCallback { v8Engine.v8Looper }
         canvas.setRenderMode(IWebCanvas.RENDER_MODE_AUTO)
@@ -143,10 +150,35 @@ class OnscreenActivity : AppCompatActivity() {
                 }
             })
         }
+
+        canvas.setOnTouchListener { v, event ->
+            when(event.action) {
+                MotionEvent.ACTION_UP -> v8Engine.v8Run {
+                    executeJSFunction("onTouchEnd", event.x / density, event.y / density)
+                }
+            }
+            true
+        }
+
+        stopBtn.setOnClickListener {
+            window.stopWhenNextFrame = true
+            stopBtn.visibility = View.GONE
+            v8Engine.reset {
+                initV8(this)
+            }
+        }
+    }
+
+    private fun initV8(v8: V8) {
+        v8.add("canvas", canvas.getMyBinding(v8))
+        v8.add("Console", console.getMyBinding(v8))
+        v8.add("ctx", canvas.getContextV8("2d"))
+        v8.add("window", window.getMyBinding(v8))
+        v8.add("ImageCreator", imageCreator.getMyBinding(v8))
     }
 
     private fun getJsApis(): List<JsApi2D> {
-        val path = "js"
+        val path = "js/${intent.getStringExtra(KEY_SUB_DIR)}"
         val jsNames = assets.list(path) ?: return emptyList()
         return List(jsNames.size) {
             val name = jsNames[it]

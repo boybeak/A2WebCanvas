@@ -6,6 +6,7 @@ import android.os.Looper
 import com.eclipsesource.v8.V8
 
 typealias OnPrepareListener = V8.() -> Unit
+typealias OnResetListener = V8.() -> Unit
 
 class V8Engine {
     private var v8Inner: V8? = null
@@ -41,6 +42,14 @@ class V8Engine {
     fun v8Run(block: V8.() -> Unit) {
         v8Handler.post {
             block.invoke(v8)
+        }
+    }
+    fun reset(onReset: OnResetListener? = null) {
+        v8Run {
+            keys.forEach {
+                this.addUndefined(it)
+            }
+            onReset?.invoke(this)
         }
     }
 }
