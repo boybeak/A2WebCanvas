@@ -1,45 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".MainActivity">
-    <com.github.boybeak.webcanvas.WebCanvasView
-        android:id="@+id/webCanvas"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="320dp"
-        android:layout_gravity="center_vertical"
-        />
-    <TextView
-        android:id="@+id/runningApi"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="@string/text_running_nothing"
-        android:textStyle="bold"
-        />
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/apisRv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="?actionBarSize"
-            android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical">
+        <com.github.boybeak.a2webcanvas.app.widget.InfoCard
+            android:id="@+id/onScreen2D"
+            style="@style/MainInfoCard"
+            app:title="2D OnscreenCanvas - V8"
+            app:text="Execute js code in assets/js dir with v8 and Onscreen Canvas"
             />
-        <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottomAppBar"
-            android:layout_width="match_parent"
-            android:layout_gravity="bottom"
-            android:layout_height="?actionBarSize"
-            app:buttonGravity="top"
-            app:fabAlignmentMode="end"
-            app:menu="@menu/menu_main"
+        <com.github.boybeak.a2webcanvas.app.widget.InfoCard
+            android:id="@+id/offScreen2D"
+            style="@style/MainInfoCard"
+            app:title="2D OffscreenCanvas - V8"
+            app:text="Execute js code in assets/js dir with v8 and Offscreen Canvas"
             />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</LinearLayout>
+        <com.github.boybeak.a2webcanvas.app.widget.InfoCard
+            android:id="@+id/oldV8Apis"
+            style="@style/MainInfoCard"
+            app:title="Old 2d apis - V8"
+            app:text="Some apis before"
+            />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</ScrollView>

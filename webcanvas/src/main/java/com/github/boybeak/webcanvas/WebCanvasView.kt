@@ -3,14 +3,16 @@ package com.github.boybeak.webcanvas
 import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
+import android.os.Looper
 import android.util.AttributeSet
-import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import com.github.boybeak.webcanvas.twod.IWebCanvas2D
 import com.github.boybeak.webcanvas.webgl.IWebCanvasWebGL
 import java.lang.IllegalArgumentException
+
+typealias OnPrepareListener = () -> Looper?
 
 open class WebCanvasView : SurfaceView, IWebCanvas2D, IWebCanvasWebGL {
 
@@ -24,8 +26,13 @@ open class WebCanvasView : SurfaceView, IWebCanvas2D, IWebCanvasWebGL {
     override val surfaceHolder: SurfaceHolder
         get() = holder
 
-    private val renderThread by lazy { HandlerThread("RenderThread").also { it.start() } }
-    private val renderHandler by lazy { Handler(renderThread.looper) }
+    private val renderHandler: Handler by lazy {
+        val looper: Looper = onPrepareListener?.invoke() ?: createDefaultLooper()
+        onPrepareListener = null
+        Handler(looper)
+    }
+
+    private var onPrepareListener: OnPrepareListener? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -34,6 +41,16 @@ open class WebCanvasView : SurfaceView, IWebCanvas2D, IWebCanvasWebGL {
         attrs,
         defStyleAttr
     )
+
+    private fun createDefaultLooper(): Looper {
+        return HandlerThread("RenderThread").also {
+            it.start()
+        }.looper
+    }
+
+    fun setOnPrepareCallback(onPrepare: OnPrepareListener) {
+        this.onPrepareListener = onPrepare
+    }
 
     override fun <T : IWebCanvasContext> getContext(type: String): T {
         if (canvasContext == null) {
