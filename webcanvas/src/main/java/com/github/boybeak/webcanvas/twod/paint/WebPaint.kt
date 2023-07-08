@@ -6,6 +6,9 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.MaskFilter
 import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Xfermode
 import android.util.Log
 import com.github.boybeak.webcanvas.utils.HtmlColor
 import java.lang.IllegalArgumentException
@@ -18,7 +21,6 @@ class WebPaint {
     }
 
     private val paint = Paint().apply {
-        this.
         isAntiAlias = true
     }
     val fillPaint get() = paint.apply {
@@ -55,6 +57,30 @@ class WebPaint {
         0F, 0F, 0F, 1F, 0F
     )
 
+    /**
+     * Only support limited
+     */
+    private val xfermodeMap = mapOf<String, Xfermode>(
+        "source-over" to PorterDuffXfermode(PorterDuff.Mode.SRC_OVER),
+        "source-in" to PorterDuffXfermode(PorterDuff.Mode.SRC_IN),
+        "source-out" to PorterDuffXfermode(PorterDuff.Mode.SRC_OUT),
+        "source-atop" to PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP),
+
+        "destination-over" to PorterDuffXfermode(PorterDuff.Mode.DST_OVER),
+        "destination-in" to PorterDuffXfermode(PorterDuff.Mode.DST_IN),
+        "destination-out" to PorterDuffXfermode(PorterDuff.Mode.DST_OUT),
+        "destination-atop" to PorterDuffXfermode(PorterDuff.Mode.DST_ATOP),
+
+        "lighter" to PorterDuffXfermode(PorterDuff.Mode.LIGHTEN),
+        "xor" to PorterDuffXfermode(PorterDuff.Mode.XOR),
+        "multiply" to PorterDuffXfermode(PorterDuff.Mode.MULTIPLY),
+
+        "screen" to PorterDuffXfermode(PorterDuff.Mode.SCREEN),
+        "overlay" to PorterDuffXfermode(PorterDuff.Mode.OVERLAY),
+        "darken" to PorterDuffXfermode(PorterDuff.Mode.DARKEN),
+        "lighten" to PorterDuffXfermode(PorterDuff.Mode.LIGHTEN),
+    )
+
     var fillStyle: Style
         get() = currentState.fillStyle
         set(value) {
@@ -84,6 +110,13 @@ class WebPaint {
         set(value) {
             currentState.globalAlpha = value
             stateGlobalAlpha()
+        }
+
+    var globalCompositeOperation: String
+        get() = currentState.globalCompositeOperation
+        set(value) {
+            currentState.globalCompositeOperation = value
+            stateGlobalCompositeOperation()
         }
 
     var lineCap: String
@@ -190,6 +223,14 @@ class WebPaint {
         colorMatrix[18] = globalAlpha
         paint.colorFilter = ColorMatrixColorFilter(colorMatrix)
     }
+    private fun stateGlobalCompositeOperation() {
+        val xfermode = xfermodeMap[globalCompositeOperation]
+        if (xfermode == null) {
+            Log.w(TAG, "globalCompositeOperation for $globalCompositeOperation not supported")
+        }
+        Log.d(TAG, "stateGlobalCompositeOperation globalCompositeOperation=$globalCompositeOperation")
+        paint.xfermode = xfermode
+    }
     private fun stateLineCap() {
         Log.d(TAG, "stateLineCap lineCap=$lineCap")
         paint.strokeCap = when(lineCap) {
@@ -236,6 +277,7 @@ class WebPaint {
                         var filter: String? = null,
                         var font: String = "10px sans-serif",
                         var globalAlpha: Float = 1F,
+                        var globalCompositeOperation: String = "source-over",
                         var lineCap: String = "butt",
                         var lineJoin: String = "miter",
                         var lineWidth: Float = 1F,
@@ -256,6 +298,7 @@ class WebPaint {
             this.filter = state.filter
             this.font = state.font
             this.globalAlpha = state.globalAlpha
+            this.globalCompositeOperation = state.globalCompositeOperation
             this.lineCap = state.lineCap
             this.lineJoin = state.lineJoin
             this.lineWidth = state.lineWidth
@@ -267,7 +310,8 @@ class WebPaint {
             this.textBaseline = state.textBaseline
         }
         fun copy(): State {
-            return State(fillStyle, strokeStyle, filter, font, globalAlpha, lineCap, lineJoin, lineWidth,
+            return State(fillStyle, strokeStyle, filter, font, globalAlpha, globalCompositeOperation,
+                lineCap, lineJoin, lineWidth,
                 shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY, textAlign, textBaseline)
         }
 

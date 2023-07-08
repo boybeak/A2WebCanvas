@@ -45,13 +45,6 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
 
     private var resetSaveIndex = 0
 
-    private fun canvasRun(callback: (canvas: Canvas) -> Unit) {
-        callback.invoke(canvas)
-        if (shadowCanvas != null) {
-            callback.invoke(shadowCanvas!!)
-        }
-    }
-
     override var fillStyle: Style
         get() = paint.fillStyle
         set(value) { paint.fillStyle = value }
@@ -67,6 +60,9 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
     override var globalAlpha: Float
         get() = paint.globalAlpha
         set(value) { paint.globalAlpha = value }
+    override var globalCompositeOperation: String
+        get() = paint.globalCompositeOperation
+        set(value) { paint.globalCompositeOperation = value }
     override var lineCap: String
         get() = paint.lineCap
         set(value) { paint.lineCap = value }
@@ -97,6 +93,13 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
 
     init {
         canvasProvider.setCallback(this)
+    }
+
+    private fun canvasRun(callback: (canvas: Canvas) -> Unit) {
+        callback.invoke(canvas)
+        if (shadowCanvas != null) {
+            callback.invoke(shadowCanvas!!)
+        }
     }
 
     override fun onCanvasCreated(canvas: Canvas) {

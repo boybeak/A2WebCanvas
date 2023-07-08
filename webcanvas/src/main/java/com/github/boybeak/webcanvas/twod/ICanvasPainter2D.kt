@@ -20,6 +20,7 @@ interface ICanvasPainter2D {
     var font: String
 
     var globalAlpha: Float
+    var globalCompositeOperation: String
 
     var lineCap: String
     var lineJoin: String

@@ -1,5 +1,6 @@
 package com.github.boybeak.webcanvas.twod
 
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Handler
 import android.util.Log

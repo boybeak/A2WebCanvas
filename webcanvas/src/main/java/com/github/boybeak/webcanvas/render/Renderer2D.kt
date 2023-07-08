@@ -2,6 +2,7 @@ package com.github.boybeak.webcanvas.render
 
 import android.graphics.Canvas
 import android.graphics.Color
+import android.os.Build
 import android.util.Log
 import android.view.SurfaceHolder
 import com.github.boybeak.webcanvas.twod.CanvasProvider
@@ -63,7 +64,11 @@ internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer2D(canvas2D) {
         if (currentCanvas != null) {
             return
         }
-        currentCanvas = surfaceHolder.lockCanvas()
+        currentCanvas = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            surfaceHolder.lockHardwareCanvas()
+        } else {
+            surfaceHolder.lockCanvas()
+        }
         callback?.onCanvasCreated(currentCanvas!!)
     }
 
