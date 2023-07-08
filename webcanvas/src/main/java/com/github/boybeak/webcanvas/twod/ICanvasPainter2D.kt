@@ -19,6 +19,8 @@ interface ICanvasPainter2D {
 
     var font: String
 
+    var globalAlpha: Float
+
     var lineCap: String
     var lineJoin: String
     var lineWidth: Float

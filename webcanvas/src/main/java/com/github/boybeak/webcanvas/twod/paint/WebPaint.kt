@@ -2,6 +2,8 @@ package com.github.boybeak.webcanvas.twod.paint
 
 import android.graphics.BlurMaskFilter
 import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.MaskFilter
 import android.graphics.Paint
 import android.util.Log
@@ -16,6 +18,7 @@ class WebPaint {
     }
 
     private val paint = Paint().apply {
+        this.
         isAntiAlias = true
     }
     val fillPaint get() = paint.apply {
@@ -29,8 +32,28 @@ class WebPaint {
         statePaint()
     }
 
+    internal val currentPaint: Paint get() = paint
+
     private val currentState = State()
     private val stateStack = Stack<State>()
+
+    /**
+     * [ a, b, c, d, e,
+     *   f, g, h, i, j,
+     *   k, l, m, n, o,
+     *   p, q, r, s, t ]
+     *
+     *   R’ = a*R + b*G + c*B + d*A + e;
+     *   G’ = f*R + g*G + h*B + i*A + j;
+     *   B’ = k*R + l*G + m*B + n*A + o;
+     *   A’ = p*R + q*G + r*B + s*A + t;
+     */
+    private val colorMatrix = floatArrayOf(
+        1F, 0F, 0F, 0F, 0F,
+        0F, 1F, 0F, 0F, 0F,
+        0F, 0F, 1F, 0F, 0F,
+        0F, 0F, 0F, 1F, 0F
+    )
 
     var fillStyle: Style
         get() = currentState.fillStyle
@@ -54,6 +77,13 @@ class WebPaint {
         set(value) {
             currentState.font = value
             stateFont()
+        }
+
+    var globalAlpha: Float
+        get() = currentState.globalAlpha
+        set(value) {
+            currentState.globalAlpha = value
+            stateGlobalAlpha()
         }
 
     var lineCap: String
@@ -156,6 +186,10 @@ class WebPaint {
         paint.textSize = font.textSize
         paint.typeface = font.typeface
     }
+    private fun stateGlobalAlpha() {
+        colorMatrix[18] = globalAlpha
+        paint.colorFilter = ColorMatrixColorFilter(colorMatrix)
+    }
     private fun stateLineCap() {
         Log.d(TAG, "stateLineCap lineCap=$lineCap")
         paint.strokeCap = when(lineCap) {
@@ -201,6 +235,7 @@ class WebPaint {
                         var strokeStyle: Style = Style.ColorStyle(Color.BLACK),
                         var filter: String? = null,
                         var font: String = "10px sans-serif",
+                        var globalAlpha: Float = 1F,
                         var lineCap: String = "butt",
                         var lineJoin: String = "miter",
                         var lineWidth: Float = 1F,
@@ -220,6 +255,7 @@ class WebPaint {
             this.strokeStyle = state.strokeStyle
             this.filter = state.filter
             this.font = state.font
+            this.globalAlpha = state.globalAlpha
             this.lineCap = state.lineCap
             this.lineJoin = state.lineJoin
             this.lineWidth = state.lineWidth
@@ -231,7 +267,7 @@ class WebPaint {
             this.textBaseline = state.textBaseline
         }
         fun copy(): State {
-            return State(fillStyle, strokeStyle, filter, font, lineCap, lineJoin, lineWidth,
+            return State(fillStyle, strokeStyle, filter, font, globalAlpha, lineCap, lineJoin, lineWidth,
                 shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY, textAlign, textBaseline)
         }
 

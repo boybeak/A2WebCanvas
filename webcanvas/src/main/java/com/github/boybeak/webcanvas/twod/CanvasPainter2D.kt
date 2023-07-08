@@ -64,6 +64,9 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
     override var font: String
         get() = paint.font
         set(value) { paint.font = value }
+    override var globalAlpha: Float
+        get() = paint.globalAlpha
+        set(value) { paint.globalAlpha = value }
     override var lineCap: String
         get() = paint.lineCap
         set(value) { paint.lineCap = value }
@@ -329,7 +332,7 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
         val src = image.bitmap ?: return@canvasRun
         drawImageSrcRect.set(sx, sy, sx + sWidth, sy + sHeight)
         drawImageDstRect.set(dx, dy, dx + dWidth, dy + dHeight)
-        canvas.drawBitmap(src, drawImageSrcRect, drawImageDstRect, null)
+        canvas.drawBitmap(src, drawImageSrcRect, drawImageDstRect, paint.currentPaint)
     }
 
     override fun getImageData(sx: Int, sy: Int, sw: Int, sh: Int): ImageData {

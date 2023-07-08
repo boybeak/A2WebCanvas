@@ -55,7 +55,7 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
 
     override fun getAdditionalPropertyNames(): Array<String> {
         return arrayOf(
-            "fillStyle", "strokeStyle", "filter", "font",
+            "fillStyle", "strokeStyle", "filter", "font", "globalAlpha",
             "lineCap", "lineJoin", "lineWidth",
             "shadowBlur", "shadowColor", "shadowOffsetX", "shadowOffsetY",
             "textAlign", "textBaseline"
@@ -97,6 +97,7 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
             }
             "filter" -> context2D.filter = newValue.toString()
             "font" -> context2D.font = newValue.toString()
+            "globalAlpha" -> context2D.globalAlpha = (newValue as Number).toFloat()
             "lineCap" -> context2D.lineCap = newValue.toString()
             "lineJoin" -> context2D.lineJoin = newValue.toString()
             "lineWidth" -> context2D.lineWidth = (newValue as Number).toFloat()

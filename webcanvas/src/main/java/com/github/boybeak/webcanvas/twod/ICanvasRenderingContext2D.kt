@@ -26,6 +26,9 @@ interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
     override var font: String
         get() = canvasPainter.font
         set(value) { canvasPainter.font = value }
+    override var globalAlpha: Float
+        get() = canvasPainter.globalAlpha
+        set(value) { canvasPainter.globalAlpha = value }
     override var lineCap: String
         get() = canvasPainter.lineCap
         set(value) { canvasPainter.lineCap = value }
