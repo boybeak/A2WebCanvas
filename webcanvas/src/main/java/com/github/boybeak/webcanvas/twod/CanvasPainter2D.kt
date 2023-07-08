@@ -18,6 +18,7 @@ import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.image.ImageData
 import com.github.boybeak.webcanvas.image.WebImageManager
 import com.github.boybeak.webcanvas.twod.gradient.CanvasGradientManager
+import com.github.boybeak.webcanvas.twod.gradient.CanvasPattern
 import com.github.boybeak.webcanvas.twod.gradient.LinearGradient
 import com.github.boybeak.webcanvas.twod.gradient.RadialGradient
 import com.github.boybeak.webcanvas.twod.paint.Style
@@ -120,6 +121,10 @@ class CanvasPainter2D(private val canvasProvider: CanvasProvider) : ICanvasPaint
 
     override fun createLinearGradient(x0: Float, y0: Float, x1: Float, y1: Float): LinearGradient {
         return CanvasGradientManager.createLinearGradient(x0, y0, x1, y1)
+    }
+
+    override fun createPattern(image: IWebImage, repetition: String): CanvasPattern {
+        return CanvasGradientManager.createPattern(image, repetition)
     }
 
     override fun createRadialGradient(

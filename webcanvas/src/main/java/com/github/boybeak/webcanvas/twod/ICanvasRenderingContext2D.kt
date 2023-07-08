@@ -5,6 +5,7 @@ import android.graphics.Matrix
 import com.github.boybeak.webcanvas.IWebCanvasContext
 import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.image.ImageData
+import com.github.boybeak.webcanvas.twod.gradient.CanvasPattern
 import com.github.boybeak.webcanvas.twod.gradient.LinearGradient
 import com.github.boybeak.webcanvas.twod.gradient.RadialGradient
 import com.github.boybeak.webcanvas.twod.paint.Style
@@ -55,6 +56,10 @@ interface ICanvasRenderingContext2D : IWebCanvasContext, ICanvasPainter2D {
 
     override fun createLinearGradient(x0: Float, y0: Float, x1: Float, y1: Float): LinearGradient {
         return canvasPainter.createLinearGradient(x0, y0, x1, y1)
+    }
+
+    override fun createPattern(image: IWebImage, repetition: String): CanvasPattern {
+        return canvasPainter.createPattern(image, repetition)
     }
 
     override fun createRadialGradient(

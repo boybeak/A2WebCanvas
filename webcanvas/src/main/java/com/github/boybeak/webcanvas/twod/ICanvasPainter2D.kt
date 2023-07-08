@@ -4,6 +4,7 @@ import android.graphics.ColorSpace
 import android.graphics.Matrix
 import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.image.ImageData
+import com.github.boybeak.webcanvas.twod.gradient.CanvasPattern
 import com.github.boybeak.webcanvas.twod.gradient.LinearGradient
 import com.github.boybeak.webcanvas.twod.gradient.RadialGradient
 import com.github.boybeak.webcanvas.twod.paint.Style
@@ -31,6 +32,7 @@ interface ICanvasPainter2D {
     var textBaseline: String
 
     fun createLinearGradient(x0: Float, y0: Float, x1: Float, y1: Float): LinearGradient
+    fun createPattern(image: IWebImage, repetition: String): CanvasPattern
     fun createRadialGradient(x0: Float, y0: Float, r0: Float, x1: Float, y1: Float, r1: Float): RadialGradient
 
     fun save()

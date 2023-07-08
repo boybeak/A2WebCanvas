@@ -14,12 +14,14 @@ import com.github.boybeak.v8webcanvas.twod.gradient.V8CanvasGradient
 import com.github.boybeak.v8x.binding.Key
 import com.github.boybeak.v8x.binding.V8Binding
 import com.github.boybeak.v8x.binding.annotation.V8Method
+import com.github.boybeak.webcanvas.image.HTMLImageElement
 import com.github.boybeak.webcanvas.image.IWebImage
 import com.github.boybeak.webcanvas.image.ImageData
 import com.github.boybeak.webcanvas.image.WebImageManager
 import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
 import com.github.boybeak.webcanvas.twod.gradient.CanvasGradient
 import com.github.boybeak.webcanvas.twod.gradient.CanvasGradientManager
+import com.github.boybeak.webcanvas.twod.gradient.CanvasPattern
 import com.github.boybeak.webcanvas.twod.gradient.LinearGradient
 import com.github.boybeak.webcanvas.twod.gradient.RadialGradient
 import com.github.boybeak.webcanvas.twod.paint.Style
@@ -110,6 +112,13 @@ class V8CanvasRenderingContext2D(private val v8WebCanvas2D: V8WebCanvasView) : V
     @V8Method
     fun createLinearGradient(x0: Double, y0: Double, x1: Double, y1: Double): V8Object {
         return V8CanvasGradient(context2D.createLinearGradient(x0.toFloat(), y0.toFloat(), x1.toFloat(), y1.toFloat())).getMyBinding(v8)
+    }
+
+    @V8Method
+    fun createPattern(image: V8Object, repetition: String): V8Object {
+        val imgId = V8HTMLImageElement.getId(image)
+        val img = WebImageManager.getIWebImage<HTMLImageElement>(imgId)
+        return V8CanvasGradient(context2D.createPattern(img, repetition)).getMyBinding(v8)
     }
 
     @V8Method
