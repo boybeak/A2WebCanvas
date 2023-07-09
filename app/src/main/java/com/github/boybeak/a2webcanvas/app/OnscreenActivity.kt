@@ -71,11 +71,12 @@ class OnscreenActivity : AppCompatActivity() {
             }
 
             val guessName = function.guessName
-            canvas.queueEvent(16L) {
+            canvas.queueEvent(10L) {
                 canvas?.getContext<CanvasRenderingContext2D>("2d")?.scale(density, density)
                 v8Engine.v8Run {
                     executeJSFunction(guessName)
                 }
+//                canvas.requestRender()
             }
             if (stopBtn.visibility == View.GONE) {
                 runOnUiThread {
@@ -153,6 +154,12 @@ class OnscreenActivity : AppCompatActivity() {
 
         canvas.setOnTouchListener { v, event ->
             when(event.action) {
+                MotionEvent.ACTION_DOWN -> v8Engine.v8Run {
+                    executeJSFunction("onTouchStart", event.x / density, event.y / density)
+                }
+                MotionEvent.ACTION_MOVE -> v8Engine.v8Run {
+                    executeJSFunction("onTouchMove", event.x / density, event.y / density)
+                }
                 MotionEvent.ACTION_UP -> v8Engine.v8Run {
                     executeJSFunction("onTouchEnd", event.x / density, event.y / density)
                 }
@@ -163,16 +170,19 @@ class OnscreenActivity : AppCompatActivity() {
         stopBtn.setOnClickListener {
             window.stopWhenNextFrame = true
             stopBtn.visibility = View.GONE
-            v8Engine.reset {
+            /*v8Engine.reset {
                 initV8(this)
-            }
+            }*/
         }
     }
 
     private fun initV8(v8: V8) {
         v8.add("canvas", canvas.getMyBinding(v8))
         v8.add("Console", console.getMyBinding(v8))
-        v8.add("ctx", canvas.getContextV8("2d"))
+        v8.add("ctx", canvas.getContextV8("2d").apply {
+            add("width", (canvas.width / density).toInt())
+            add("height", (canvas.height / density).toInt())
+        })
         v8.add("window", window.getMyBinding(v8))
         v8.add("ImageCreator", imageCreator.getMyBinding(v8))
     }
