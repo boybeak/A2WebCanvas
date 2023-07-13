@@ -38,13 +38,11 @@ classDiagram
     class IPainter2D {
         ~CanvasProvider provider
     }
-    namespace Render {
-        class RenderExecutor {
-            ~setRenderMode(int mode)
-        }
-        class RenderStrategy {
+    class RenderExecutor {
+        ~setRenderMode(int mode)
+    }
+    class RenderStrategy {
 
-        }
     }
     
 
@@ -69,4 +67,5 @@ classDiagram
 
     RenderExecutor *-- IWebCanvasContextOnscreen
     ICanvas2DProvider *-- IPainter2D
+    RenderExecutor *-- RenderStrategy
 ```
