@@ -12,7 +12,9 @@ import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
 import com.github.boybeak.a2webcanvas.app.adapter.JsApiItem
+import com.github.boybeak.a2webcanvas.app.game.GameEngine
 import com.github.boybeak.a2webcanvas.app.v8.V8Engine
+import com.github.boybeak.a2webcanvas.app.v8.V8GamePlayground
 import com.github.boybeak.adapter.AnyAdapter
 import com.github.boybeak.adapter.event.OnItemClick
 import com.github.boybeak.v8webcanvas.V8WebCanvasView
@@ -34,13 +36,19 @@ class OnscreenActivity : AppCompatActivity() {
         const val KEY_SUB_DIR = "sub-dir"
     }
 
+    private val gameEngine = GameEngine {
+        object : V8GamePlayground(it) {
+            override fun onPrepared(v8: V8) {
+                initV8(v8)
+            }
+        }
+    }
+
     private val density get() = resources.displayMetrics.density
 
     private val canvas by lazy { findViewById<V8WebCanvasView>(R.id.webCanvas) }
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.apiList) }
     private val stopBtn by lazy { findViewById<View>(R.id.stopBtn) }
-
-    private val v8Engine = V8Engine()
 
     private val console = object : V8BindingAdapter {
 
@@ -72,11 +80,9 @@ class OnscreenActivity : AppCompatActivity() {
 
             val guessName = function.guessName
             canvas.queueEvent(10L) {
+                Log.d(TAG, "guessName=$guessName")
                 canvas?.getContext<CanvasRenderingContext2D>("2d")?.scale(density, density)
-                v8Engine.v8Run {
-                    executeJSFunction(guessName)
-                }
-//                canvas.requestRender()
+                gameEngine.playground.v8.executeJSFunction(guessName)
             }
             if (stopBtn.visibility == View.GONE) {
                 runOnUiThread {
@@ -114,20 +120,18 @@ class OnscreenActivity : AppCompatActivity() {
         }
         @V8Method
         fun createImage(): V8Object {
-            return V8HTMLImageElement(WebImageManager.createHTMLImageElement(imageDecoder)).getMyBinding(v8Engine.v8)
+            return V8HTMLImageElement(WebImageManager.createHTMLImageElement(imageDecoder)).getMyBinding(gameEngine.playground.v8)
         }
     }
+
+    fun v8GameRun(run: V8.() -> Unit) = gameEngine.playground.v8GameRun(run)
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_onscreen)
 
-        v8Engine.onV8Prepared {
-            canvas.initialize(this)
-            initV8(this)
-        }
-        canvas.setOnPrepareCallback { v8Engine.v8Looper }
+        canvas.setOnPrepareCallback { gameEngine.playground.playgroundLooper }
         canvas.setRenderMode(IWebCanvas.RENDER_MODE_AUTO)
 
         recyclerView.adapter = AnyAdapter().apply {
@@ -143,8 +147,8 @@ class OnscreenActivity : AppCompatActivity() {
                 ) {
                     val code = item.getJsCode(view.context)
                     Log.d(TAG, "onClick name=${item.source().name}")
-                    canvas.queueEvent {
-                        v8Engine.v8Run {
+                    gameEngine.createPlayground(item.source().name) {
+                        v8GameRun {
                             executeScript(code)
                         }
                     }
@@ -154,13 +158,13 @@ class OnscreenActivity : AppCompatActivity() {
 
         canvas.setOnTouchListener { v, event ->
             when(event.action) {
-                MotionEvent.ACTION_DOWN -> v8Engine.v8Run {
+                MotionEvent.ACTION_DOWN -> v8GameRun {
                     executeJSFunction("onTouchStart", event.x / density, event.y / density)
                 }
-                MotionEvent.ACTION_MOVE -> v8Engine.v8Run {
+                MotionEvent.ACTION_MOVE -> v8GameRun {
                     executeJSFunction("onTouchMove", event.x / density, event.y / density)
                 }
-                MotionEvent.ACTION_UP -> v8Engine.v8Run {
+                MotionEvent.ACTION_UP -> v8GameRun {
                     executeJSFunction("onTouchEnd", event.x / density, event.y / density)
                 }
             }
@@ -177,6 +181,7 @@ class OnscreenActivity : AppCompatActivity() {
     }
 
     private fun initV8(v8: V8) {
+        canvas.initialize(v8)
         v8.add("canvas", canvas.getMyBinding(v8))
         v8.add("Console", console.getMyBinding(v8))
         v8.add("ctx", canvas.getContextV8("2d").apply {

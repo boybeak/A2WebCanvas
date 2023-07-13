@@ -26,11 +26,21 @@ open class WebCanvasView : SurfaceView, IWebCanvas2D, IWebCanvasWebGL {
     override val surfaceHolder: SurfaceHolder
         get() = holder
 
-    private val renderHandler: Handler by lazy {
-        val looper: Looper = onPrepareListener?.invoke() ?: createDefaultLooper()
-        onPrepareListener = null
-        Handler(looper)
+    private var renderLooperInner: Looper? = null
+    private val renderLooper: Looper get() {
+        if (renderLooperInner == null) {
+            renderLooperInner = onPrepareListener?.invoke() ?: createDefaultLooper()
+        }
+        return renderLooperInner!!
     }
+
+    private var renderHandler: Handler? = null
+        get() {
+            if (field == null) {
+                field = Handler(renderLooper)
+            }
+            return field
+        }
 
     private var onPrepareListener: OnPrepareListener? = null
 
@@ -46,6 +56,14 @@ open class WebCanvasView : SurfaceView, IWebCanvas2D, IWebCanvasWebGL {
         return HandlerThread("RenderThread").also {
             it.start()
         }.looper
+    }
+
+    fun start(callback: () -> Looper?) {
+
+    }
+
+    fun stop(callback: (looper: Looper) -> Unit) {
+
     }
 
     fun setOnPrepareCallback(onPrepare: OnPrepareListener) {
@@ -80,15 +98,15 @@ open class WebCanvasView : SurfaceView, IWebCanvas2D, IWebCanvasWebGL {
     }
 
     override fun queueEvent(event: Runnable) {
-        renderHandler.post(event)
+        renderHandler?.post(event)
     }
 
     override fun queueEvent(delayInMills: Long, event: Runnable) {
-        renderHandler.postDelayed(event, delayInMills)
+        renderHandler?.postDelayed(event, delayInMills)
     }
 
     override fun removeEvent(event: Runnable) {
-        renderHandler.removeCallbacks(event)
+        renderHandler?.removeCallbacks(event)
     }
 
     fun setRenderMode(@RenderMode mode: Int) {

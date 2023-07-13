@@ -1,12 +1,7 @@
 package com.github.boybeak.webcanvas.twod
 
-import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.os.Handler
-import android.util.Log
-import com.github.boybeak.webcanvas.WebCanvasView
 import com.github.boybeak.webcanvas.render.AbsRenderer2D
-import com.github.boybeak.webcanvas.render.Renderer2D
 
 abstract class AbsCanvasRenderingContext2D : ICanvasRenderingContext2D {
 

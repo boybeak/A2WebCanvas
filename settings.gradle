@@ -17,3 +17,4 @@ rootProject.name = "A2WebCanvas"
 include ':app'
 include ':webcanvas'
 include ':v8webcanvas'
+include ':canvas'

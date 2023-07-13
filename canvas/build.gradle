@@ -6,7 +6,7 @@ plugins {
 apply from: '../dependencies.gradle'
 
 android {
-    namespace 'com.github.boybeak.v8webcanvas'
+    namespace 'com.github.boybeak.canvas'
     compileSdk project.ext.compileSdk
 
     defaultConfig {
@@ -33,12 +33,6 @@ android {
 }
 
 dependencies {
-
-    implementation project.ext.v8.j2v8
-    implementation project(":webcanvas")
-    implementation project.ext.v8x.binding
-    implementation project.ext.v8x.ext
-
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

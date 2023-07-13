@@ -28,6 +28,12 @@
             app:text="Execute js code in assets/js dir with v8 and Offscreen Canvas"
             />
         <com.github.boybeak.a2webcanvas.app.widget.InfoCard
+            android:id="@+id/multiThreadRender"
+            style="@style/MainInfoCard"
+            app:title="Experiment for render switch threads"
+            app:text="Render one frame with thread-1, then render next frame with thread-2"
+            />
+        <com.github.boybeak.a2webcanvas.app.widget.InfoCard
             android:id="@+id/oldV8Apis"
             style="@style/MainInfoCard"
             app:title="Old 2d apis - V8"

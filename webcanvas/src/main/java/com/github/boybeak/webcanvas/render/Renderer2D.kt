@@ -64,6 +64,7 @@ internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer2D(canvas2D) {
         if (currentCanvas != null) {
             return
         }
+        Log.d(TAG, "makeCanvas thread=${Thread.currentThread().name}")
         currentCanvas = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             surfaceHolder.lockHardwareCanvas()
         } else {
@@ -78,6 +79,7 @@ internal class Renderer2D(canvas2D: IWebCanvas2D) : AbsRenderer2D(canvas2D) {
 
     private fun commitCanvas() {
         val c = currentCanvas ?: return
+        Log.d(TAG, "commitCanvas thread=${Thread.currentThread().name}")
         callback?.onCanvasCommit(c)
         surfaceHolder.unlockCanvasAndPost(c)
         currentCanvas = null

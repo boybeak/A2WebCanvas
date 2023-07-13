@@ -1,4 +1,7 @@
 ext {
+    compileSdk = 33
+    minSdk = 24
+    targetSdk = 33
     v8 = [
             j2v8        :   "com.eclipsesource.j2v8:j2v8:6.2.1@aar"
     ]

@@ -11,6 +11,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/canvas" />
             <option value="$PROJECT_DIR$/v8webcanvas" />
             <option value="$PROJECT_DIR$/webcanvas" />
           </set>
