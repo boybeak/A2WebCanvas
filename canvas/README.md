@@ -21,6 +21,7 @@ classDiagram
         +IWebCanvas canvas
     }
     class IWebCanvasContextOnscreen {
+        ~RenderExecutor renderExecutor
         ~startRender()
         ~stopRender()
         ~post(Runnable task)
@@ -31,10 +32,26 @@ classDiagram
     class IWebCanvasContext2D {
         ~ICanvasPainter2D iCanvasPainter2D
     }
+    class ICanvas2DProvider {
+        ~Canvas canvas["android canvas"]
+    }
+    class IPainter2D {
+        ~CanvasProvider provider
+    }
+    namespace Render {
+        class RenderExecutor {
+            ~setRenderMode(int mode)
+        }
+        class RenderStrategy {
+
+        }
+    }
+    
 
     IWebCanvasContext  <|-- IWebCanvasContextOnscreen
     IWebCanvasContext <|-- IWebCanvasContextOffscreen 
     IWebCanvasContext <|-- IWebCanvasContext2D 
+    IPainter2D <|-- IWebCanvasContext2D
     IWebCanvasContext <|--  IWebCanvasContextWebGL 
 
     IWebCanvasContextOnscreen ..|> CanvasContextOnscreen2D
@@ -49,4 +66,7 @@ classDiagram
 
     IWebCanvasContextOffscreen ..|> CanvasContextOffscreenWebGL
     IWebCanvasContextWebGL ..|> CanvasContextOffscreenWebGL
+
+    RenderExecutor *-- IWebCanvasContextOnscreen
+    ICanvas2DProvider *-- IPainter2D
 ```
