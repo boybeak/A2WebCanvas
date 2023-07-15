@@ -3,6 +3,7 @@ package com.github.boybeak.a2webcanvas.app.widget
 import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
+import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -51,6 +52,11 @@ class InfoCard : CardView {
             try {
                 titleView.text = getText(R.styleable.InfoCard_title)
                 textView.text = getText(R.styleable.InfoCard_text)
+                if (textView.text.isNullOrEmpty()) {
+                    textView.visibility = View.GONE
+                } else {
+                    textView.visibility = View.VISIBLE
+                }
             } catch (e: Throwable) {
                 e.printStackTrace()
             }

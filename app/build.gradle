@@ -44,6 +44,7 @@ dependencies {
     implementation 'com.github.boybeak:any-adapter:1.4.1'
     implementation project(":webcanvas")
     implementation project(":v8webcanvas")
+    implementation project(":canvas")
     implementation project.ext.v8.j2v8
     implementation project.ext.v8x.binding
     implementation project.ext.v8x.ext

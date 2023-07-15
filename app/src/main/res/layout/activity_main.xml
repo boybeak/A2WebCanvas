@@ -34,6 +34,12 @@
             app:text="Render one frame with thread-1, then render next frame with thread-2"
             />
         <com.github.boybeak.a2webcanvas.app.widget.InfoCard
+            android:id="@+id/newOnScreen"
+            style="@style/MainInfoCard"
+            app:title="Apis of WebCanvasOnScreen"
+            app:text="Some apis of WebCanvasOnScreen from canvas module"
+            />
+        <com.github.boybeak.a2webcanvas.app.widget.InfoCard
             android:id="@+id/oldV8Apis"
             style="@style/MainInfoCard"
             app:title="Old 2d apis - V8"
