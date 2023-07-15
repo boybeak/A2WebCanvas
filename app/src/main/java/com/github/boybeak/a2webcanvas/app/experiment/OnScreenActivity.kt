@@ -5,13 +5,12 @@ import android.content.DialogInterface.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.HandlerThread
-import android.util.ArrayMap
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.github.boybeak.a2webcanvas.app.R
 import com.github.boybeak.a2webcanvas.app.widget.InfoCard
-import com.github.boybeak.canvas.WebCanvasOnscreen
+import com.github.boybeak.canvas.onscreen.WebCanvasOnscreen
 import com.github.boybeak.canvas.render.RenderExecutor
 
 class OnScreenActivity : AppCompatActivity() {
@@ -91,6 +90,7 @@ class OnScreenActivity : AppCompatActivity() {
             }
         }
         findViewById<InfoCard>(R.id.requestRenderManual).setOnClickListener {
+            webCanvas.requestRender()
             webCanvas.requestRender()
             webCanvas.requestRender()
             webCanvas.requestRender()

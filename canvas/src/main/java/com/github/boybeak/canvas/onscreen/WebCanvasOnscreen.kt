@@ -1,4 +1,4 @@
-package com.github.boybeak.canvas
+package com.github.boybeak.canvas.onscreen
 
 import android.content.Context
 import android.os.Looper
@@ -7,8 +7,6 @@ import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.github.boybeak.canvas.context.WebCanvasContextOnscreen2D
-import com.github.boybeak.canvas.onscreen.IWebCanvasContextOnscreen
-import com.github.boybeak.canvas.onscreen.IWebCanvasOnscreen
 import com.github.boybeak.canvas.render.RenderExecutor
 
 class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
@@ -17,7 +15,7 @@ class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
         private const val TAG = "WebCanvasOnscreen"
     }
 
-    private var contextOnscreen: IWebCanvasContextOnscreen? = null
+    private var contextOnscreen: AbsWebCanvasContextOnscreen? = null
 
     override val surfaceHolder: SurfaceHolder
         get() = holder
@@ -43,8 +41,8 @@ class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
     override fun getContext(type: String): IWebCanvasContextOnscreen {
         when(type) {
             "2d", "2D" -> contextOnscreen = WebCanvasContextOnscreen2D(this).also {
-                it.renderExecutor.setLooper(looper)
-                it.renderExecutor.setRenderMode(renderMode)
+                it.setLooper(looper)
+                it.setRenderMode(renderMode)
             }
             else -> TODO("getContext($type) Not support yet!!")
         }
@@ -57,10 +55,10 @@ class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
             return
         }
         myLooper = callback.invoke() ?: Looper.getMainLooper()
-        contextOnscreen?.renderExecutor?.run {
+        contextOnscreen?.run {
             setRenderMode(renderMode)
             setLooper(looper)
-            start()
+            startRender()
         }
     }
 
@@ -72,7 +70,7 @@ class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
         if (contextOnscreen == null) {
             callback.invoke(looper, Looper.getMainLooper() == looper)
         } else {
-            contextOnscreen?.renderExecutor?.stop {
+            contextOnscreen?.stopRender {
                 callback.invoke(looper, Looper.getMainLooper() == looper)
             }
         }
@@ -84,7 +82,7 @@ class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
             return
         }
         renderMode = mode
-        contextOnscreen?.renderExecutor?.setRenderMode(mode)
+        contextOnscreen?.setRenderMode(mode)
     }
 
     override fun getRenderMode(): Int {
@@ -92,9 +90,10 @@ class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
     }
 
     override fun requestRender() {
+        Log.d(TAG,  "requestRender in canvas")
         if (!isStarted) {
             return
         }
-        contextOnscreen?.renderExecutor?.requestRender()
+        contextOnscreen?.requestRender()
     }
 }
