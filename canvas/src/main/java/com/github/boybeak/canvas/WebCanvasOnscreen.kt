@@ -87,6 +87,10 @@ class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
         contextOnscreen?.renderExecutor?.setRenderMode(mode)
     }
 
+    override fun getRenderMode(): Int {
+        return renderMode
+    }
+
     override fun requestRender() {
         if (!isStarted) {
             return

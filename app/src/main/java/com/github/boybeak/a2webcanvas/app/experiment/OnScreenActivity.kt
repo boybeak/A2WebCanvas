@@ -1,13 +1,18 @@
 package com.github.boybeak.a2webcanvas.app.experiment
 
+import android.content.DialogInterface
+import android.content.DialogInterface.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.HandlerThread
+import android.util.ArrayMap
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.github.boybeak.a2webcanvas.app.R
 import com.github.boybeak.a2webcanvas.app.widget.InfoCard
 import com.github.boybeak.canvas.WebCanvasOnscreen
+import com.github.boybeak.canvas.render.RenderExecutor
 
 class OnScreenActivity : AppCompatActivity() {
 
@@ -15,7 +20,17 @@ class OnScreenActivity : AppCompatActivity() {
         private const val TAG = "OnScreenActivity"
     }
 
+    private val renderModeNames = arrayOf(
+        "WHEN_DIRTY", "CONTINUOUSLY", "AUTO"
+    )
+    private val renderModes = arrayOf(
+        RenderExecutor.RENDER_MODE_WHEN_DIRTY,
+        RenderExecutor.RENDER_MODE_CONTINUOUSLY,
+        RenderExecutor.RENDER_MODE_AUTO
+    )
+
     private val webCanvas: WebCanvasOnscreen by lazy { findViewById(R.id.webCanvas) }
+    private val renderModeBtn: InfoCard by lazy { findViewById(R.id.renderMode) }
 
     private val renderThreadA = HandlerThread("RenderA").also { it.start() }
     private val renderThreadB = HandlerThread("RenderB").also { it.start() }
@@ -24,12 +39,25 @@ class OnScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_on_screen)
 
+        renderModeBtn.setText(renderModeNames[renderModes.indexOf(webCanvas.getRenderMode())])
+
         findViewById<InfoCard>(R.id.getContext).setOnClickListener {
             webCanvas.start {
                 toast("Start with A")
                 renderThreadA.looper
             }
             val canvasContext = webCanvas.getContext("2d")
+        }
+        renderModeBtn.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setSingleChoiceItems(renderModeNames, renderModes.indexOf(webCanvas.getRenderMode()), object : OnClickListener {
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        webCanvas.setRenderMode(renderModes[which])
+                        renderModeBtn.setText(renderModeNames[which])
+                        dialog?.dismiss()
+                    }
+                })
+                .show()
         }
         findViewById<InfoCard>(R.id.changeLooper).setOnClickListener {
             if (webCanvas.isStarted) {
@@ -61,6 +89,11 @@ class OnScreenActivity : AppCompatActivity() {
                     renderThreadA.looper
                 }
             }
+        }
+        findViewById<InfoCard>(R.id.requestRenderManual).setOnClickListener {
+            webCanvas.requestRender()
+            webCanvas.requestRender()
+            webCanvas.requestRender()
         }
     }
 

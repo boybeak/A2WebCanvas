@@ -4,12 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import java.lang.IllegalArgumentException
 import kotlin.math.ceil
 
 class RenderExecutor(context: Context, private val callback: Callback) {
 
     companion object {
+        private const val TAG = "RenderExecutor"
         const val RENDER_MODE_WHEN_DIRTY = 0
         const val RENDER_MODE_CONTINUOUSLY = 1
         const val RENDER_MODE_AUTO = 2
@@ -68,7 +70,8 @@ class RenderExecutor(context: Context, private val callback: Callback) {
             RENDER_MODE_AUTO -> autoStrategy
             else -> throw IllegalArgumentException("setRenderMode unsupported mode=$mode")
         }
-        renderStrategy.stop()
+        renderMode = mode
+        renderStrategy.requestRender()
     }
     fun post(task: Runnable) {
         handler?.post(task)

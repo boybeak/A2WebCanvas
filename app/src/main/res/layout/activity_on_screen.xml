@@ -36,8 +36,20 @@
             <com.github.boybeak.a2webcanvas.app.widget.InfoCard
                 android:id="@+id/changeLooper"
                 style="@style/MainInfoCard"
-                app:title="ChangeLooper"
+                app:title="Change Looper"
                 app:text="Change looper test"
+                />
+            <com.github.boybeak.a2webcanvas.app.widget.InfoCard
+                android:id="@+id/renderMode"
+                style="@style/MainInfoCard"
+                app:title="Change RenderMode"
+                app:text="Change looper test"
+                />
+            <com.github.boybeak.a2webcanvas.app.widget.InfoCard
+                android:id="@+id/requestRenderManual"
+                style="@style/MainInfoCard"
+                app:title="Request render"
+                app:text="request render manually"
                 />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>

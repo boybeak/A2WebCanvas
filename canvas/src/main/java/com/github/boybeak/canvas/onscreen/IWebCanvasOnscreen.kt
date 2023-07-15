@@ -15,5 +15,6 @@ interface IWebCanvasOnscreen : IWebCanvas {
     fun start(callback: () -> Looper?)
     fun stop(callback: (looper: Looper, isDefault: Boolean) -> Unit)
     fun setRenderMode(mode: Int)
+    fun getRenderMode(): Int
     fun requestRender()
 }

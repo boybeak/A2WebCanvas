@@ -63,4 +63,8 @@ class InfoCard : CardView {
         }.recycle()
     }
 
+    fun setText(text: CharSequence) {
+        textView.text = text
+    }
+
 }

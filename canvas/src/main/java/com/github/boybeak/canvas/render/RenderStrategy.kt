@@ -1,6 +1,13 @@
 package com.github.boybeak.canvas.render
 
+import android.util.Log
+
 abstract class RenderStrategy(private val executor: RenderExecutor) {
+
+    companion object {
+        private const val TAG = "RenderStrategy"
+    }
+
     abstract val renderTask: Runnable
     open fun requestRender() {
         executor.post(renderTask)
