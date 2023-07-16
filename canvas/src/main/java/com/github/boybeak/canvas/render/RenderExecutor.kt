@@ -70,6 +70,9 @@ class RenderExecutor(context: Context, private val callback: Callback) {
         renderMode = mode
         renderStrategy.requestRender()
     }
+    fun getRenderMode(): Int {
+        return renderMode
+    }
     fun post(task: Runnable): Boolean {
         if (handler == null) {
             return false

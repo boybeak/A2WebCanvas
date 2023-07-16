@@ -174,7 +174,6 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider) : IPai
     }
 
     override fun stroke() = canvasRun{ canvas ->
-        Log.d(TAG, "stroke path=$path thread=${Thread.currentThread().name} hashCode=${hashCode()}")
         canvas.drawPath(path!!, paint.strokePaint)
     }
     override fun strokeRect(x: Float, y: Float, width: Float, height: Float) = canvasRun{ canvas ->
@@ -193,7 +192,6 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider) : IPai
 
     override fun beginPath() {
         path = AnchorPath()
-        Log.d(TAG, "beginPath path=${path} thread=${Thread.currentThread().name} hashCode=${hashCode()}")
     }
 
     override fun arc(

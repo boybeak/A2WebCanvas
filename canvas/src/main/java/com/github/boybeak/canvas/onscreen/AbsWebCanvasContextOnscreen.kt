@@ -56,4 +56,8 @@ abstract class AbsWebCanvasContextOnscreen(final override val canvas: IWebCanvas
     override fun remove(task: Runnable): Boolean {
         return renderExecutor.remove(task)
     }
+
+    override fun getRenderMode(): Int {
+        return renderExecutor.getRenderMode()
+    }
 }

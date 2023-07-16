@@ -102,7 +102,6 @@ interface IWebCanvasContext2D : IWebCanvasContext, IPainter2D, IAndroidCanvasPro
     override fun fillText(text: String, x: Float, y: Float) = canvasPainter.fillText(text, x, y)
 
     override fun stroke() {
-        Log.d(TAG, "stroke hashCode=${hashCode()}")
         canvasPainter.stroke()
     }
 
@@ -114,7 +113,6 @@ interface IWebCanvasContext2D : IWebCanvasContext, IPainter2D, IAndroidCanvasPro
 
     override fun beginPath() {
         canvasPainter.beginPath()
-        Log.d(TAG, "beginPath hashCode=${hashCode()}")
     }
 
     override fun arc(

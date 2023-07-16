@@ -21,7 +21,9 @@ import com.github.boybeak.v8x.binding.V8BindingAdapter
 import com.github.boybeak.v8x.binding.annotation.V8Method
 import com.github.boybeak.v8x.ext.guessName
 import com.github.boybeak.canvas.image.ISrcDecoder
+import com.github.boybeak.canvas.image.WebImageManager
 import com.github.boybeak.canvas.render.RenderMode
+import com.github.boybeak.v8canvas.image.V8HTMLImageElement
 import com.github.boybeak.v8canvas.onscreen.V8WebCanvasOnscreen
 import java.io.File
 
@@ -116,8 +118,7 @@ class OnscreenActivity : AppCompatActivity() {
         }
         @V8Method
         fun createImage(): V8Object {
-//            return V8HTMLImageElement(WebImageManager.createHTMLImageElement(imageDecoder)).getMyBinding(gameEngine.playground.v8)
-            TODO("")
+            return V8HTMLImageElement(WebImageManager.createHTMLImageElement(imageDecoder)).getMyBinding(gameEngine.playground.v8)
         }
     }
 
@@ -142,10 +143,9 @@ class OnscreenActivity : AppCompatActivity() {
                     adapter: AnyAdapter
                 ) {
                     val code = item.getJsCode(view.context)
-                    Log.d(TAG, "onClick name=${item.source().name}")
-                    gameEngine.createPlayground(item.source().name) {
-                        if (canvas.isStarted) {
-                            canvas.stop { _, _ ->
+                    if (canvas.isStarted) {
+                        canvas.stop { _, _ ->
+                            gameEngine.createPlayground(item.source().name) {
                                 canvas.start {
                                     this.playgroundLooper
                                 }
@@ -153,7 +153,9 @@ class OnscreenActivity : AppCompatActivity() {
                                     executeScript(code)
                                 }
                             }
-                        } else {
+                        }
+                    } else {
+                        gameEngine.createPlayground(item.source().name) {
                             canvas.start {
                                 this.playgroundLooper
                             }
