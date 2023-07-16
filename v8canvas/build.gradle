@@ -1,0 +1,45 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+apply from: '../deps.gradle'
+
+android {
+    namespace 'com.github.boybeak.v8canvas'
+    compileSdk project.ext.compileSdk
+
+    defaultConfig {
+        minSdk project.ext.minSdk
+        targetSdk project.ext.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation project(':canvas')
+
+    implementation project.ext.v8x.binding
+    implementation project.ext.v8x.ext
+    implementation project.ext.v8.j2v8
+
+    testImplementation project.ext.testDeps.junit
+    androidTestImplementation project.ext.testDeps.junit_ext
+    androidTestImplementation project.ext.testDeps.espresso_core
+}

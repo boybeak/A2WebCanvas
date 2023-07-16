@@ -2,22 +2,14 @@ package com.github.boybeak.a2webcanvas.app
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.graphics.BlendMode
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.PointF
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
-import android.graphics.Xfermode
 import android.util.AttributeSet
 import android.view.View
-import com.github.boybeak.webcanvas.twod.geometry.ArcTo
-import com.github.boybeak.webcanvas.twod.geometry.VectorF2D
-import kotlin.math.sin
 
 class PainterView : View {
 

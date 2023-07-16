@@ -8,8 +8,9 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.github.boybeak.canvas.context.WebCanvasContextOnscreen2D
 import com.github.boybeak.canvas.render.RenderExecutor
+import com.github.boybeak.canvas.render.RenderMode
 
-class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
+open class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
 
     companion object {
         private const val TAG = "WebCanvasOnscreen"
@@ -28,7 +29,7 @@ class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
     override val isStarted: Boolean
         get() = myLooper != null
 
-    private var renderMode = RenderExecutor.RENDER_MODE_WHEN_DIRTY
+    private var renderMode = RenderMode.RENDER_MODE_WHEN_DIRTY
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -38,13 +39,18 @@ class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
         defStyleAttr
     )
 
+    fun <T : IWebCanvasContextOnscreen> getContextAs(type: String) : T {
+        return getContext(type) as T
+    }
     override fun getContext(type: String): IWebCanvasContextOnscreen {
-        when(type) {
-            "2d", "2D" -> contextOnscreen = WebCanvasContextOnscreen2D(this).also {
-                it.setLooper(looper)
-                it.setRenderMode(renderMode)
+        if (contextOnscreen == null) {
+            when(type) {
+                "2d", "2D" -> contextOnscreen = WebCanvasContextOnscreen2D(this).also {
+                    it.setLooper(looper)
+                    it.setRenderMode(renderMode)
+                }
+                else -> TODO("getContext($type) Not support yet!!")
             }
-            else -> TODO("getContext($type) Not support yet!!")
         }
         return contextOnscreen!!
     }
@@ -95,5 +101,13 @@ class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
             return
         }
         contextOnscreen?.requestRender()
+    }
+
+    override fun queueEvent(task: Runnable): Boolean {
+        return contextOnscreen?.post(task) ?: false
+    }
+
+    override fun queueEvent(delay: Long, task: Runnable): Boolean {
+        return contextOnscreen?.postDelayed(delay, task) ?: false
     }
 }

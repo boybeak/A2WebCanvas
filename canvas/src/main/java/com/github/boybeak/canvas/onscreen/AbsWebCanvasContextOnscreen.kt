@@ -45,15 +45,15 @@ abstract class AbsWebCanvasContextOnscreen(final override val canvas: IWebCanvas
         renderExecutor.stop(callback)
     }
 
-    override fun post(task: Runnable) {
-        renderExecutor.post(task)
+    override fun post(task: Runnable): Boolean {
+        return renderExecutor.post(task)
     }
 
-    override fun postDelayed(delay: Long, task: Runnable) {
-        renderExecutor.postDelayed(delay, task)
+    override fun postDelayed(delay: Long, task: Runnable): Boolean {
+        return renderExecutor.postDelayed(delay, task)
     }
 
-    override fun remove(task: Runnable) {
-        renderExecutor.remove(task)
+    override fun remove(task: Runnable): Boolean {
+        return renderExecutor.remove(task)
     }
 }

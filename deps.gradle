@@ -6,9 +6,14 @@ ext {
             j2v8        :   "com.eclipsesource.j2v8:j2v8:6.2.1@aar"
     ]
 
-    def v8x_version = "dev-0.0.4"
+    def v8x_version = "dev-0.0.5"
     v8x = [
             binding     :   "com.github.boybeak.v8x:v8binding:$v8x_version",
             ext         :   "com.github.boybeak.v8x:v8ext:$v8x_version"
+    ]
+    testDeps = [
+            junit       :   "junit:junit:4.13.2",
+            junit_ext   :   "androidx.test.ext:junit:1.1.3",
+            espresso_core        :   "androidx.test.espresso:espresso-core:3.4.0"
     ]
 }

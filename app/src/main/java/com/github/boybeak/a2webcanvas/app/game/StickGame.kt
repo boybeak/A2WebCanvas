@@ -2,13 +2,13 @@ package com.github.boybeak.a2webcanvas.app.game
 
 import android.graphics.Color
 import android.graphics.PointF
-import com.github.boybeak.webcanvas.WebCanvasView
-import com.github.boybeak.webcanvas.ext.context2DPost
-import com.github.boybeak.webcanvas.twod.paint.Style
+import com.github.boybeak.a2webcanvas.app.ext.context2DPost
+import com.github.boybeak.canvas._2d.paint.Style
+import com.github.boybeak.canvas.onscreen.WebCanvasOnscreen
 import java.lang.IllegalArgumentException
 import kotlin.random.Random
 
-class StickGame(private val canvasView: WebCanvasView) : Runnable {
+class StickGame(private val canvasView: WebCanvasOnscreen) : Runnable {
 
     private val stickContainer by lazy { StickContainer(10, canvasView.width, canvasView.height) }
 
@@ -48,7 +48,7 @@ class StickGame(private val canvasView: WebCanvasView) : Runnable {
                 lineCap = "round"
                 for (stick in stickContainer.sticks) {
                     colorStyle.setColorStr(stick.colorStr)
-                    strokeStyle = colorStyle
+//                    strokeStyle = colorStyle
                     beginPath()
                     moveTo(stick.p1.x, stick.p1.y)
                     lineTo(stick.p2.x, stick.p2.y)

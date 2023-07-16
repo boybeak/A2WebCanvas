@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-apply from: '../dependencies.gradle'
+apply from: '../deps.gradle'
 
 android {
     namespace 'com.github.boybeak.v8webcanvas'

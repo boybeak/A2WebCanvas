@@ -12,9 +12,6 @@ class RenderExecutor(context: Context, private val callback: Callback) {
 
     companion object {
         private const val TAG = "RenderExecutor"
-        const val RENDER_MODE_WHEN_DIRTY = 0
-        const val RENDER_MODE_CONTINUOUSLY = 1
-        const val RENDER_MODE_AUTO = 2
     }
 
     private var stopCallback: (() -> Unit)? = null
@@ -34,7 +31,7 @@ class RenderExecutor(context: Context, private val callback: Callback) {
     private val whenDirtyStrategy = WhenDirtyStrategy(this)
     private var renderStrategy: RenderStrategy = whenDirtyStrategy
 
-    private var renderMode = RENDER_MODE_WHEN_DIRTY
+    private var renderMode = RenderMode.RENDER_MODE_WHEN_DIRTY
 
     fun setLooper(looper: Looper) {
         if (isStarted) {
@@ -65,22 +62,34 @@ class RenderExecutor(context: Context, private val callback: Callback) {
         }
         renderStrategy.stop()
         renderStrategy = when(mode) {
-            RENDER_MODE_WHEN_DIRTY -> whenDirtyStrategy
-            RENDER_MODE_CONTINUOUSLY -> continuouslyStrategy
-            RENDER_MODE_AUTO -> autoStrategy
+            RenderMode.RENDER_MODE_WHEN_DIRTY -> whenDirtyStrategy
+            RenderMode.RENDER_MODE_CONTINUOUSLY -> continuouslyStrategy
+            RenderMode.RENDER_MODE_AUTO -> autoStrategy
             else -> throw IllegalArgumentException("setRenderMode unsupported mode=$mode")
         }
         renderMode = mode
         renderStrategy.requestRender()
     }
-    fun post(task: Runnable) {
+    fun post(task: Runnable): Boolean {
+        if (handler == null) {
+            return false
+        }
         handler?.post(task)
+        return true
     }
-    fun postDelayed(delay: Long, task: Runnable) {
+    fun postDelayed(delay: Long, task: Runnable): Boolean {
+        if (handler == null) {
+            return false
+        }
         handler?.postDelayed(task, delay)
+        return true
     }
-    fun remove(task: Runnable) {
+    fun remove(task: Runnable): Boolean {
+        if (handler == null) {
+            return false
+        }
         handler?.removeCallbacks(task)
+        return true
     }
 
     interface Callback {

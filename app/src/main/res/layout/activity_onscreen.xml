@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".OnscreenActivity">
-    <com.github.boybeak.v8webcanvas.V8WebCanvasView
+    <com.github.boybeak.v8canvas.onscreen.V8WebCanvasOnscreen
         android:id="@+id/webCanvas"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -1,6 +1,5 @@
 package com.github.boybeak.a2webcanvas.app
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,19 +11,17 @@ import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
 import com.github.boybeak.a2webcanvas.app.adapter.JsApiItem
+import com.github.boybeak.a2webcanvas.app.ext.context2DPost
 import com.github.boybeak.adapter.AnyAdapter
 import com.github.boybeak.adapter.event.OnItemClick
-import com.github.boybeak.v8webcanvas.V8WebCanvasView
-import com.github.boybeak.v8webcanvas.image.V8HTMLImageElement
+import com.github.boybeak.canvas.context.WebCanvasContextOnscreen2D
 import com.github.boybeak.v8x.binding.V8BindingAdapter
 import com.github.boybeak.v8x.binding.annotation.V8Method
 import com.github.boybeak.v8x.binding.ext.manager
 import com.github.boybeak.v8x.ext.guessName
-import com.github.boybeak.webcanvas.IWebCanvas
-import com.github.boybeak.webcanvas.ext.context2DPost
-import com.github.boybeak.webcanvas.image.ISrcDecoder
-import com.github.boybeak.webcanvas.image.WebImageManager
-import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
+import com.github.boybeak.canvas.image.ISrcDecoder
+import com.github.boybeak.canvas.render.RenderMode
+import com.github.boybeak.v8canvas.onscreen.V8WebCanvasOnscreen
 import java.io.File
 
 class V8Activity : AppCompatActivity() {
@@ -35,7 +32,7 @@ class V8Activity : AppCompatActivity() {
 
     private val density get() = resources.displayMetrics.density
 
-    private val canvasView by lazy { findViewById<V8WebCanvasView>(R.id.canvasView) }
+    private val canvasView by lazy { findViewById<V8WebCanvasOnscreen>(R.id.canvasView) }
     private val menuBar by lazy { findViewById<Toolbar>(R.id.menuBar) }
     private val jsApiRv by lazy { findViewById<RecyclerView>(R.id.jsApiRv) }
 
@@ -78,7 +75,7 @@ class V8Activity : AppCompatActivity() {
 
             val guessName = function.guessName
             canvasView.queueEvent(16L) {
-                canvasView?.getContext<CanvasRenderingContext2D>("2d")?.scale(density, density)
+                canvasView?.getContextAs<WebCanvasContextOnscreen2D>("2d")?.scale(density, density)
                 v8?.executeJSFunction(guessName)
             }
         }
@@ -89,7 +86,8 @@ class V8Activity : AppCompatActivity() {
         }
         @V8Method
         fun createImage(): V8Object {
-            return V8HTMLImageElement(WebImageManager.createHTMLImageElement(imageDecoder)).getMyBinding(v8!!)
+//            return V8HTMLImageElement(WebImageManager.createHTMLImageElement(imageDecoder)).getMyBinding(v8!!)
+            TODO("")
         }
     }
     private val imageDecoder = object : ISrcDecoder {
@@ -120,7 +118,7 @@ class V8Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_v8)
 
-        canvasView.setRenderMode(IWebCanvas.RENDER_MODE_AUTO)
+        canvasView.setRenderMode(RenderMode.RENDER_MODE_AUTO)
         canvasView.queueEvent {
             v8?.manager
             v8 = V8.createV8Runtime()

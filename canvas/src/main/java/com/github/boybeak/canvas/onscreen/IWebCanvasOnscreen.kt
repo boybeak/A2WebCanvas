@@ -17,4 +17,7 @@ interface IWebCanvasOnscreen : IWebCanvas {
     fun setRenderMode(mode: Int)
     fun getRenderMode(): Int
     fun requestRender()
+
+    fun queueEvent(task: Runnable): Boolean
+    fun queueEvent(delay: Long, task: Runnable): Boolean
 }

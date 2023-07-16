@@ -13,20 +13,16 @@ import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
 import com.github.boybeak.a2webcanvas.app.adapter.JsApiItem
 import com.github.boybeak.a2webcanvas.app.game.GameEngine
-import com.github.boybeak.a2webcanvas.app.v8.V8Engine
 import com.github.boybeak.a2webcanvas.app.v8.V8GamePlayground
 import com.github.boybeak.adapter.AnyAdapter
 import com.github.boybeak.adapter.event.OnItemClick
-import com.github.boybeak.v8webcanvas.V8WebCanvasView
-import com.github.boybeak.v8webcanvas.image.V8HTMLImageElement
+import com.github.boybeak.canvas.context.WebCanvasContextOnscreen2D
 import com.github.boybeak.v8x.binding.V8BindingAdapter
 import com.github.boybeak.v8x.binding.annotation.V8Method
 import com.github.boybeak.v8x.ext.guessName
-import com.github.boybeak.webcanvas.IWebCanvas
-import com.github.boybeak.webcanvas.WebCanvasView
-import com.github.boybeak.webcanvas.image.ISrcDecoder
-import com.github.boybeak.webcanvas.image.WebImageManager
-import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
+import com.github.boybeak.canvas.image.ISrcDecoder
+import com.github.boybeak.canvas.render.RenderMode
+import com.github.boybeak.v8canvas.onscreen.V8WebCanvasOnscreen
 import java.io.File
 
 class OnscreenActivity : AppCompatActivity() {
@@ -46,7 +42,7 @@ class OnscreenActivity : AppCompatActivity() {
 
     private val density get() = resources.displayMetrics.density
 
-    private val canvas by lazy { findViewById<V8WebCanvasView>(R.id.webCanvas) }
+    private val canvas by lazy { findViewById<V8WebCanvasOnscreen>(R.id.webCanvas) }
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.apiList) }
     private val stopBtn by lazy { findViewById<View>(R.id.stopBtn) }
 
@@ -81,7 +77,7 @@ class OnscreenActivity : AppCompatActivity() {
             val guessName = function.guessName
             canvas.queueEvent(10L) {
                 Log.d(TAG, "guessName=$guessName")
-                canvas?.getContext<CanvasRenderingContext2D>("2d")?.scale(density, density)
+                canvas?.getContextAs<WebCanvasContextOnscreen2D>("2d")?.scale(density, density)
                 gameEngine.playground.v8.executeJSFunction(guessName)
             }
             if (stopBtn.visibility == View.GONE) {
@@ -120,7 +116,8 @@ class OnscreenActivity : AppCompatActivity() {
         }
         @V8Method
         fun createImage(): V8Object {
-            return V8HTMLImageElement(WebImageManager.createHTMLImageElement(imageDecoder)).getMyBinding(gameEngine.playground.v8)
+//            return V8HTMLImageElement(WebImageManager.createHTMLImageElement(imageDecoder)).getMyBinding(gameEngine.playground.v8)
+            TODO("")
         }
     }
 
@@ -131,8 +128,7 @@ class OnscreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_onscreen)
 
-        canvas.setOnPrepareCallback { gameEngine.playground.playgroundLooper }
-        canvas.setRenderMode(IWebCanvas.RENDER_MODE_AUTO)
+        canvas.setRenderMode(RenderMode.RENDER_MODE_AUTO)
 
         recyclerView.adapter = AnyAdapter().apply {
             addAll(getJsApis()) { s, _ ->
@@ -148,8 +144,22 @@ class OnscreenActivity : AppCompatActivity() {
                     val code = item.getJsCode(view.context)
                     Log.d(TAG, "onClick name=${item.source().name}")
                     gameEngine.createPlayground(item.source().name) {
-                        v8GameRun {
-                            executeScript(code)
+                        if (canvas.isStarted) {
+                            canvas.stop { _, _ ->
+                                canvas.start {
+                                    this.playgroundLooper
+                                }
+                                v8GameRun {
+                                    executeScript(code)
+                                }
+                            }
+                        } else {
+                            canvas.start {
+                                this.playgroundLooper
+                            }
+                            v8GameRun {
+                                executeScript(code)
+                            }
                         }
                     }
                 }
@@ -203,12 +213,10 @@ class OnscreenActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        canvas.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        canvas.onPause()
     }
 
 }

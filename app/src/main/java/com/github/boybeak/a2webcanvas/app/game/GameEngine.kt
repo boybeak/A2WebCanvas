@@ -6,12 +6,14 @@ class GameEngine<T : GamePlayground>(private val creator: (name: String) -> T) {
 
     val playground: T get() = currentPlayground!!
 
-    fun createPlayground(name: String, onFinish: OnStartFinishListener): GamePlayground {
+    fun createPlayground(name: String, onFinish: GamePlayground.() -> Unit): GamePlayground {
         if (currentPlayground != null) {
             destroyPlayground()
         }
         currentPlayground = creator.invoke(name)
-        currentPlayground?.start(onFinish)
+        currentPlayground?.start {
+            onFinish.invoke(currentPlayground!!)
+        }
         return currentPlayground!!
     }
 

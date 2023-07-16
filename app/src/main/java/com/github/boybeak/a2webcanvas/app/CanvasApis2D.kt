@@ -3,13 +3,13 @@ package com.github.boybeak.a2webcanvas.app
 import android.graphics.PointF
 import com.github.boybeak.a2webcanvas.app.image.AssetImage
 import com.github.boybeak.a2webcanvas.app.image.ResourceImage
-import com.github.boybeak.webcanvas.WebCanvasView
-import com.github.boybeak.webcanvas.twod.CanvasRenderingContext2D
-import com.github.boybeak.webcanvas.twod.ICanvasRenderingContext2D
-import com.github.boybeak.webcanvas.twod.paint.Style
+import com.github.boybeak.canvas._2d.IWebCanvasContext2D
+import com.github.boybeak.canvas._2d.paint.Style
+import com.github.boybeak.canvas.onscreen.WebCanvasOnscreen
 import kotlin.math.PI
 
-class CanvasApis2D(private val canvas: WebCanvasView) {
+
+class CanvasApis2D(canvas: WebCanvasOnscreen) {
 
     val context = canvas.context
     val density = canvas.context.resources.displayMetrics.density
@@ -357,11 +357,12 @@ class CanvasApis2D(private val canvas: WebCanvasView) {
             drawImage(AssetImage(context, "hippo.png"), 0, 0)
         }
     )
+    /*val apis = listOf<Api2D>()*/
 
-    private fun newFixedApi(name: String, onDraw: (ICanvasRenderingContext2D.() -> Unit)): Api2D {
+    private fun newFixedApi(name: String, onDraw: (IWebCanvasContext2D.() -> Unit)): Api2D {
         return Api2D(name, newFixedOnDraw(onDraw))
     }
-    private fun newFixedOnDraw(onDraw: (ICanvasRenderingContext2D.() -> Unit)): ICanvasRenderingContext2D.() -> Unit {
+    private fun newFixedOnDraw(onDraw: (IWebCanvasContext2D.() -> Unit)): IWebCanvasContext2D.() -> Unit {
         return {
             scale(density, density)
             onDraw.invoke(this)
