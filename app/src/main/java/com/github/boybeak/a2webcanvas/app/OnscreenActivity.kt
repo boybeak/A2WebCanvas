@@ -71,6 +71,7 @@ class OnscreenActivity : AppCompatActivity() {
         }
         @V8Method
         fun requestAnimationFrame(function: V8Function) {
+            Log.d(TAG, "requestAnimationFrame stopWhenNextFrame=$stopWhenNextFrame")
             if (stopWhenNextFrame) {
                 stopWhenNextFrame = false
                 return
@@ -79,7 +80,7 @@ class OnscreenActivity : AppCompatActivity() {
             val guessName = function.guessName
             canvas.queueEvent(10L) {
                 Log.d(TAG, "guessName=$guessName")
-                canvas?.getContextAs<WebCanvasContextOnscreen2D>("2d")?.scale(density, density)
+//                canvas?.getContextAs<WebCanvasContextOnscreen2D>("2d")?.scale(density, density)
                 gameEngine.playground.v8.executeJSFunction(guessName)
             }
             if (stopBtn.visibility == View.GONE) {
@@ -144,12 +145,17 @@ class OnscreenActivity : AppCompatActivity() {
                 ) {
                     val code = item.getJsCode(view.context)
                     if (canvas.isStarted) {
+                        window.stopWhenNextFrame = true
                         canvas.stop { _, _ ->
                             gameEngine.createPlayground(item.source().name) {
                                 canvas.start {
                                     this.playgroundLooper
                                 }
                                 v8GameRun {
+                                    add("ctx", canvas.getContextV8("2d").apply {
+                                        add("width", (canvas.width / density).toInt())
+                                        add("height", (canvas.height / density).toInt())
+                                    })
                                     executeScript(code)
                                 }
                             }
@@ -160,6 +166,10 @@ class OnscreenActivity : AppCompatActivity() {
                                 this.playgroundLooper
                             }
                             v8GameRun {
+                                add("ctx", canvas.getContextV8("2d").apply {
+                                    add("width", (canvas.width / density).toInt())
+                                    add("height", (canvas.height / density).toInt())
+                                })
                                 executeScript(code)
                             }
                         }
@@ -185,6 +195,10 @@ class OnscreenActivity : AppCompatActivity() {
 
         stopBtn.setOnClickListener {
             window.stopWhenNextFrame = true
+            canvas.stop { _, _ ->
+                gameEngine.playground.stop()
+                Log.d(TAG, "STOP!!!!")
+            }
             stopBtn.visibility = View.GONE
             /*v8Engine.reset {
                 initV8(this)
@@ -193,13 +207,10 @@ class OnscreenActivity : AppCompatActivity() {
     }
 
     private fun initV8(v8: V8) {
+        Log.d(TAG, "initV8 ")
         canvas.initialize(v8)
         v8.add("canvas", canvas.getMyBinding(v8))
         v8.add("Console", console.getMyBinding(v8))
-        v8.add("ctx", canvas.getContextV8("2d").apply {
-            add("width", (canvas.width / density).toInt())
-            add("height", (canvas.height / density).toInt())
-        })
         v8.add("window", window.getMyBinding(v8))
         v8.add("ImageCreator", imageCreator.getMyBinding(v8))
     }

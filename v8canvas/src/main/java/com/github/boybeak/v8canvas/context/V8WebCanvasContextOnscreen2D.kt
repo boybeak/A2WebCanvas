@@ -22,7 +22,7 @@ import kotlin.math.abs
 
 class V8WebCanvasContextOnscreen2D(private val v8WebCanvas: V8WebCanvasOnscreen) : V8Binding {
 
-    private val context2D get() = v8WebCanvas.getContextAs<WebCanvasContextOnscreen2D>("2d")
+    private val context2D = v8WebCanvas.getContextAs<WebCanvasContextOnscreen2D>("2d")
 
     private val v8: V8 get() = v8WebCanvas.v8
 

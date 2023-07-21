@@ -16,6 +16,13 @@ open class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
         private const val TAG = "WebCanvasOnscreen"
     }
 
+    override var canvasWidth: Int
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var canvasHeight: Int
+        get() = TODO("Not yet implemented")
+        set(value) {}
+
     private var contextOnscreen: AbsWebCanvasContextOnscreen? = null
 
     override val surfaceHolder: SurfaceHolder
@@ -43,6 +50,7 @@ open class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
         return getContext(type) as T
     }
     override fun getContext(type: String): IWebCanvasContextOnscreen {
+        Log.d(TAG, "getContext-1 type=$type")
         if (contextOnscreen == null) {
             when(type) {
                 "2d", "2D" -> contextOnscreen = WebCanvasContextOnscreen2D(this).also {
@@ -52,6 +60,7 @@ open class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
                 else -> TODO("getContext($type) Not support yet!!")
             }
         }
+        Log.d(TAG, "getContext-2 type=$type")
         return contextOnscreen!!
     }
 
@@ -69,6 +78,7 @@ open class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
     }
 
     override fun stop(callback: (looper: Looper, isDefault: Boolean) -> Unit) {
+        Log.d(TAG, "stop isStarted=$isStarted contextOnscreen=$contextOnscreen")
         if (!isStarted) {
             return
         }
@@ -77,6 +87,7 @@ open class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
             callback.invoke(looper, Looper.getMainLooper() == looper)
         } else {
             contextOnscreen?.stopRender {
+                Log.d(TAG,  "stop result")
                 callback.invoke(looper, Looper.getMainLooper() == looper)
             }
         }
@@ -108,6 +119,7 @@ open class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
     }
 
     override fun queueEvent(delay: Long, task: Runnable): Boolean {
+        Log.d(TAG, "queueEvent contextOnscreen=$contextOnscreen")
         return contextOnscreen?.postDelayed(delay, task) ?: false
     }
 }

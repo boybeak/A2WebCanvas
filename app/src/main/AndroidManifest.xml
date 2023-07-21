@@ -13,6 +13,9 @@
         android:theme="@style/Theme.A2WebCanvas"
         tools:targetApi="31">
         <activity
+            android:name=".OffscreenActivity"
+            android:exported="false" />
+        <activity
             android:name=".experiment.OnScreenActivity"
             android:exported="false" />
         <activity

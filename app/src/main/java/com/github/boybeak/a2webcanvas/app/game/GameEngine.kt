@@ -8,7 +8,8 @@ class GameEngine<T : GamePlayground>(private val creator: (name: String) -> T) {
 
     fun createPlayground(name: String, onFinish: GamePlayground.() -> Unit): GamePlayground {
         if (currentPlayground != null) {
-            destroyPlayground()
+            currentPlayground?.stop()
+            currentPlayground = null
         }
         currentPlayground = creator.invoke(name)
         currentPlayground?.start {
@@ -17,9 +18,9 @@ class GameEngine<T : GamePlayground>(private val creator: (name: String) -> T) {
         return currentPlayground!!
     }
 
-    fun destroyPlayground() {
+    /*fun destroyPlayground() {
         currentPlayground?.stop()
         currentPlayground = null
-    }
+    }*/
 
 }

@@ -21,7 +21,7 @@ open class V8GamePlayground(name: String) : GamePlayground(name) {
         v8GameRun {
             release(false)
             v8Inner = null
+            super.stop()
         }
-        super.stop()
     }
 }

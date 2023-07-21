@@ -25,6 +25,8 @@ class WebCanvasContextOnscreen2D constructor(canvas: IWebCanvasOnscreen) : AbsWe
 
     private val androidContext get() = canvas.androidContext
 
+    private var pid = 0L
+
     private var canvasInner: Canvas? = null
         get() {
             if (field == null) {
@@ -45,19 +47,28 @@ class WebCanvasContextOnscreen2D constructor(canvas: IWebCanvasOnscreen) : AbsWe
     }
 
     private fun onCreateCanvas(canvas: Canvas) {
+        pid = Thread.currentThread().id
         canvas.drawColor(Color.WHITE)
         canvas.scale(androidContext.resources.displayMetrics.density, androidContext.resources.displayMetrics.density)
     }
 
     override fun onFrameRender() {
+        Log.d(TAG, "onFrameRender ")
         if (canvasInner != null) {
+            if (Thread.currentThread().id != pid) {
+                Log.e(TAG, "onFrameRender render in wrong thread")
+            }
             canvas.surfaceHolder.unlockCanvasAndPost(canvasInner!!)
             canvasInner = null
         }
     }
 
     override fun onStopRender() {
+        Log.d(TAG, "onStopRender ------>")
         if (canvasInner != null) {
+            if (Thread.currentThread().id != pid) {
+                Log.e(TAG, "onStopRender render in wrong thread")
+            }
             canvas.surfaceHolder.unlockCanvasAndPost(canvasInner!!)
             canvasInner = null
         }

@@ -26,6 +26,9 @@ class MainActivity : AppCompatActivity() {
                 putString(OnscreenActivity.KEY_SUB_DIR, "game")
             }
         }
+        findViewById<View>(R.id.offScreen2D).setOnClickListener {
+            gotoActivity(OffscreenActivity::class.java)
+        }
         findViewById<View>(R.id.multiThreadRender).setOnClickListener {
             gotoActivity(MultiThreadActivity::class.java)
         }

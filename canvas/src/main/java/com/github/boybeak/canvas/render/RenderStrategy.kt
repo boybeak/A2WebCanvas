@@ -50,12 +50,19 @@ class ContinuouslyStrategy(executor: RenderExecutor, fps: Int) : RenderStrategy(
     }
 }
 class AutoStrategy(executor: RenderExecutor) : RenderStrategy(executor) {
+
+    companion object {
+        private const val TAG = "AutoStrategy"
+    }
+
     override val renderTask: Runnable = Runnable {
+        Log.d(TAG,  "renderTask.run")
         onRender()
         isPosted = false
     }
     private var isPosted = false
     override fun requestRender() {
+        Log.d(TAG,  "requestRender isPosted=$isPosted")
         if (isPosted) {
             return
         }
@@ -64,6 +71,7 @@ class AutoStrategy(executor: RenderExecutor) : RenderStrategy(executor) {
     }
 
     override fun stop() {
+        Log.d(TAG,  "stop.stop")
         isPosted = false
         super.stop()
     }

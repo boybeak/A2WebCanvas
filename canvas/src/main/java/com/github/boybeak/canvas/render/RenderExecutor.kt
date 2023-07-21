@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import java.lang.IllegalArgumentException
 import kotlin.math.ceil
 typealias StopCallback = () -> Unit
@@ -16,6 +17,7 @@ class RenderExecutor(context: Context, private val callback: Callback) {
 
     private var stopCallback: (() -> Unit)? = null
     private val stopTask = Runnable {
+        Log.d(TAG, "stopTask.run")
         callback.onStop()
         stopCallback?.invoke()
         stopCallback = null
@@ -46,8 +48,10 @@ class RenderExecutor(context: Context, private val callback: Callback) {
 
     fun start() {
         renderStrategy.requestRender()
+        stopCallback = null
     }
     fun stop(callback: StopCallback) {
+        Log.e(TAG, "stop---")
         this.stopCallback = callback
         renderStrategy.stop()
         handler?.post(stopTask)
@@ -74,6 +78,7 @@ class RenderExecutor(context: Context, private val callback: Callback) {
         return renderMode
     }
     fun post(task: Runnable): Boolean {
+        Log.d(TAG, "post handler=${handler.hashCode()}")
         if (handler == null) {
             return false
         }
