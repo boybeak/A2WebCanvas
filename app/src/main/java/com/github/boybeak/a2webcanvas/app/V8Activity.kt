@@ -125,7 +125,7 @@ class V8Activity : AppCompatActivity() {
             canvasView.initialize(v8!!)
             v8?.add("canvas", canvasView.getMyBinding(v8!!))
             v8?.add("Console", console.getMyBinding(v8!!))
-            v8?.add("ctx", canvasView.getContextV8("2d"))
+            v8?.add("ctx", canvasView.getContextV8("2d").getMyBinding(v8!!))
             v8?.add("window", window.getMyBinding(v8!!))
             v8?.add("ImageCreator", imageCreator.getMyBinding(v8!!))
 

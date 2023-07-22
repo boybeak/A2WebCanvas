@@ -46,9 +46,6 @@ open class WebCanvasOnscreen : SurfaceView, IWebCanvasOnscreen {
         defStyleAttr
     )
 
-    fun <T : IWebCanvasContextOnscreen> getContextAs(type: String) : T {
-        return getContext(type) as T
-    }
     override fun getContext(type: String): IWebCanvasContextOnscreen {
         Log.d(TAG, "getContext-1 type=$type")
         if (contextOnscreen == null) {

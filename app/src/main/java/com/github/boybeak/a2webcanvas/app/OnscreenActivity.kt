@@ -13,6 +13,7 @@ import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
 import com.github.boybeak.a2webcanvas.app.adapter.JsApiItem
 import com.github.boybeak.a2webcanvas.app.game.GameEngine
+import com.github.boybeak.a2webcanvas.app.v8.Console
 import com.github.boybeak.a2webcanvas.app.v8.V8GamePlayground
 import com.github.boybeak.adapter.AnyAdapter
 import com.github.boybeak.adapter.event.OnItemClick
@@ -48,19 +49,6 @@ class OnscreenActivity : AppCompatActivity() {
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.apiList) }
     private val stopBtn by lazy { findViewById<View>(R.id.stopBtn) }
 
-    private val console = object : V8BindingAdapter {
-
-        private val tag = "V8Console"
-
-        override fun getBindingId(): String {
-            return this.hashCode().toString()
-        }
-
-        @V8Method
-        fun log(vararg args: Any) {
-            Log.d(tag, args.joinToString(separator = ""))
-        }
-    }
     private val window = object : V8BindingAdapter {
 
         @Volatile
@@ -152,7 +140,7 @@ class OnscreenActivity : AppCompatActivity() {
                                     this.playgroundLooper
                                 }
                                 v8GameRun {
-                                    add("ctx", canvas.getContextV8("2d").apply {
+                                    add("ctx", canvas.getContextV8("2d").getMyBinding(this).apply {
                                         add("width", (canvas.width / density).toInt())
                                         add("height", (canvas.height / density).toInt())
                                     })
@@ -166,7 +154,7 @@ class OnscreenActivity : AppCompatActivity() {
                                 this.playgroundLooper
                             }
                             v8GameRun {
-                                add("ctx", canvas.getContextV8("2d").apply {
+                                add("ctx", canvas.getContextV8("2d").getMyBinding(this).apply {
                                     add("width", (canvas.width / density).toInt())
                                     add("height", (canvas.height / density).toInt())
                                 })
@@ -210,7 +198,7 @@ class OnscreenActivity : AppCompatActivity() {
         Log.d(TAG, "initV8 ")
         canvas.initialize(v8)
         v8.add("canvas", canvas.getMyBinding(v8))
-        v8.add("Console", console.getMyBinding(v8))
+        v8.add("Console", Console().getMyBinding(v8))
         v8.add("window", window.getMyBinding(v8))
         v8.add("ImageCreator", imageCreator.getMyBinding(v8))
     }

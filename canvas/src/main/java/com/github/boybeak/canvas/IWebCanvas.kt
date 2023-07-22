@@ -10,4 +10,7 @@ interface IWebCanvas {
     var canvasWidth: Int
     var canvasHeight: Int
     fun getContext(type: String): IWebCanvasContext
+    fun <T : IWebCanvasContext> getContextAs(type: String): T {
+        return getContext(type) as T
+    }
 }

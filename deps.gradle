@@ -6,7 +6,7 @@ ext {
             j2v8        :   "com.eclipsesource.j2v8:j2v8:6.2.1@aar"
     ]
 
-    def v8x_version = "dev-0.0.5"
+    def v8x_version = "dev-0.0.7"
     v8x = [
             binding     :   "com.github.boybeak.v8x:v8binding:$v8x_version",
             ext         :   "com.github.boybeak.v8x:v8ext:$v8x_version"

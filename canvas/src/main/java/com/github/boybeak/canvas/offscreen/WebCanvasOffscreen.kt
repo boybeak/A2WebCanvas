@@ -4,7 +4,7 @@ import com.github.boybeak.canvas.IWebCanvas
 import com.github.boybeak.canvas.context.WebCanvasContextOffscreen2D
 import java.lang.IllegalArgumentException
 
-class WebCanvasOffscreen : IWebCanvasOffscreen {
+open class WebCanvasOffscreen : IWebCanvasOffscreen {
 
     override var canvasWidth: Int = IWebCanvas.SIZE_WIDTH_DEFAULT
     override var canvasHeight: Int = IWebCanvas.SIZE_HEIGHT_DEFAULT
