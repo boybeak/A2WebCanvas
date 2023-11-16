@@ -81,7 +81,10 @@ class ArcTo {
 
         sweepDegrees = ct1Vec.degreesWith(ct2Vec)
 
-        startDegrees = ct1Vec.degreesWith(xPositiveVec)
+        // the Math coordinate system is up-positive/down-negative,
+        // but the screen coordinate system is opposite.
+        // So we need put a negative symbol.
+        startDegrees = -ct1Vec.degreesWith(xPositiveVec)
 
     }
 

@@ -18,7 +18,7 @@ import com.github.boybeak.canvas._2d.paint.WebPaint
 import com.github.boybeak.canvas.image.IWebImage
 import com.github.boybeak.canvas.image.ImageData
 import com.github.boybeak.canvas.image.WebImageManager
-import com.github.boybeak.canvas._2d.geometry.AnchorPath
+import com.github.boybeak.canvas._2d.geometry.WebPath
 import java.lang.IllegalArgumentException
 import kotlin.math.PI
 
@@ -30,7 +30,7 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider) : IPai
 
     private val canvas: Canvas get() = provider.androidCanvas
 
-    private var path: AnchorPath? = null
+    private var path: WebPath? = null
     private val paint = WebPaint()
 
     private val drawImageSrcRect = Rect()
@@ -70,6 +70,9 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider) : IPai
     override var lineWidth: Float
         get() = paint.lineWidth
         set(value) { paint.lineWidth = value }
+    override var miterLimit: Float
+        get() = paint.miterLimit
+        set(value) { paint.miterLimit = value }
     override var shadowBlur: Float
         get() = paint.shadowBlur
         set(value) { paint.shadowBlur = value }
@@ -191,7 +194,7 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider) : IPai
     // Path related
 
     override fun beginPath() {
-        path = AnchorPath()
+        path = WebPath()
     }
 
     override fun arc(
