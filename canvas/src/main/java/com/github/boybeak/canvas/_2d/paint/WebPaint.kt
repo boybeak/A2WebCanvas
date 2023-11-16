@@ -137,6 +137,13 @@ class WebPaint {
             stateLineWidth()
         }
 
+    var miterLimit: Float
+        get() = currentState.miterLimit
+        set(value) {
+            currentState.miterLimit = value
+            stateMiterLimit()
+        }
+
     var shadowBlur: Float
         get() = currentState.shadowBlur
         set(value) {
@@ -251,6 +258,10 @@ class WebPaint {
         paint.strokeWidth = currentState.lineWidth
     }
 
+    private fun stateMiterLimit() {
+        paint.strokeMiter = currentState.miterLimit
+    }
+
     private fun stateShadow() {
         val colorStr = shadowColor ?: return
         paint.setShadowLayer(shadowBlur, shadowOffsetX, shadowOffsetY, HtmlColor.parseColor(colorStr))
@@ -280,6 +291,7 @@ class WebPaint {
                         var lineCap: String = "butt",
                         var lineJoin: String = "miter",
                         var lineWidth: Float = 1F,
+                        var miterLimit: Float = 4F, // Default strokeMiter of a paint
                         var shadowBlur: Float = 0F,
                         var shadowColor: String? = null,
                         var shadowOffsetX: Float = 0F,
@@ -301,6 +313,7 @@ class WebPaint {
             this.lineCap = state.lineCap
             this.lineJoin = state.lineJoin
             this.lineWidth = state.lineWidth
+            this.miterLimit = state.miterLimit
             this.shadowBlur = state.shadowBlur
             this.shadowColor = state.shadowColor
             this.shadowOffsetX = state.shadowOffsetX
@@ -310,7 +323,7 @@ class WebPaint {
         }
         fun copy(): State {
             return State(fillStyle, strokeStyle, filter, font, globalAlpha, globalCompositeOperation,
-                lineCap, lineJoin, lineWidth,
+                lineCap, lineJoin, lineWidth, miterLimit,
                 shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY, textAlign, textBaseline)
         }
 

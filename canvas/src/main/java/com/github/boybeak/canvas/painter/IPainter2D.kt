@@ -25,6 +25,8 @@ interface IPainter2D {
     var lineJoin: String
     var lineWidth: Float
 
+    var miterLimit: Float
+
     var shadowBlur: Float
     var shadowColor: String?
     var shadowOffsetX: Float

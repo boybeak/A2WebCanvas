@@ -49,6 +49,9 @@ interface IWebCanvasContext2D : IWebCanvasContext, IPainter2D, IAndroidCanvasPro
     override var lineWidth: Float
         get() = canvasPainter.lineWidth
         set(value) { canvasPainter.lineWidth = value }
+    override var miterLimit: Float
+        get() = canvasPainter.miterLimit
+        set(value) { canvasPainter.miterLimit = value }
     override var shadowBlur: Float
         get() = canvasPainter.shadowBlur
         set(value) { canvasPainter.shadowBlur = value }
