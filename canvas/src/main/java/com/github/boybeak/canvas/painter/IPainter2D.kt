@@ -64,6 +64,7 @@ interface IPainter2D {
     fun quadraticCurveTo(cpx: Float, cpy: Float, x: Float, y: Float)
     fun rect(x: Float, y: Float, width: Float, height: Float)
     fun roundRect(x: Float, y: Float, width: Float, height: Float, radii: FloatArray)
+    fun clip()
 
     fun closePath()
 

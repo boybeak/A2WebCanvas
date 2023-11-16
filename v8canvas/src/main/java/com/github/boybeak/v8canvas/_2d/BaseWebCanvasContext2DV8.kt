@@ -317,6 +317,9 @@ open class BaseWebCanvasContext2DV8(final override val canvas: IWebCanvasV8) : I
     }
 
     @V8Method
+    fun clip() = context2D.clip()
+
+    @V8Method
     fun closePath() = context2D.closePath()
 
     /** Transform related **/

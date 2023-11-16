@@ -248,6 +248,10 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider) : IPai
         path?.addRoundRect(x, y, x + width, y + height, radii, Path.Direction.CW)
     }
 
+    override fun clip() {
+        canvas.clipPath(path!!)
+    }
+
     override fun closePath() {
         path?.close()
     }

@@ -149,6 +149,10 @@ interface IWebCanvasContext2D : IWebCanvasContext, IPainter2D, IAndroidCanvasPro
         canvasPainter.roundRect(x, y, width, height, radii)
     }
 
+    override fun clip() {
+        canvasPainter.clip()
+    }
+
     override fun closePath() = canvasPainter.closePath()
 
     override fun getTransform(): Matrix {
