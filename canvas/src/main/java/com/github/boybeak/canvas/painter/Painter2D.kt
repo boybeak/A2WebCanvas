@@ -244,7 +244,7 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider) : IPai
     }
 
     override fun rect(x: Float, y: Float, width: Float, height: Float) {
-        path?.addRect(x, y, x + width, y + height)
+        path?.addRect(x, y, width, height)
     }
 
     override fun roundRect(x: Float, y: Float, width: Float, height: Float, radii: FloatArray) {
