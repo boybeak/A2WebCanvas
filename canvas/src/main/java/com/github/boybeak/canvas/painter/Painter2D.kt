@@ -289,9 +289,9 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider, privat
     override fun setTransform(a: Float, b: Float, c: Float, d: Float, e: Float, f: Float) {
         Log.d(TAG, "setTransform(a=$a, b=$b, c=$c, d=$d, e=$e, f=$f)")
         transformMatrix.reset()
-        transformMatrix.postScale(a, d)
         transformMatrix.postSkew(c, b)
-        transformMatrix.postTranslate(e, f)
+        transformMatrix.postTranslate(e, f)     // Must keep the order skew -> translate -> scale
+        transformMatrix.postScale(a, d)
         canvas.setMatrix(transformMatrix)
     }
 
@@ -301,9 +301,9 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider, privat
 
     override fun transform(a: Float, b: Float, c: Float, d: Float, e: Float, f: Float) {
         canvas.getMatrix(transformMatrix)
-        transformMatrix.postScale(a, d)
         transformMatrix.postSkew(c, b)
-        transformMatrix.postTranslate(e, f)
+        transformMatrix.postTranslate(e, f)     // Must keep the order skew -> translate -> scale
+        transformMatrix.postScale(a, d)
         canvas.setMatrix(transformMatrix)
     }
 
