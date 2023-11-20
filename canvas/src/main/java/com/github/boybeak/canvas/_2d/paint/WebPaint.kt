@@ -13,7 +13,7 @@ import com.github.boybeak.canvas.utils.HtmlColor
 import java.lang.IllegalArgumentException
 import java.util.Stack
 
-class WebPaint {
+class WebPaint : IWebPaint {
 
     companion object {
         private const val TAG = "WebPaint"
@@ -80,103 +80,103 @@ class WebPaint {
         "lighten" to PorterDuffXfermode(PorterDuff.Mode.LIGHTEN),
     )
 
-    var fillStyle: Style
+    override var fillStyle: Style
         get() = currentState.fillStyle
         set(value) {
             currentState.fillStyle = value
         }
-    var strokeStyle: Style
+    override var strokeStyle: Style
         get() = currentState.strokeStyle
         set(value) {
             currentState.strokeStyle = value
         }
-    var filter: String?
+    override var filter: String?
         get() = currentState.filter
         set(value) {
             currentState.filter = value
             stateMaskFilter()
         }
 
-    var font: String
+    override var font: String
         get() = currentState.font
         set(value) {
             currentState.font = value
             stateFont()
         }
 
-    var globalAlpha: Float
+    override var globalAlpha: Float
         get() = currentState.globalAlpha
         set(value) {
             currentState.globalAlpha = value
             stateGlobalAlpha()
         }
 
-    var globalCompositeOperation: String
+    override var globalCompositeOperation: String
         get() = currentState.globalCompositeOperation
         set(value) {
             currentState.globalCompositeOperation = value
             stateGlobalCompositeOperation()
         }
 
-    var lineCap: String
+    override var lineCap: String
         get() = currentState.lineCap
         set(value) {
             currentState.lineCap = value
             stateLineCap()
         }
-    var lineJoin: String
+    override var lineJoin: String
         get() = currentState.lineJoin
         set(value) {
             currentState.lineJoin = value
             stateLineJoin()
         }
-    var lineWidth: Float
+    override var lineWidth: Float
         get() = currentState.lineWidth
         set(value) {
             currentState.lineWidth = value
             stateLineWidth()
         }
 
-    var miterLimit: Float
+    override var miterLimit: Float
         get() = currentState.miterLimit
         set(value) {
             currentState.miterLimit = value
             stateMiterLimit()
         }
 
-    var shadowBlur: Float
+    override var shadowBlur: Float
         get() = currentState.shadowBlur
         set(value) {
             currentState.shadowBlur = value
             stateShadow()
         }
-    var shadowColor: String?
+    override var shadowColor: String?
         get() = currentState.shadowColor
         set(value) {
             currentState.shadowColor = value
             stateShadow()
         }
-    var shadowOffsetX: Float
+    override var shadowOffsetX: Float
         get() = currentState.shadowOffsetX
         set(value) {
             currentState.shadowOffsetX = value
             stateShadow()
         }
-    var shadowOffsetY: Float
+    override var shadowOffsetY: Float
         get() = currentState.shadowOffsetY
         set(value) {
             currentState.shadowOffsetY = value
             stateShadow()
         }
 
-    var textAlign: String
+    override var textAlign: String
         get() = currentState.textAlign
         set(value) {
             currentState.textAlign = value
             stateTextAlign()
         }
 
-    var textBaseline: String
+    override var textBaseline: String
         get() = currentState.textBaseline
         set(value) {
             currentState.textBaseline = value

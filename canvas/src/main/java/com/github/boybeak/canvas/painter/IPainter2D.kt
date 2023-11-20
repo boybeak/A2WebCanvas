@@ -5,35 +5,13 @@ import android.graphics.Matrix
 import com.github.boybeak.canvas._2d.gradient.CanvasPattern
 import com.github.boybeak.canvas._2d.gradient.LinearGradient
 import com.github.boybeak.canvas._2d.gradient.RadialGradient
+import com.github.boybeak.canvas._2d.paint.IWebPaint
 import com.github.boybeak.canvas._2d.paint.Style
 import com.github.boybeak.canvas._2d.paint.TextMetrics
 import com.github.boybeak.canvas.image.IWebImage
 import com.github.boybeak.canvas.image.ImageData
 
-interface IPainter2D {
-    var fillStyle: Style
-    var strokeStyle: Style
-
-    var filter: String?
-
-    var font: String
-
-    var globalAlpha: Float
-    var globalCompositeOperation: String
-
-    var lineCap: String
-    var lineJoin: String
-    var lineWidth: Float
-
-    var miterLimit: Float
-
-    var shadowBlur: Float
-    var shadowColor: String?
-    var shadowOffsetX: Float
-    var shadowOffsetY: Float
-
-    var textAlign: String
-    var textBaseline: String
+interface IPainter2D : IWebPaint {
 
     fun createLinearGradient(x0: Float, y0: Float, x1: Float, y1: Float): LinearGradient
     fun createPattern(image: IWebImage, repetition: String): CanvasPattern

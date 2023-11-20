@@ -19,10 +19,11 @@ import com.github.boybeak.canvas.image.IWebImage
 import com.github.boybeak.canvas.image.ImageData
 import com.github.boybeak.canvas.image.WebImageManager
 import com.github.boybeak.canvas._2d.geometry.WebPath
+import com.github.boybeak.canvas._2d.paint.IWebPaint
 import java.lang.IllegalArgumentException
 import kotlin.math.PI
 
-class Painter2D constructor(private val provider: IAndroidCanvasProvider) : IPainter2D {
+class Painter2D constructor(private val provider: IAndroidCanvasProvider, private val paint: WebPaint = WebPaint()) : IPainter2D, IWebPaint by paint {
 
     companion object {
         private const val TAG = "Painter2D"
@@ -31,7 +32,6 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider) : IPai
     private val canvas: Canvas get() = provider.androidCanvas
 
     private var path: WebPath? = null
-    private val paint = WebPaint()
 
     private val drawImageSrcRect = Rect()
     private val drawImageDstRect = Rect()
