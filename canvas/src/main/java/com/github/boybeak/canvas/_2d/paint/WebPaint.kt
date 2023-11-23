@@ -3,6 +3,7 @@ package com.github.boybeak.canvas._2d.paint
 import android.graphics.BlurMaskFilter
 import android.graphics.Color
 import android.graphics.ColorMatrixColorFilter
+import android.graphics.DashPathEffect
 import android.graphics.MaskFilter
 import android.graphics.Paint
 import android.graphics.PorterDuff
@@ -31,6 +32,10 @@ class WebPaint : IWebPaint {
         style = Paint.Style.STROKE
         strokeStyle.setTo(paint)
         statePaint()
+        stateLineCap()
+        stateLineDash()
+        stateLineJoin()
+        stateLineWidth()
     }
 
     internal val currentPaint: Paint get() = paint
@@ -123,6 +128,12 @@ class WebPaint : IWebPaint {
         set(value) {
             currentState.lineCap = value
             stateLineCap()
+        }
+    override var lineDash: LineDash?
+        get() = currentState.lineDash
+        set(value) {
+            currentState.lineDash = value
+            stateLineDash()
         }
     override var lineJoin: String
         get() = currentState.lineJoin
@@ -246,6 +257,14 @@ class WebPaint : IWebPaint {
             else -> throw IllegalArgumentException("Unknown lineCap $lineCap")
         }
     }
+    private fun stateLineDash() {
+        val ld = lineDash
+        if (ld != null) {
+            paint.pathEffect = DashPathEffect(ld.intervals, ld.phase)
+        } else {
+            paint.pathEffect = null
+        }
+    }
     private fun stateLineJoin() {
         paint.strokeJoin = when(lineJoin) {
             "round" -> Paint.Join.ROUND
@@ -289,6 +308,7 @@ class WebPaint : IWebPaint {
                         var globalAlpha: Float = 1F,
                         var globalCompositeOperation: String = "source-over",
                         var lineCap: String = "butt",
+                        var lineDash: LineDash? = null,
                         var lineJoin: String = "miter",
                         var lineWidth: Float = 1F,
                         var miterLimit: Float = 4F, // Default strokeMiter of a paint
@@ -311,6 +331,7 @@ class WebPaint : IWebPaint {
             this.globalAlpha = state.globalAlpha
             this.globalCompositeOperation = state.globalCompositeOperation
             this.lineCap = state.lineCap
+            this.lineDash = state.lineDash
             this.lineJoin = state.lineJoin
             this.lineWidth = state.lineWidth
             this.miterLimit = state.miterLimit
@@ -323,7 +344,7 @@ class WebPaint : IWebPaint {
         }
         fun copy(): State {
             return State(fillStyle, strokeStyle, filter, font, globalAlpha, globalCompositeOperation,
-                lineCap, lineJoin, lineWidth, miterLimit,
+                lineCap, lineDash, lineJoin, lineWidth, miterLimit,
                 shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY, textAlign, textBaseline)
         }
 

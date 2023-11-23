@@ -12,6 +12,7 @@ interface IWebPaint {
     var globalCompositeOperation: String
 
     var lineCap: String
+    var lineDash: LineDash?
     var lineJoin: String
     var lineWidth: Float
 
