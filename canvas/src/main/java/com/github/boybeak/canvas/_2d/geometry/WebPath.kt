@@ -26,9 +26,7 @@ class WebPath : Path() {
         radius: Float
     ) {
         arcTo.set(anchorPointF.x, anchorPointF.y, x1, y1, x2, y2, radius)
-        Log.d(TAG, "arcTo tangentPoint1=${arcTo.tangentPoint1}")
         lineTo(arcTo.tangentPoint1.x, arcTo.tangentPoint1.y)
-        Log.d(TAG, "arcTo rect=${arcTo.rect} stDegrees=${arcTo.startDegrees} swDegrees=${arcTo.sweepDegrees}")
         arcTo(arcTo.rect, arcTo.startDegrees, arcTo.sweepDegrees, false)
 
     }

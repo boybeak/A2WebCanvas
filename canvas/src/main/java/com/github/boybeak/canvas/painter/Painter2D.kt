@@ -32,6 +32,7 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider, privat
     private val canvas: Canvas get() = provider.androidCanvas
 
     private var path: WebPath? = null
+    private val tempPath: WebPath = WebPath()
 
     private val drawImageSrcRect = Rect()
     private val drawImageDstRect = Rect()
@@ -209,7 +210,7 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider, privat
             val deltaAngle = ((endAngle - startAngle) / PI * 180).toFloat()
             // Handle the special data
             // TODO("may cause other problems, need test")
-            if (deltaAngle % 360 == 0F) 360F else deltaAngle - 360
+            -if (deltaAngle % 360 == 0F) 360F else deltaAngle - 360
         } else {
             ((endAngle - startAngle) / PI * 180).toFloat()
         }
@@ -244,7 +245,9 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider, privat
     }
 
     override fun rect(x: Float, y: Float, width: Float, height: Float) {
-        path?.addRect(x, y, width, height)
+        tempPath.reset()
+        tempPath.addRect(x, y, width, height)
+        path?.addPath(tempPath)
     }
 
     override fun roundRect(x: Float, y: Float, width: Float, height: Float, radii: FloatArray) {
@@ -287,7 +290,6 @@ class Painter2D constructor(private val provider: IAndroidCanvasProvider, privat
      * f - transformY
      */
     override fun setTransform(a: Float, b: Float, c: Float, d: Float, e: Float, f: Float) {
-        Log.d(TAG, "setTransform(a=$a, b=$b, c=$c, d=$d, e=$e, f=$f)")
         transformMatrix.reset()
         transformMatrix.postSkew(c, b)
         transformMatrix.postTranslate(e, f)     // Must keep the order skew -> translate -> scale
