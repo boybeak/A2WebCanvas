@@ -2,6 +2,7 @@ package com.github.boybeak.canvas._2d.geometry
 
 import android.graphics.PointF
 import android.graphics.RectF
+import kotlin.math.abs
 import kotlin.math.sin
 import kotlin.math.tan
 
@@ -79,7 +80,10 @@ class ArcTo {
         ct1Vec.set(cPoint, tangentPoint1)
         ct2Vec.set(cPoint, tangentPoint2)
 
-        sweepDegrees = ct1Vec.degreesWith(ct2Vec)
+        val crossProduct = ct1Vec.crossProduct(ct2Vec)
+        val sweepSymbol = crossProduct[2] / abs(crossProduct[2])    // calculate sweep direction clock wise or counter clock wise
+
+        sweepDegrees = ct1Vec.degreesWith(ct2Vec) * sweepSymbol
 
         // the Math coordinate system is up-positive/down-negative,
         // but the screen coordinate system is opposite.

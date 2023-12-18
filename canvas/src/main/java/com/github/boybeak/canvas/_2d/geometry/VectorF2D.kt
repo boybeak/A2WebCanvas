@@ -62,6 +62,10 @@ class VectorF2D {
         return VectorF2D(x - vector.x, y - vector.y)
     }
 
+    fun crossProduct(vector: VectorF2D): FloatArray {
+        return floatArrayOf(0F, 0F, x * vector.y - vector.x * y)
+    }
+
     fun innerProduct(vector: VectorF2D): Float {
         return x * vector.x + y * vector.y
     }
